@@ -1,0 +1,66 @@
+﻿@page
+@model ProjektInzynierski.Pages.Group.AddMembersModel
+@{
+    ViewData["Title"] = "Dodaj ucznia do grupy";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Dodaj ucznia do grupy</h1>
+
+@if (Model.wysUczniowie != null && Model.wysUczniowie.Any())
+{
+    <table class="table">
+        <thead>
+            <tr class="text-muted">
+                <th>Nazwisko</th>
+                <th>Imię</th>
+                <th>Email</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var uczen in Model.wysUczniowie)
+            {
+                <tr class="text1">
+                    <td>@Html.DisplayFor(m => uczen.Surname)</td>
+                    <td>@Html.DisplayFor(m => uczen.Name)</td>
+                    <td>@Html.DisplayFor(m => uczen.Email)</td>
+                    <td>
+                        <a asp-page-handler="Delete" asp-route-idUcznia="@uczen.IdOsoba" asp-route-idGrupy="@ViewBag.idGrupy" class="btn btn-delete">Usuń ucznia</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-muted">Ta grupa aktualnie jest pusta. Możesz dodać do niej uczniów poniżej.</p>
+}
+
+<h4>Uczestnicy</h4>
+<hr />
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form method="post" asp-route-id="@ViewBag.idGrupy">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Uczestnicy.IdUcznia" class="control-label">Wybierz ucznia</label>
+                    <select asp-for="Uczestnicy.IdUcznia" class="form-control" asp-items="ViewBag.IdUcznia"></select>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Dodaj ucznia" class="btn btn-standard" />
+                    <a class="btn btn-back ml-2" asp-page="List">Powrót</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,159 @@
+﻿@page
+@model TestTest.Pages.Question.IndexModel
+
+@{
+    ViewData["Title"] = "Pytania";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h1 class="display-4">Pytania</h1>
+
+    <p>
+        <a class="btn btn-create" asp-page="Create">Utwórz pytanie</a>
+    </p>
+
+    <form method="get" class="form-row">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="categoryId" class="row1">Kategoria:</label>
+                        <select class="form-control dropdown" id="categoryId" name="categoryId">
+                            <option value="">Wszystkie</option>
+                            @foreach (var category in Model.Kategorie)
+                            {
+                                <option value="@category.IdKategoriaPytania">@category.Nazwa</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="typeId" class="row1">Typ pytania:</label>
+                        <select class="form-control dropdown" id="typeId" name="typeId">
+                            <option value="">Wszystkie</option>
+                            @foreach (var type in Model.TypyPytan)
+                            {
+                                <option value="@type.IdTypPytania">@type.Nazwa</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-7">
+                    <div class="form-group">
+                        <label for="searchText" class="row1">Wyszukaj:</label>
+                        <input type="search" class="form-control" id="searchText" name="searchText" placeholder="Wyszukaj pytanie...">
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <br />
+                        <button type="submit" class="btn btn-standard">Szukaj</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+     @if (!Model.Pytanie.Any())
+    {
+        <p class="text2">Aktualnie w bazie danych nie ma żadnych pytań. Możesz je dodać za pomocą przycisku "Utwórz pytanie".</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr class="text-muted text-center">
+                    <th class="col-sm-5">@Html.DisplayNameFor(model => model.Pytanie.FirstOrDefault().Tresc)</th>
+                    <th class="col-sm-2">@Html.DisplayNameFor(model => model.Pytanie.FirstOrDefault().IdKategoriaPytaniaNavigation.Nazwa)</th>
+                    <th class="col-sm-2">@Html.DisplayNameFor(model => model.Pytanie.FirstOrDefault().IdTypPytaniaNavigation.Nazwa)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Pytanie)
+                {
+                    <tr class="text1 no-border">
+                        <td class="col-sm-5">@Html.DisplayFor(modelItem => item.Tresc)</td>
+                        <td class="text-center col-sm-2">@Html.DisplayFor(modelItem => item.IdKategoriaPytaniaNavigation.Nazwa)</td>
+                        <td class="text-center col-sm-2">@Html.DisplayFor(modelItem => item.IdTypPytaniaNavigation.Nazwa)</td>
+                        <td class="text-center">
+                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.IdPytanie">Edytuj</a>
+                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.IdPytanie">Usuń</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" class="text-left">
+                            <a class="btn btn-create" asp-page="/Answer/Create" asp-route-id="@item.IdPytanie">Zarządzaj odpowiedziami</a>
+                            <button class="btn btn-show-hide" data-question-id="@item.IdPytanie" data-toggle-text="Pokaż odpowiedzi">Pokaż odpowiedzi</button>
+                        </td>
+                    </tr>
+                    <tr class="text-muted answers-row" id="answers-row-@item.IdPytanie" style="display: none;">
+                        <td colspan="5">
+                            <b>Odpowiedzi</b>
+                            <table>
+                                @foreach (var answer in item.Odpowiedz)
+                                {
+                                    <tr class="text1">
+                                        <td class="answer1">@Html.DisplayFor(model => answer.TrescOdpowiedzi)</td>
+                                        <td class="answer1">@Html.DisplayFor(model => answer.CzyPoprawny)</td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script>
+        $(document).ready(function () {
+            var pytaniaArray = @Html.Raw(Json.Serialize(Model.Pytanie.Select(p => p.Tresc).ToList()));
+
+            $("#searchText").autocomplete({
+                source: function (request, response) {
+                    var results = $.ui.autocomplete.filter(pytaniaArray, request.term);
+
+                    if (results.length === 0) {
+                        results.push("Nie odnaleziono.");
+                    }
+
+                    var scrollbarThreshold = 5;
+                    var scrollbar = false;
+
+                    if (results.length > scrollbarThreshold) {
+                        scrollbar = true;
+                    }
+
+                    response(results);
+
+                    if (scrollbar) {
+                        $(".ui-autocomplete").css("max-height", "150px");
+                        $(".ui-autocomplete").css("overflow-y", "auto");
+                    }
+                },
+                minLength: 2,
+                delay: 300
+            });
+
+            $(".btn-show-hide").click(function () {
+                var questionId = $(this).data("question-id");
+                var toggleText = $(this).data("toggle-text");
+                $("#answers-row-" + questionId).toggle();
+                $(this).text(function (_, currentText) {
+                    return currentText === toggleText ? "Ukryj odpowiedzi" : toggleText;
+                });
+            });
+        });
+    </script>
+}

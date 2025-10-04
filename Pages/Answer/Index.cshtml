@@ -1,0 +1,90 @@
+﻿@page
+@model TestTest.Pages.Answer.IndexModel
+
+@{
+    ViewData["Title"] = "Odpowiedzi";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+@functions {
+    string ToLowerString(object value) => value?.ToString()?.ToLower();
+}
+
+<div class="container">
+    <h1 class="display-4">Odpowiedzi</h1>
+
+    <form method="get" class="form-row">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="questionFilter" class="row1">Pytanie:</label>
+                        <select class="form-control dropdown" id="questionFilter" name="questionFilter">
+                            <option value="">Wszystkie</option>
+                            @foreach (var question in Model.Pytania)
+                            {
+                                <option value="@question.IdPytanie">@question.Tresc</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="correctnessFilter" class="row1">Poprawność odpowiedzi:</label>
+                        <select class="form-control dropdown" id="correctnessFilter" name="correctnessFilter">
+                            <option value="">Wszystkie</option>
+                            <option value="true">Poprawne</option>
+                            <option value="false">Niepoprawne</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2 custom-margin1">
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-standard">Szukaj</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Odpowiedzi.Any())
+    {
+        <p class="text2">Aktualnie w bazie danych nie ma żadnych odpowiedzi. Możesz dodać odpowiedzi do konkretnego pytania na stronie "Pytania".</p>
+    } else
+    {
+    <table class="table">
+        <thead>
+            <tr class="text-muted text-center">
+                <th class="col-sm-3">Treść odpowiedzi</th>
+                <th class="col-sm-2">Czy jest poprawna?</th>
+                <th class="col-sm-3">Pytanie</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Odpowiedzi)
+            {
+                var correctnessFilter = Request.Query["correctnessFilter"];
+                var questionFilter = Request.Query["questionFilter"];
+
+                @if ((string.IsNullOrEmpty(correctnessFilter) || ToLowerString(item.CzyPoprawny) == ToLowerString(correctnessFilter)) &&
+               (string.IsNullOrEmpty(questionFilter) || item.IdPytanie == int.Parse(questionFilter)))
+                {
+                    <tr class="text1 text-center">
+                        <td class="col-sm-3">@Html.DisplayFor(modelItem => item.TrescOdpowiedzi)</td>
+                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.CzyPoprawny)</td>
+                        <td class="col-sm-3">@Html.DisplayFor(modelItem => item.IdPytanieNavigation.Tresc)</td>
+                        <td class="col-sm-3">
+                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.IdOdpowiedz">Edytuj</a>
+                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.IdOdpowiedz">Usuń</a>
+                        </td>
+                    </tr>
+                }
+
+            }
+        </tbody>
+    </table>
+    }
+</div>

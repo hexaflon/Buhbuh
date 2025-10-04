@@ -1,0 +1,21 @@
+﻿@page
+@model LogoutModel
+@{
+    ViewData["Title"] = "Wyloguj się";
+}
+
+<header>
+    <h1>@ViewData["Title"]</h1>
+    @{
+        if (User.Identity?.IsAuthenticated ?? false)
+        {
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                <button type="submit" class="btn btn-standard mt-3">Kliknij tutaj, aby się wylogować</button>
+            </form>
+        }
+        else
+        {
+            <p>Wylogowanie przebiegło pomyślnie.</p>
+        }
+    }
+</header>

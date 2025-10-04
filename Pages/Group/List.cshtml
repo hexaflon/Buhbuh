@@ -1,0 +1,101 @@
+﻿@page
+@model ProjektInzynierski.Pages.Group.ListModel
+
+@{
+    ViewData["Title"] = "Grupy";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h1 class="display-4">Grupy</h1>
+
+    <p>
+        <a class="btn btn-create" asp-page="Create">Utwórz grupę</a>
+    </p>
+
+    <form method="get" class="form-row">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label for="searchInput" class="sr-only row1">Wyszukaj</label>
+                    <input type="text" class="form-control" id="searchText" name="searchText" placeholder="Wyszukaj nazwę grupy...">
+                </div>
+            </div>
+
+             <div class="col-md-2">
+                 <div class="form-group">
+                    <button type="submit" class="btn btn-standard">Szukaj</button>
+                 </div>
+             </div>
+        </div>
+    </form>
+
+    @if (!Model.Grupy.Any())
+    {
+        <p class="text2">Aktualnie w bazie danych nie ma żadnych grup. Możesz je dodać za pomocą przycisku "Utwórz grupę".</p>
+    }
+    else
+    {
+    <table class="table">
+        <thead>
+            <tr class="text-muted text-center">
+                <th class="col-sm-2">@Html.DisplayNameFor(model => model.Grupy.FirstOrDefault().IdGrupy)</th>
+                <th class="col-sm-3">@Html.DisplayNameFor(model => model.Grupy.FirstOrDefault().Nazwa)</th>
+                <th class="col-sm-2">@Html.DisplayNameFor(model => model.Grupy.FirstOrDefault().IdNauczyciela)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Grupy)
+            {
+                <tr class="text1 text-center">
+                    <td class="col-sm-2">@Html.DisplayFor(modelItem => item.IdGrupy)</td>
+                    <td class="col-sm-3">@Html.DisplayFor(modelItem => item.Nazwa)</td>
+                    <td class="col-sm-2">@Html.DisplayFor(modelItem => item.IdNauczyciela)</td>
+                    <td class="col-sm-3">
+                        <a class="btn btn-edit" asp-page="./AddMembers" asp-route-id="@item.IdGrupy">Dodaj ucznia</a>
+                        <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.IdGrupy">Usuń</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    }
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script>
+        $(document).ready(function () {
+            var grupyArray = @Html.Raw(Json.Serialize(Model.Grupy.Select(g => g.Nazwa).ToList()));
+
+            $("#searchText").autocomplete({
+                source: function (request, response) {
+                    var results = $.ui.autocomplete.filter(grupyArray, request.term);
+
+                    if (results.length === 0) {
+                        results.push("Nie odnaleziono.");
+                    }
+
+                    var scrollbarThreshold = 5;
+                    var scrollbar = false;
+
+                    if (results.length > scrollbarThreshold) {
+                        scrollbar = true;
+                    }
+
+                    response(results);
+
+                    if (scrollbar) {
+                        $(".ui-autocomplete").css("max-height", "150px");
+                        $(".ui-autocomplete").css("overflow-y", "auto");
+                    }
+                },
+                minLength: 2,
+                delay: 300
+            });
+        });
+    </script>
+}

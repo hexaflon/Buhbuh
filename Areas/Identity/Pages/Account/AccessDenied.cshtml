@@ -1,0 +1,16 @@
+﻿@page
+@model AccessDeniedModel
+
+@{
+    ViewData["Title"] = "Odmowa dostępu";
+}
+
+<h1 class="text-danger">@ViewData["Title"]</h1>
+<div>
+    <h4 class="text-danger mb-5">
+        Nie możesz zobaczyć tej strony, ponieważ nie posiadasz odpowiednich uprawnień.
+    </h4>
+    <p>
+        <a asp-page="/Index" class="btn btn-standard">Powrót do strony głównej</a>
+    </p>
+</div>

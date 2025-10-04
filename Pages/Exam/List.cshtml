@@ -1,0 +1,181 @@
+﻿@page
+@model ProjektInzynierski.Pages.Exam.ListModel
+
+@{
+    ViewData["Title"] = "Testy";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+
+@functions {
+    string ToLowerString(object value) => value?.ToString()?.ToLower();
+}
+
+<div class="container">
+    <h1 class="display-4">Testy</h1>
+
+    <p>
+        <a class="btn btn-create" asp-page="Create">Utwórz test</a>
+    </p>
+
+    <form method="get" class="form-row">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="visibility" class="row1">Widoczność:</label>
+                        <select class="form-control dropdown" id="visibility" name="visibility">
+                            <option value="">Wszystkie</option>
+                            <option value="true">Widoczne</option>
+                            <option value="false">Niewidoczne</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <label for="groupName" class="row1">Nazwa grupy:</label>
+                        <select class="form-control dropdown" id="groupName" name="groupName">
+                            <option value="">Wszystkie</option>
+                            @foreach (var group in Model.Groups)
+                            {
+                                <option value="@group.Nazwa">@group.Nazwa</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label for="searchText" class="row1">Wyszukaj tytuł:</label>
+                        <input type="text" class="form-control" id="searchText" name="searchText" placeholder="Wyszukaj tytuł testu..." />
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    <div class="form-group">
+                        <br />
+                        <button type="submit" class="btn btn-standard">Szukaj</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+     @if (!Model.Test.Any())
+    {
+        <p class="text2">Aktualnie w bazie danych nie ma żadnych testów. Możesz je dodać za pomocą przycisku "Utwórz test".</p>
+    }
+    else
+    {
+    <table class="table">
+        <thead>
+            <tr class="text-muted text-center">
+                <th class="col-sm-1">Widoczność</th>
+                <th class="col-sm-2">Data rozpoczęcia</th>
+                <th class="col-sm-2">Data zakończenia</th>
+                <th class="col-sm-2">Tytuł</th>
+                <th class="col-sm-1">Czas trwania</th>
+                <th class="col-sm-1">ID grupy</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Test)
+            {
+                var visibilityFilter = Request.Query["visibility"];
+                var groupNameFilter = Request.Query["groupName"];
+                var searchTextFilter = Request.Query["searchText"];
+
+                @if ((string.IsNullOrEmpty(visibilityFilter) || ToLowerString(item.CzyWidoczny) == ToLowerString(visibilityFilter)) &&
+               (string.IsNullOrEmpty(groupNameFilter) || item.IdGrupyNavigation.Nazwa == groupNameFilter) &&
+               (string.IsNullOrEmpty(searchTextFilter) || item.Tytul.Contains(searchTextFilter, StringComparison.OrdinalIgnoreCase)))
+                {
+                    <tr class="text1 no-border text-center">
+                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.CzyWidoczny)</td>
+                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.DataRozpoczecia)</td>
+                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.DataZakonczenia)</td>
+                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.Tytul)</td>
+                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.CzasTrwania)</td>
+                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.IdGrupyNavigation.IdGrupy)</td>
+                        <td>
+                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.IdTest">Edytuj</a>
+                            <a class="btn btn-details" asp-page="./Details" asp-route-id="@item.IdTest">Oceny</a>
+                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.IdTest">Usuń</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="9">
+                            <a class="btn btn-create" asp-page="./AddQuestion" asp-route-id="@item.IdTest">Zarządzaj pytaniami</a>
+                            <button class="btn btn-show-hide" data-test-id="@item.IdTest" data-toggle-text="Pokaż pytania">Pokaż pytania</button>
+                        </td>
+                    </tr>
+                    <tr class="text-muted questions-row" id="questions-row-@item.IdTest" style="display: none;">
+                        <td colspan="9">
+                            <b>Pytania</b>
+                            <table>
+                                @foreach (var pytanie in item.ListaPytan)
+                                {
+                                    <tr class="text1">
+                                        <td colspan="8">
+                                            @Html.DisplayFor(x => pytanie.IdPytanieNavigation.Tresc)
+                                        </td>
+                                    </tr>
+                                }
+                            </table>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    }
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script>
+        $(document).ready(function () {
+            var tytulyArray = @Html.Raw(Json.Serialize(Model.Test.Select(t => t.Tytul).ToList()));
+
+            $("#searchText").autocomplete({
+                source: function (request, response) {
+                    var results = $.ui.autocomplete.filter(tytulyArray, request.term);
+
+                    if (results.length === 0) {
+                        results.push("Nie odnaleziono.");
+                    }
+
+                    var scrollbarThreshold = 5;
+                    var scrollbar = false;
+
+                    if (results.length > scrollbarThreshold) {
+                        scrollbar = true;
+                    }
+
+                    response(results);
+
+                    if (scrollbar) {
+                        $(".ui-autocomplete").css("max-height", "150px");
+                        $(".ui-autocomplete").css("overflow-y", "auto");
+                    }
+                },
+                minLength: 2,
+                delay: 300
+            });
+        });
+
+        $(document).ready(function () {
+            $(".btn-show-hide").click(function () {
+                var testId = $(this).data("test-id");
+                var toggleText = $(this).data("toggle-text");
+                $("#questions-row-" + testId).toggle();
+                $(this).text(function (_, currentText) {
+                    return currentText === toggleText ? "Ukryj pytania" : toggleText;
+                });
+            });
+        });
+    </script>
+}

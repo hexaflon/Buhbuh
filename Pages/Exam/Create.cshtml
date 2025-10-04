@@ -1,0 +1,87 @@
+﻿@page
+@model ProjektInzynierski.Pages.Exam.CreateModel
+
+@{
+    ViewData["Title"] = "Utwórz test";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Utwórz test</h1>
+<div class="container">
+    <div class="info-section">
+        <p>
+            Przed utworzeniem testu zapoznaj się z podstawowymi informacjami, klikając
+            <a href="#" onclick="openExplanation()" class="link">tutaj</a>.
+        </p>
+    </div>
+
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h4>Podstawowe informacje</h4>
+            <ul>
+                <li><strong>Data rozpoczęcia:</strong> określa datę i godzinę, od której uczeń może przystąpić do rozwiązywania testu.</li>
+                <li><strong>Data zakończenia:</strong> określa datę i godzinę, o której test zostaje zamknięty i nie ma możliwości dalszego rozwiązywania.</li>
+                <li><strong>Czas trwania:</strong> określa czas (wyrażony w minutach) przeznaczony na rozwiązanie testu, liczony jest od momentu naciśnięcia przycisku "Rozwiąż". Po zakończeniu odliczania, test zostaje automatycznie zakończony.</li>
+                <li><strong>Widoczność:</strong> określa czy po rozwiązaniu testu uczeń będzie mieć dostęp do podglądu swojego testu w celu sprawdzenia poprawnych odpowiedzi.</li>
+            </ul>
+            <p>
+                Można utworzyć test bez określenia daty rozpoczęcia i zakończenia, ale dopiero po wypełnieniu tych pól uczniowie otrzymują możliwość rozwiązania danego testu.
+            </p>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Test.IdGrupy" class="control-label"></label>
+                    <select asp-for="Test.IdGrupy" class="form-control" asp-items="ViewBag.IdGrupy"></select>
+                </div>
+
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Test.CzyWidoczny" /> @Html.DisplayNameFor(model => model.Test.CzyWidoczny)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.DataRozpoczecia" class="control-label"></label>
+                    <input asp-for="Test.DataRozpoczecia" class="form-control" />
+                    <span asp-validation-for="Test.DataRozpoczecia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.DataZakonczenia" class="control-label"></label>
+                    <input asp-for="Test.DataZakonczenia" class="form-control" />
+                    <span asp-validation-for="Test.DataZakonczenia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.Tytul" class="control-label"></label>
+                    <input asp-for="Test.Tytul" class="form-control" />
+                    <span asp-validation-for="Test.Tytul" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.Opis" class="control-label"></label>
+                    <input asp-for="Test.Opis" class="form-control" />
+                    <span asp-validation-for="Test.Opis" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.CzasTrwania" class="control-label"></label>
+                    <input asp-for="Test.CzasTrwania" class="form-control" />
+                    <span asp-validation-for="Test.CzasTrwania" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Utwórz" class="btn btn-standard" />
+                    <a class="btn btn-back ml-2" asp-page="List">Powrót</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

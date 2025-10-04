@@ -1,0 +1,35 @@
+﻿@page
+@model TestTest.Pages.Question.DeleteModel
+
+@{
+    ViewData["Title"] = "Usuń pytanie";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Usuń pytanie</h1>
+<hr />
+<h4 class="text-danger">Czy na pewno chcesz usunąć pytanie?</h4>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pytanie.Tresc)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pytanie.Tresc)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pytanie.IdNauczyciela)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pytanie.IdNauczyciela)
+        </dd>
+    </dl>
+
+    <form method="post">
+        <input type="hidden" asp-for="Pytanie.IdPytanie" />
+        <div class="form-group mt-3">
+            <input type="submit" value="Usuń" class="btn btn-delete" />
+            <a class="btn btn-back ml-2" asp-page="Index">Powrót</a>
+        </div>
+    </form>
+</div>

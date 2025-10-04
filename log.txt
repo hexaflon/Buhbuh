@@ -1,0 +1,870 @@
+root@testy:/home/user/Desktop/projekt./projekt# docker-compose build
+WARN[0000] /home/user/Desktop/projekt./projekt/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+Compose now can delegate build to bake for better performances
+Just set COMPOSE_BAKE=true
+[+] Building 19.0s (23/23) FINISHED                                                                                           docker:default
+ => [sql-data internal] load build definition from sqlserver.Dockerfile                                                                 0.0s
+ => => transferring dockerfile: 463B                                                                                                    0.0s
+ => [sql-data internal] load metadata for mcr.microsoft.com/mssql/server:2022-latest                                                    0.0s
+ => [sql-data internal] load .dockerignore                                                                                              0.0s
+ => => transferring context: 2B                                                                                                         0.0s
+ => [sql-data 1/2] FROM mcr.microsoft.com/mssql/server:2022-latest                                                                      0.0s
+ => CACHED [sql-data 2/2] RUN apt-get update &&     apt-get install -y curl unzip libunwind8 &&     curl -L -o sqlpackage.zip https://  0.0s
+ => [sql-data] exporting to image                                                                                                       0.0s
+ => => exporting layers                                                                                                                 0.0s
+ => => writing image sha256:1a7a48fcec3c1c6c1062df730b960dc602223b9641af6cfd6fc7effc439c5762                                            0.0s
+ => => naming to docker.io/library/projekt-sql-data                                                                                     0.0s
+ => [sql-data] resolving provenance for metadata file                                                                                   0.0s
+ => [web internal] load build definition from Dockerfile                                                                                0.0s
+ => => transferring dockerfile: 448B                                                                                                    0.0s
+ => [web internal] load metadata for mcr.microsoft.com/dotnet/sdk:6.0                                                                   0.3s
+ => [web internal] load metadata for mcr.microsoft.com/dotnet/aspnet:6.0                                                                0.3s
+ => [web internal] load .dockerignore                                                                                                   0.0s
+ => => transferring context: 2B                                                                                                         0.0s
+ => [web build 1/5] FROM mcr.microsoft.com/dotnet/sdk:6.0@sha256:c8fdd06e430de9f4ddd066b475ea350d771f341b77dd5ff4c2fafa748e3f2ef2       0.0s
+ => [web base 1/2] FROM mcr.microsoft.com/dotnet/aspnet:6.0@sha256:e70c493f8af7f95bf459cb2b15c7e7a6173228929c2b7a9a6836b19377890e78     0.0s
+ => [web internal] load build context                                                                                                   0.0s
+ => => transferring context: 12.98kB                                                                                                    0.0s
+ => CACHED [web build 2/5] WORKDIR /src                                                                                                 0.0s
+ => [web build 3/5] COPY . .                                                                                                            0.1s
+ => [web build 4/5] RUN dotnet restore "./ProjektInzynierski.csproj"                                                                    8.5s
+ => [web build 5/5] RUN dotnet publish "./ProjektInzynierski.csproj" -c Release -o /app/publish                                         8.4s 
+ => CACHED [web base 2/2] WORKDIR /app                                                                                                  0.0s 
+ => CACHED [web final 1/2] WORKDIR /app                                                                                                 0.0s 
+ => [web final 2/2] COPY --from=build /app/publish .                                                                                    0.4s 
+ => [web] exporting to image                                                                                                            0.5s 
+ => => exporting layers                                                                                                                 0.4s 
+ => => writing image sha256:1e87f46762549092d2d9c639eedd6f76b47000b52206c0c2d9a1d2ec38d294c7                                            0.0s 
+ => => naming to docker.io/library/projekt-web                                                                                          0.0s
+ => [web] resolving provenance for metadata file                                                                                        0.0s
+[+] Building 2/2
+ ✔ sql-data  Built                                                                                                                      0.0s 
+ ✔ web       Built                                                                                                                      0.0s 
+root@testy:/home/user/Desktop/projekt./projekt# docker-compose up
+WARN[0000] /home/user/Desktop/projekt./projekt/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+[+] Running 2/2
+ ✔ Container sql-data       Created                                                                                                     0.0s 
+ ✔ Container projekt-web-1  Recreated                                                                                                   0.1s 
+Attaching to web-1, sql-data
+sql-data  | SQL Server 2022 will run as non-root by default.
+sql-data  | This container is running as user mssql.
+sql-data  | Your master database file is owned by mssql.
+sql-data  | To learn more visit https://go.microsoft.com/fwlink/?linkid=2099216.
+sql-data  | ⏳ Czekam na SQL Server ()...
+web-1     | warn: Microsoft.AspNetCore.DataProtection.Repositories.FileSystemXmlRepository[60]
+web-1     |       Storing keys in a directory '/root/.aspnet/DataProtection-Keys' that may not be persisted outside of the container. Protected data will be unavailable when container is destroyed.
+web-1     | warn: Microsoft.AspNetCore.DataProtection.KeyManagement.XmlKeyManager[35]
+web-1     |       No XML encryptor configured. Key {3395351a-2eec-44d5-bd93-c8222983c385} may be persisted to storage in unencrypted form.
+web-1     | info: Microsoft.Hosting.Lifetime[14]
+web-1     |       Now listening on: http://[::]:80
+web-1     | info: Microsoft.Hosting.Lifetime[0]
+web-1     |       Application started. Press Ctrl+C to shut down.
+web-1     | info: Microsoft.Hosting.Lifetime[0]
+web-1     |       Hosting environment: Production
+web-1     | info: Microsoft.Hosting.Lifetime[0]
+web-1     |       Content root path: /app/
+sql-data  | 2025-06-08 19:50:27.93 Server      Setup step is FORCE copying system data file 'C:\templatedata\model_replicatedmaster.mdf' to '/var/opt/mssql/data/model_replicatedmaster.mdf'.
+2025-06-08 19:50:27.98 Server      Setup step is FORCE copying system data file 'C:\templatedata\model_replicatedmaster.ldf' to '/var/opt/mssql/data/model_replicatedmaster.ldf'.
+2025-06-08 19:50:28.00 Server      Setup step is FORCE copying system data file 'C:\templatedata\model_msdbdata.mdf' to '/var/opt/mssql/data/model_msdbdata.mdf'.
+2025-06-08 19:50:28.04 Server      Setup step is FORCE copying system data file 'C:\templatedata\model_msdblog.ldf' to '/var/opt/mssql/data/model_msdblog.ldf'.
+2025-06-08 19:50:28.10 Server      Microsoft SQL Server 2022 (RTM-CU19) (KB5054531) - 16.0.4195.2 (X64) 
+sql-dataApr 18 2025 13:42:14 
+sql-dataCopyright (C) 2022 Microsoft Corporation
+sql-dataDeveloper Edition (64-bit) on Linux (Ubuntu 22.04.5 LTS) <X64>
+2025-06-08 19:50:28.10 Server      UTC adjustment: 0:00
+2025-06-08 19:50:28.10 Server      (c) Microsoft Corporation.
+2025-06-08 19:50:28.10 Server      All rights reserved.
+2025-06-08 19:50:28.10 Server      Server process ID is 432.
+2025-06-08 19:50:28.10 Server      Logging SQL Server messages in file '/var/opt/mssql/log/errorlog'.
+2025-06-08 19:50:28.10 Server      Registry startup parameters: 
+sql-data -d /var/opt/mssql/data/master.mdf
+sql-data -l /var/opt/mssql/data/mastlog.ldf
+sql-data -e /var/opt/mssql/log/errorlog
+2025-06-08 19:50:28.11 Server      SQL Server detected 1 sockets with 4 cores per socket and 4 logical processors per socket, 4 total logical processors; using 4 logical processors based on SQL Server licensing. This is an informational message; no user action is required.
+2025-06-08 19:50:28.11 Server      SQL Server is starting at normal priority base (=7). This is an informational message only. No user action is required.
+2025-06-08 19:50:28.11 Server      Detected 12142 MB of RAM, 11821 MB of available memory, 11821 MB of available page file. This is an informational message; no user action is required.
+2025-06-08 19:50:28.11 Server      Using conventional memory in the memory manager.
+2025-06-08 19:50:28.11 Server      Detected pause instruction latency: 42 cycles.
+2025-06-08 19:50:28.11 Server      SQL Server detected the following NUMA node configuration (NUMA Node number 0, Processor Group number 0, CPU Mask 0x000000000000000f).
+2025-06-08 19:50:28.12 Server      Page exclusion bitmap is enabled.
+2025-06-08 19:50:28.18 Server      Buffer pool extension is not supported on Linux platform.
+2025-06-08 19:50:28.18 Server      Buffer Pool: Allocating 16777216 bytes for 1890085 hashPages.
+2025-06-08 19:50:28.30 Server      Buffer pool extension is already disabled. No action is necessary.
+2025-06-08 19:50:28.55 Server      Installing Client TLS certificates to the store.
+2025-06-08 19:50:28.56 Server      CPU vectorization level(s) detected:  SSE SSE2 SSE3 SSSE3 SSE41 SSE42 POPCNT BMI1 BMI2
+2025-06-08 19:50:28.67 Server      Successfully initialized the TLS configuration. Allowed TLS protocol versions are ['1.0 1.1 1.2']. Allowed TLS ciphers are ['ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-ECDSA-AES128-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:!DHE-RSA-AES256-GCM-SHA384:!DHE-RSA-AES128-GCM-SHA256:!DHE-RSA-AES256-SHA:!DHE-RSA-AES128-SHA'].
+2025-06-08 19:50:28.72 Server      Query Store settings initialized with enabled = 1, 
+2025-06-08 19:50:28.76 Server      The maximum number of dedicated administrator connections for this instance is '1'
+2025-06-08 19:50:28.78 Server      Node configuration: node 0: CPU mask: 0x000000000000000f:0 Active CPU mask: 0x000000000000000f:0. This message provides a description of the NUMA configuration for this computer. This is an informational message only. No user action is required.
+2025-06-08 19:50:28.94 Server      Using dynamic lock allocation.  Initial allocation of 2500 Lock blocks and 5000 Lock Owner blocks per node.  This is an informational message only.  No user action is required.
+2025-06-08 19:50:29.14 Server      CLR version v4.0.30319 loaded.
+2025-06-08 19:50:29.50 Server      In-Memory OLTP initialized on lowend machine.
+2025-06-08 19:50:29.55 Server      [INFO] Created Extended Events session 'hkenginexesession'
+2025-06-08 19:50:29.56 Server      Database Instant File Initialization: enabled. For security and performance considerations see the topic 'Database Instant File Initialization' in SQL Server Books Online. This is an informational message only. No user action is required.
+ForceFlush is enabled for this instance. 
+2025-06-08 19:50:29.74 Server      Total Log Writer threads: 2. This is an informational message; no user action is required.
+2025-06-08 19:50:29.81 Server      clflushopt is selected for pmem flush operation.
+2025-06-08 19:50:29.82 Server      Software Usage Metrics is disabled.
+2025-06-08 19:50:30.02 spid19s     [1]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 1. ConcurrentSGAMUpdate: 1, CleanupUnderUserTransaction: 0. TranLevelPVS: 0
+2025-06-08 19:50:30.03 spid19s     Starting up database 'master'.
+ForceFlush feature is enabled for log durability.
+2025-06-08 19:50:30.21 spid19s     17 transactions rolled forward in database 'master' (1:0). This is an informational message only. No user action is required.
+2025-06-08 19:50:30.30 spid19s     0 transactions rolled back in database 'master' (1:0). This is an informational message only. No user action is required.
+2025-06-08 19:50:30.30 spid19s     Recovery is writing a checkpoint in database 'master' (1). This is an informational message only. No user action is required.
+2025-06-08 19:50:30.39 Server      Common language runtime (CLR) functionality initialized.
+2025-06-08 19:50:30.45 Server      External governance manager initialized
+2025-06-08 19:50:30.52 spid26s     [32767]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 1. ConcurrentSGAMUpdate: 1, CleanupUnderUserTransaction: 0. TranLevelPVS: 0
+2025-06-08 19:50:30.55 spid19s     [32762]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 1. ConcurrentSGAMUpdate: 1, CleanupUnderUserTransaction: 0. TranLevelPVS: 0
+2025-06-08 19:50:30.55 spid26s     Starting up database 'mssqlsystemresource'.
+2025-06-08 19:50:30.56 spid19s     Starting up database 'model_replicatedmaster'.
+2025-06-08 19:50:30.57 spid26s     The resource database build version is 16.00.4195. This is an informational message only. No user action is required.
+2025-06-08 19:50:30.66 spid26s     [3]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 1. ConcurrentSGAMUpdate: 1, CleanupUnderUserTransaction: 0. TranLevelPVS: 0
+2025-06-08 19:50:30.66 spid26s     Starting up database 'model'.
+2025-06-08 19:50:30.79 spid19s     Converting database 'model_replicatedmaster' from version 927 to the current version 957.
+2025-06-08 19:50:30.79 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 927 to version 928.
+2025-06-08 19:50:30.84 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 928 to version 929.
+2025-06-08 19:50:31.04 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 929 to version 930.
+2025-06-08 19:50:31.05 spid30s     A self-generated certificate was successfully loaded for encryption.
+2025-06-08 19:50:31.06 spid30s     Server is listening on [ 'any' <ipv6> 1433] accept sockets 1.
+2025-06-08 19:50:31.06 spid30s     Server is listening on [ 'any' <ipv4> 1433] accept sockets 1.
+2025-06-08 19:50:31.06 Server      Server is listening on [ ::1 <ipv6> 1434] accept sockets 1.
+2025-06-08 19:50:31.07 Server      Server is listening on [ 127.0.0.1 <ipv4> 1434] accept sockets 1.
+2025-06-08 19:50:31.07 Server      Dedicated admin connection support was established for listening locally on port 1434.
+2025-06-08 19:50:31.11 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 930 to version 931.
+2025-06-08 19:50:31.11 spid30s     Server is listening on [ ::1 <ipv6> 1431] accept sockets 1.
+2025-06-08 19:50:31.11 spid30s     Server is listening on [ 127.0.0.1 <ipv4> 1431] accept sockets 1.
+2025-06-08 19:50:31.11 spid30s     SQL Server is now ready for client connections. This is an informational message; no user action is required.
+2025-06-08 19:50:31.16 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 931 to version 932.
+2025-06-08 19:50:31.19 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 932 to version 933.
+2025-06-08 19:50:31.21 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 933 to version 934.
+2025-06-08 19:50:31.24 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 934 to version 935.
+2025-06-08 19:50:31.30 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 935 to version 936.
+2025-06-08 19:50:31.33 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 936 to version 937.
+2025-06-08 19:50:31.36 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 937 to version 938.
+2025-06-08 19:50:31.39 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 938 to version 939.
+2025-06-08 19:50:31.43 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 939 to version 940.
+2025-06-08 19:50:31.46 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 940 to version 941.
+2025-06-08 19:50:31.50 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 941 to version 942.
+2025-06-08 19:50:31.54 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 942 to version 943.
+2025-06-08 19:50:31.64 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 943 to version 944.
+2025-06-08 19:50:31.67 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 944 to version 945.
+2025-06-08 19:50:31.71 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 945 to version 946.
+2025-06-08 19:50:31.74 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 946 to version 947.
+2025-06-08 19:50:31.77 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 947 to version 948.
+2025-06-08 19:50:31.80 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 948 to version 949.
+2025-06-08 19:50:31.82 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 949 to version 950.
+2025-06-08 19:50:31.86 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 950 to version 951.
+2025-06-08 19:50:31.90 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 951 to version 952.
+2025-06-08 19:50:31.93 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 952 to version 953.
+2025-06-08 19:50:32.00 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 953 to version 954.
+2025-06-08 19:50:32.03 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 954 to version 955.
+2025-06-08 19:50:32.06 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 955 to version 956.
+2025-06-08 19:50:32.09 spid19s     Database 'model_replicatedmaster' running the upgrade step from version 956 to version 957.
+2025-06-08 19:50:32.25 spid19s     [32761]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 1. ConcurrentSGAMUpdate: 1, CleanupUnderUserTransaction: 0. TranLevelPVS: 0
+2025-06-08 19:50:32.25 spid19s     Starting up database 'model_msdb'.
+2025-06-08 19:50:32.34 spid19s     Converting database 'model_msdb' from version 927 to the current version 957.
+2025-06-08 19:50:32.34 spid19s     Database 'model_msdb' running the upgrade step from version 927 to version 928.
+2025-06-08 19:50:32.38 spid19s     Database 'model_msdb' running the upgrade step from version 928 to version 929.
+2025-06-08 19:50:32.45 spid19s     Database 'model_msdb' running the upgrade step from version 929 to version 930.
+2025-06-08 19:50:32.48 spid19s     Database 'model_msdb' running the upgrade step from version 930 to version 931.
+2025-06-08 19:50:32.54 spid19s     Database 'model_msdb' running the upgrade step from version 931 to version 932.
+2025-06-08 19:50:32.57 spid19s     Database 'model_msdb' running the upgrade step from version 932 to version 933.
+2025-06-08 19:50:32.60 spid19s     Database 'model_msdb' running the upgrade step from version 933 to version 934.
+2025-06-08 19:50:32.64 spid19s     Database 'model_msdb' running the upgrade step from version 934 to version 935.
+2025-06-08 19:50:32.66 spid19s     Database 'model_msdb' running the upgrade step from version 935 to version 936.
+2025-06-08 19:50:32.69 spid19s     Database 'model_msdb' running the upgrade step from version 936 to version 937.
+2025-06-08 19:50:32.72 spid19s     Database 'model_msdb' running the upgrade step from version 937 to version 938.
+2025-06-08 19:50:32.75 spid19s     Database 'model_msdb' running the upgrade step from version 938 to version 939.
+2025-06-08 19:50:32.78 spid19s     Database 'model_msdb' running the upgrade step from version 939 to version 940.
+2025-06-08 19:50:32.82 spid19s     Database 'model_msdb' running the upgrade step from version 940 to version 941.
+2025-06-08 19:50:32.85 spid19s     Database 'model_msdb' running the upgrade step from version 941 to version 942.
+2025-06-08 19:50:32.87 spid19s     Database 'model_msdb' running the upgrade step from version 942 to version 943.
+2025-06-08 19:50:32.94 spid19s     Database 'model_msdb' running the upgrade step from version 943 to version 944.
+2025-06-08 19:50:32.97 spid19s     Database 'model_msdb' running the upgrade step from version 944 to version 945.
+2025-06-08 19:50:33.03 spid19s     Database 'model_msdb' running the upgrade step from version 945 to version 946.
+2025-06-08 19:50:33.06 spid19s     Database 'model_msdb' running the upgrade step from version 946 to version 947.
+2025-06-08 19:50:33.09 spid19s     Database 'model_msdb' running the upgrade step from version 947 to version 948.
+2025-06-08 19:50:33.13 spid19s     Database 'model_msdb' running the upgrade step from version 948 to version 949.
+2025-06-08 19:50:33.16 spid19s     Database 'model_msdb' running the upgrade step from version 949 to version 950.
+2025-06-08 19:50:33.19 spid19s     Database 'model_msdb' running the upgrade step from version 950 to version 951.
+2025-06-08 19:50:33.24 spid19s     Database 'model_msdb' running the upgrade step from version 951 to version 952.
+2025-06-08 19:50:33.26 spid19s     Database 'model_msdb' running the upgrade step from version 952 to version 953.
+2025-06-08 19:50:33.30 spid19s     Database 'model_msdb' running the upgrade step from version 953 to version 954.
+2025-06-08 19:50:33.33 spid19s     Database 'model_msdb' running the upgrade step from version 954 to version 955.
+2025-06-08 19:50:33.36 spid19s     Database 'model_msdb' running the upgrade step from version 955 to version 956.
+2025-06-08 19:50:33.45 spid19s     Database 'model_msdb' running the upgrade step from version 956 to version 957.
+2025-06-08 19:50:33.60 spid19s     Resource governor reconfiguration succeeded.
+2025-06-08 19:50:33.61 spid19s     SQL Server Audit is starting the audits. This is an informational message. No user action is required.
+2025-06-08 19:50:33.62 spid36s     Attribute synchronization initialized
+2025-06-08 19:50:33.63 spid36s     Attribute synchronization manager initialized
+2025-06-08 19:50:33.64 spid19s     SQL Server Audit has started the audits. This is an informational message. No user action is required.
+2025-06-08 19:50:33.74 spid19s     SQL Trace ID 1 was started by login "sa".
+2025-06-08 19:50:33.77 spid19s     Server name is 'fd72912160a9'. This is an informational message only. No user action is required.
+2025-06-08 19:50:33.85 spid26s     Clearing tempdb database.
+2025-06-08 19:50:33.85 spid57s     Always On: The availability replica manager is starting. This is an informational message only. No user action is required.
+2025-06-08 19:50:33.86 spid57s     Always On: The availability replica manager is waiting for the instance of SQL Server to allow client connections. This is an informational message only. No user action is required.
+2025-06-08 19:50:33.89 spid58s     [4]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 1. ConcurrentSGAMUpdate: 1, CleanupUnderUserTransaction: 0. TranLevelPVS: 0
+2025-06-08 19:50:33.90 spid58s     Starting up database 'msdb'.
+2025-06-08 19:50:34.08 spid19s     Recovery is writing a checkpoint in database 'msdb' (4). This is an informational message only. No user action is required.
+2025-06-08 19:50:34.17 spid26s     [2]. Feature Status: PVS: 0. CTR: 0. ConcurrentPFSUpdate: 1. ConcurrentGAMUpdate: 1. ConcurrentSGAMUpdate: 1, CleanupUnderUserTransaction: 0. TranLevelPVS: 0
+2025-06-08 19:50:34.17 spid26s     Starting up database 'tempdb'.
+2025-06-08 19:50:34.42 spid26s     The tempdb database has 4 data file(s).
+2025-06-08 19:50:34.43 spid28s     The Service Broker endpoint is in disabled or stopped state.
+2025-06-08 19:50:34.44 spid28s     The Database Mirroring endpoint is in disabled or stopped state.
+2025-06-08 19:50:34.48 spid28s     Service Broker manager has started.
+2025-06-08 19:50:34.48 spid19s     Recovery is complete. This is an informational message only. No user action is required.
+web-1     | info: Microsoft.EntityFrameworkCore.Infrastructure[10403]
+web-1     |       Entity Framework Core 6.0.23 initialized 'IdentityDatabaseContext' using provider 'Microsoft.EntityFrameworkCore.SqlServer:6.0.23' with options: None
+2025-06-08 19:51:15.51 Logon       Error: 18456, Severity: 14, State: 38.
+2025-06-08 19:51:15.51 Logon       Login failed for user 'sa'. Reason: Failed to open the explicitly specified database 'WebsiteData'. [CLIENT: 172.19.0.3]
+web-1     | fail: Microsoft.EntityFrameworkCore.Database.Connection[20004]
+web-1     |       An error occurred using the connection to database 'WebsiteData' on server 'sql-data'.
+web-1     | fail: Microsoft.EntityFrameworkCore.Query[10100]
+web-1     |       An exception occurred while iterating over the results of a query for context type 'TestTest.Models.Db.IdentityDatabaseContext'.
+web-1     |       System.InvalidOperationException: An exception has been raised that is likely due to a transient failure. Consider enabling transient error resiliency by adding 'EnableRetryOnFailure' to the 'UseSqlServer' call.
+web-1     |        ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot open database "WebsiteData" requested by the login. The login failed.
+web-1     |       Login failed for user 'sa'.
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.CompleteLogin(Boolean enlistOK)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+web-1     |          at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.WaitForPendingOpen()
+web-1     |       --- End of stack trace from previous location ---
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+web-1     |       ClientConnectionId:63bb4826-246f-4fed-b4d5-4cfffd44ed51
+web-1     |       Error Number:4060,State:1,Class:11
+web-1     |          --- End of inner exception stack trace ---
+web-1     |          at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+web-1     |       System.InvalidOperationException: An exception has been raised that is likely due to a transient failure. Consider enabling transient error resiliency by adding 'EnableRetryOnFailure' to the 'UseSqlServer' call.
+web-1     |        ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot open database "WebsiteData" requested by the login. The login failed.
+web-1     |       Login failed for user 'sa'.
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.CompleteLogin(Boolean enlistOK)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+web-1     |          at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.WaitForPendingOpen()
+web-1     |       --- End of stack trace from previous location ---
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+web-1     |       ClientConnectionId:63bb4826-246f-4fed-b4d5-4cfffd44ed51
+web-1     |       Error Number:4060,State:1,Class:11
+web-1     |          --- End of inner exception stack trace ---
+web-1     |          at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+web-1     | fail: Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware[1]
+web-1     |       An unhandled exception has occurred while executing the request.
+web-1     |       System.InvalidOperationException: An exception has been raised that is likely due to a transient failure. Consider enabling transient error resiliency by adding 'EnableRetryOnFailure' to the 'UseSqlServer' call.
+web-1     |        ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Cannot open database "WebsiteData" requested by the login. The login failed.
+web-1     |       Login failed for user 'sa'.
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, Boolean callerHasConnectionLock, Boolean asyncClose)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+web-1     |          at Microsoft.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.CompleteLogin(Boolean enlistOK)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.AttemptOneLogin(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean ignoreSniOpenTimeout, TimeoutTimer timeout, Boolean withFailover)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.LoginNoFailover(ServerInfo serverInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString connectionOptions, SqlCredential credential, TimeoutTimer timeout)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds.OpenLoginEnlist(TimeoutTimer timeout, SqlConnectionString connectionOptions, SqlCredential credential, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance)
+web-1     |          at Microsoft.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, Boolean applyTransientFaultHandling, String accessToken, DbConnectionPool pool)
+web-1     |          at Microsoft.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+web-1     |          at Microsoft.Data.ProviderBase.DbConnectionPool.WaitForPendingOpen()
+web-1     |       --- End of stack trace from previous location ---
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+web-1     |          at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+web-1     |       ClientConnectionId:63bb4826-246f-4fed-b4d5-4cfffd44ed51
+web-1     |       Error Number:4060,State:1,Class:11
+web-1     |          --- End of inner exception stack trace ---
+web-1     |          at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+web-1     |          at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+web-1     |          at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+web-1     |          at Microsoft.AspNetCore.Identity.UserManager`1.FindByNameAsync(String userName)
+web-1     |          at Microsoft.AspNetCore.Identity.SignInManager`1.PasswordSignInAsync(String userName, String password, Boolean isPersistent, Boolean lockoutOnFailure)
+web-1     |          at TestTest.Areas.Identity.Pages.Account.LoginModel.OnPostAsync(String returnUrl) in /src/Areas/Identity/Pages/Account/Login.cshtml.cs:line 105
+web-1     |          at Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure.ExecutorFactory.GenericTaskHandlerMethod.Convert[T](Object taskAsObject)
+web-1     |          at Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure.ExecutorFactory.GenericTaskHandlerMethod.Execute(Object receiver, Object[] arguments)
+web-1     |          at Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure.PageActionInvoker.InvokeHandlerMethodAsync()
+web-1     |          at Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure.PageActionInvoker.InvokeNextPageFilterAsync()
+web-1     |          at Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure.PageActionInvoker.Rethrow(PageHandlerExecutedContext context)
+web-1     |          at Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure.PageActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+web-1     |          at Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure.PageActionInvoker.InvokeInnerFilterAsync()
+web-1     |          at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+web-1     |          at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+web-1     |          at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+web-1     |          at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+web-1     |          at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+web-1     |          at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+web-1     |          at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+web-1     |          at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+web-1     |          at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+web-1     |          at Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware.<Invoke>g__Awaited|6_0(ExceptionHandlerMiddleware middleware, HttpContext context, Task task)
+❌ SQL Server nie odpowiedział w ciągu 60 sekund.
+sql-data exited with code 1
+Gracefully stopping... (press Ctrl+C again to force)
+[+] Stopping 2/2
+ ✔ Container projekt-web-1  Stopped                                                                                                     0.5s 
+ ✔ Container sql-data       Stopped                                                                                                     0.0s 
+exit status 130
+root@testy:/home/user/Desktop/projekt./projekt# docker-compose up --build
+WARN[0000] /home/user/Desktop/projekt./projekt/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion 
+Compose now can delegate build to bake for better performances
+Just set COMPOSE_BAKE=true
+[+] Building 30.5s (5/5) FINISHED                                                                                             docker:default
+ => [sql-data internal] load build definition from sqlserver.Dockerfile                                                                 0.0s
+ => => transferring dockerfile: 651B                                                                                                    0.0s
+ => [sql-data internal] load metadata for mcr.microsoft.com/mssql/server:2022-latest                                                    0.0s
+ => [sql-data internal] load .dockerignore                                                                                              0.0s
+ => => transferring context: 2B                                                                                                         0.0s
+ => CACHED [sql-data 1/2] FROM mcr.microsoft.com/mssql/server:2022-latest                                                               0.0s
+ => ERROR [sql-data 2/2] RUN apt-get update &&     apt-get install -y curl apt-transport-https gnupg &&     curl https://packages.mic  30.3s
+------                                                                                                                                       
+ > [sql-data 2/2] RUN apt-get update &&     apt-get install -y curl apt-transport-https gnupg &&     curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - &&     curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list &&     apt-get update &&     ACCEPT_EULA=Y apt-get install -y msodbcsql18 mssql-tools18 unixodbc-dev &&     ln -sfn /opt/mssql-tools18/bin/sqlcmd /usr/bin/sqlcmd &&     chmod +x /usr/bin/sqlcmd &&     apt-get clean:                                                              
+0.525 Get:1 http://archive.ubuntu.com/ubuntu jammy InRelease [270 kB]                                                                        
+0.578 Get:2 https://packages.microsoft.com/ubuntu/22.04/prod jammy InRelease [3632 B]
+0.662 Get:3 http://security.ubuntu.com/ubuntu jammy-security InRelease [129 kB]
+0.734 Get:4 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [128 kB]
+0.786 Get:5 http://archive.ubuntu.com/ubuntu jammy-backports InRelease [127 kB]
+0.796 Get:6 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main all Packages [1252 B]
+0.862 Get:7 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main arm64 Packages [62.0 kB]
+0.922 Get:8 http://archive.ubuntu.com/ubuntu jammy/universe amd64 Packages [17.5 MB]
+0.933 Get:9 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main amd64 Packages [221 kB]
+1.004 Get:10 https://packages.microsoft.com/ubuntu/22.04/prod jammy/main armhf Packages [19.2 kB]
+1.377 Get:11 http://security.ubuntu.com/ubuntu jammy-security/main amd64 Packages [2984 kB]
+1.419 Get:12 http://archive.ubuntu.com/ubuntu jammy/multiverse amd64 Packages [266 kB]
+1.427 Get:13 http://archive.ubuntu.com/ubuntu jammy/main amd64 Packages [1792 kB]
+1.553 Get:14 http://archive.ubuntu.com/ubuntu jammy/restricted amd64 Packages [164 kB]
+1.566 Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/restricted amd64 Packages [4630 kB]
+1.687 Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 Packages [1553 kB]
+1.709 Get:17 http://archive.ubuntu.com/ubuntu jammy-updates/multiverse amd64 Packages [55.7 kB]
+1.711 Get:18 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages [3295 kB]
+1.751 Get:19 http://archive.ubuntu.com/ubuntu jammy-backports/universe amd64 Packages [35.2 kB]
+1.751 Get:20 http://archive.ubuntu.com/ubuntu jammy-backports/main amd64 Packages [83.2 kB]
+2.287 Get:21 http://security.ubuntu.com/ubuntu jammy-security/universe amd64 Packages [1246 kB]
+2.330 Get:22 http://security.ubuntu.com/ubuntu jammy-security/multiverse amd64 Packages [47.7 kB]
+2.331 Get:23 http://security.ubuntu.com/ubuntu jammy-security/restricted amd64 Packages [4476 kB]
+2.625 Fetched 39.1 MB in 2s (17.6 MB/s)
+2.625 Reading package lists...
+3.271 Reading package lists...
+3.876 Building dependency tree...
+3.976 Reading state information...
+4.080 The following additional packages will be installed:
+4.080   dirmngr gnupg-l10n gnupg-utils gpg gpg-agent gpg-wks-client gpg-wks-server
+4.081   gpgconf gpgsm libassuan0 libcurl4 libksba8 libnpth0 pinentry-curses
+4.081 Suggested packages:
+4.081   dbus-user-session libpam-systemd pinentry-gnome3 tor parcimonie xloadimage
+4.081   scdaemon pinentry-doc
+4.139 The following NEW packages will be installed:
+4.139   curl dirmngr gnupg gnupg-l10n gnupg-utils gpg gpg-agent gpg-wks-client
+4.139   gpg-wks-server gpgconf gpgsm libassuan0 libcurl4 libksba8 libnpth0
+4.139   pinentry-curses
+4.140 The following packages will be upgraded:
+4.140   apt-transport-https
+4.237 1 upgraded, 16 newly installed, 0 to remove and 18 not upgraded.
+4.237 Need to get 2797 kB of archives.
+4.237 After this operation, 7098 kB of additional disk space will be used.
+4.237 Get:1 http://archive.ubuntu.com/ubuntu jammy-updates/universe amd64 apt-transport-https all 2.4.14 [1510 B]
+4.278 Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libcurl4 amd64 7.81.0-1ubuntu1.20 [289 kB]
+4.495 Get:3 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 curl amd64 7.81.0-1ubuntu1.20 [194 kB]
+4.617 Get:4 http://archive.ubuntu.com/ubuntu jammy/main amd64 libassuan0 amd64 2.5.5-1build1 [38.2 kB]
+4.639 Get:5 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gpgconf amd64 2.2.27-3ubuntu2.3 [94.4 kB]
+4.692 Get:6 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libksba8 amd64 1.6.0-2ubuntu0.2 [119 kB]
+4.764 Get:7 http://archive.ubuntu.com/ubuntu jammy/main amd64 libnpth0 amd64 1.6-3build2 [8664 B]
+4.769 Get:8 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 dirmngr amd64 2.2.27-3ubuntu2.3 [293 kB]
+4.946 Get:9 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gnupg-l10n all 2.2.27-3ubuntu2.3 [54.6 kB]
+4.980 Get:10 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gnupg-utils amd64 2.2.27-3ubuntu2.3 [309 kB]
+5.162 Get:11 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gpg amd64 2.2.27-3ubuntu2.3 [519 kB]
+5.560 Get:12 http://archive.ubuntu.com/ubuntu jammy/main amd64 pinentry-curses amd64 1.1.1-1build2 [34.4 kB]
+5.654 Get:13 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gpg-agent amd64 2.2.27-3ubuntu2.3 [209 kB]
+5.765 Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gpg-wks-client amd64 2.2.27-3ubuntu2.3 [62.7 kB]
+5.786 Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gpg-wks-server amd64 2.2.27-3ubuntu2.3 [57.6 kB]
+5.796 Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gpgsm amd64 2.2.27-3ubuntu2.3 [198 kB]
+5.826 Get:17 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gnupg all 2.2.27-3ubuntu2.3 [315 kB]
+6.077 debconf: delaying package configuration, since apt-utils is not installed
+6.116 Fetched 2797 kB in 2s (1640 kB/s)
+(Reading database ... 9943 files and directories currently installed.)
+6.307 Preparing to unpack .../00-apt-transport-https_2.4.14_all.deb ...
+6.333 Unpacking apt-transport-https (2.4.14) over (2.4.13) ...
+6.452 Selecting previously unselected package libcurl4:amd64.
+6.453 Preparing to unpack .../01-libcurl4_7.81.0-1ubuntu1.20_amd64.deb ...
+6.478 Unpacking libcurl4:amd64 (7.81.0-1ubuntu1.20) ...
+6.550 Selecting previously unselected package curl.
+6.552 Preparing to unpack .../02-curl_7.81.0-1ubuntu1.20_amd64.deb ...
+6.562 Unpacking curl (7.81.0-1ubuntu1.20) ...
+6.647 Selecting previously unselected package libassuan0:amd64.
+6.649 Preparing to unpack .../03-libassuan0_2.5.5-1build1_amd64.deb ...
+6.659 Unpacking libassuan0:amd64 (2.5.5-1build1) ...
+6.722 Selecting previously unselected package gpgconf.
+6.724 Preparing to unpack .../04-gpgconf_2.2.27-3ubuntu2.3_amd64.deb ...
+6.737 Unpacking gpgconf (2.2.27-3ubuntu2.3) ...
+6.821 Selecting previously unselected package libksba8:amd64.
+6.822 Preparing to unpack .../05-libksba8_1.6.0-2ubuntu0.2_amd64.deb ...
+6.834 Unpacking libksba8:amd64 (1.6.0-2ubuntu0.2) ...
+6.911 Selecting previously unselected package libnpth0:amd64.
+6.913 Preparing to unpack .../06-libnpth0_1.6-3build2_amd64.deb ...
+6.922 Unpacking libnpth0:amd64 (1.6-3build2) ...
+6.998 Selecting previously unselected package dirmngr.
+6.999 Preparing to unpack .../07-dirmngr_2.2.27-3ubuntu2.3_amd64.deb ...
+7.039 Unpacking dirmngr (2.2.27-3ubuntu2.3) ...
+7.106 Selecting previously unselected package gnupg-l10n.
+7.107 Preparing to unpack .../08-gnupg-l10n_2.2.27-3ubuntu2.3_all.deb ...
+7.122 Unpacking gnupg-l10n (2.2.27-3ubuntu2.3) ...
+7.193 Selecting previously unselected package gnupg-utils.
+7.195 Preparing to unpack .../09-gnupg-utils_2.2.27-3ubuntu2.3_amd64.deb ...
+7.207 Unpacking gnupg-utils (2.2.27-3ubuntu2.3) ...
+7.286 Selecting previously unselected package gpg.
+7.287 Preparing to unpack .../10-gpg_2.2.27-3ubuntu2.3_amd64.deb ...
+7.296 Unpacking gpg (2.2.27-3ubuntu2.3) ...
+7.369 Selecting previously unselected package pinentry-curses.
+7.371 Preparing to unpack .../11-pinentry-curses_1.1.1-1build2_amd64.deb ...
+7.383 Unpacking pinentry-curses (1.1.1-1build2) ...
+7.455 Selecting previously unselected package gpg-agent.
+7.457 Preparing to unpack .../12-gpg-agent_2.2.27-3ubuntu2.3_amd64.deb ...
+7.466 Unpacking gpg-agent (2.2.27-3ubuntu2.3) ...
+7.545 Selecting previously unselected package gpg-wks-client.
+7.547 Preparing to unpack .../13-gpg-wks-client_2.2.27-3ubuntu2.3_amd64.deb ...
+7.557 Unpacking gpg-wks-client (2.2.27-3ubuntu2.3) ...
+7.612 Selecting previously unselected package gpg-wks-server.
+7.613 Preparing to unpack .../14-gpg-wks-server_2.2.27-3ubuntu2.3_amd64.deb ...
+7.625 Unpacking gpg-wks-server (2.2.27-3ubuntu2.3) ...
+7.680 Selecting previously unselected package gpgsm.
+7.681 Preparing to unpack .../15-gpgsm_2.2.27-3ubuntu2.3_amd64.deb ...
+7.690 Unpacking gpgsm (2.2.27-3ubuntu2.3) ...
+7.744 Selecting previously unselected package gnupg.
+7.746 Preparing to unpack .../16-gnupg_2.2.27-3ubuntu2.3_all.deb ...
+7.754 Unpacking gnupg (2.2.27-3ubuntu2.3) ...
+7.842 Setting up libksba8:amd64 (1.6.0-2ubuntu0.2) ...
+7.875 Setting up apt-transport-https (2.4.14) ...
+7.902 Setting up libnpth0:amd64 (1.6-3build2) ...
+7.934 Setting up libassuan0:amd64 (2.5.5-1build1) ...
+7.967 Setting up gnupg-l10n (2.2.27-3ubuntu2.3) ...
+7.998 Setting up gpgconf (2.2.27-3ubuntu2.3) ...
+8.029 Setting up libcurl4:amd64 (7.81.0-1ubuntu1.20) ...
+8.060 Setting up curl (7.81.0-1ubuntu1.20) ...
+8.090 Setting up gpg (2.2.27-3ubuntu2.3) ...
+8.122 Setting up gnupg-utils (2.2.27-3ubuntu2.3) ...
+8.154 Setting up pinentry-curses (1.1.1-1build2) ...
+8.218 Setting up gpg-agent (2.2.27-3ubuntu2.3) ...
+8.578 Setting up gpgsm (2.2.27-3ubuntu2.3) ...
+8.607 Setting up dirmngr (2.2.27-3ubuntu2.3) ...
+8.715 Setting up gpg-wks-server (2.2.27-3ubuntu2.3) ...
+8.744 Setting up gpg-wks-client (2.2.27-3ubuntu2.3) ...
+8.774 Setting up gnupg (2.2.27-3ubuntu2.3) ...
+8.803 Processing triggers for libc-bin (2.35-0ubuntu3.9) ...
+8.842 /sbin/ldconfig.real: /opt/mssql/lib/libc++.so.1 is not a symbolic link
+8.842 
+8.842 /sbin/ldconfig.real: /opt/mssql/lib/libc++abi.so.1 is not a symbolic link
+8.842 
+9.033   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+9.033                                  Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0Warning: apt-key is deprecated. Manage keyring files in trusted.gpg.d instead (see apt-key(8)).
+100   983  100   983    0     0   4550      0 --:--:-- --:--:-- --:--:--  4550
+9.334 OK
+9.360   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+9.360                                  Dload  Upload   Total   Spent    Left  Speed
+100    74  100    74    0     0    403      0 --:--:-- --:--:-- --:--:--   404
+9.693 Hit:1 http://security.ubuntu.com/ubuntu jammy-security InRelease
+9.733 Hit:2 https://packages.microsoft.com/ubuntu/22.04/prod jammy InRelease
+9.777 Get:3 https://packages.microsoft.com/debian/10/prod buster InRelease [6538 B]
+9.818 Hit:4 http://archive.ubuntu.com/ubuntu jammy InRelease
+9.926 Hit:5 http://archive.ubuntu.com/ubuntu jammy-updates InRelease
+10.03 Hit:6 http://archive.ubuntu.com/ubuntu jammy-backports InRelease
+10.14 Get:7 https://packages.microsoft.com/debian/10/prod buster/main amd64 Packages [244 kB]
+10.30 Get:8 https://packages.microsoft.com/debian/10/prod buster/main all Packages [2628 B]
+10.42 Fetched 254 kB in 1s (308 kB/s)
+10.42 Reading package lists...
+11.04 Reading package lists...
+11.67 Building dependency tree...
+11.83 Reading state information...
+11.95 mssql-tools18 is already the newest version (18.4.1.1-1).
+11.95 msodbcsql18 is already the newest version (18.5.1.1-1).
+11.95 msodbcsql18 set to manually installed.
+11.95 The following packages were automatically installed and are no longer required:
+11.95   libodbc2 libodbcinst2 unixodbc-common
+11.95 Use 'apt autoremove' to remove them.
+11.95 The following additional packages will be installed:
+11.95   autoconf automake autotools-dev binutils binutils-common
+11.95   binutils-x86-64-linux-gnu cpp cpp-11 file fontconfig-config
+11.95   fonts-dejavu-core gcc gcc-11 gcc-11-base libasan6 libbinutils libc-dev-bin
+11.95   libc-devtools libc6 libc6-dbg libc6-dev libcc1-0 libcrypt-dev libctf-nobfd0
+11.95   libctf0 libdeflate0 libfontconfig1 libfreetype6 libgcc-11-dev libgd3
+11.95   libgdbm-compat4 libgdbm6 libgomp1 libisl23 libitm1 libjbig0 libjpeg-turbo8
+11.95   libjpeg8 liblsan0 libltdl-dev libmagic-mgc libmagic1 libmpc3 libnsl-dev
+11.95   libodbc1 libperl5.34 libpng16-16 libquadmath0 libtiff5 libtirpc-dev libtool
+11.95   libtsan0 libubsan1 libwebp7 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6
+11.95   libxpm4 linux-libc-dev m4 manpages manpages-dev netbase odbcinst
+11.95   odbcinst1debian2 perl perl-modules-5.34 rpcsvc-proto unixodbc
+11.95 Suggested packages:
+11.95   autoconf-archive gnu-standards autoconf-doc gettext binutils-doc cpp-doc
+11.95   gcc-11-locales gcc-multilib make flex bison gcc-doc gcc-11-multilib
+11.95   gcc-11-doc glibc-doc libgd-tools gdbm-l10n libtool-doc msodbcsql17
+11.95   unixodbc-bin gfortran | fortran95-compiler gcj-jdk m4-doc man-browser
+11.95   perl-doc libterm-readline-gnu-perl | libterm-readline-perl-perl
+11.95   libtap-harness-archive-perl
+11.95 Recommended packages:
+11.95   libnss-nis libnss-nisplus
+12.06 The following NEW packages will be installed:
+12.06   autoconf automake autotools-dev binutils binutils-common
+12.06   binutils-x86-64-linux-gnu cpp cpp-11 file fontconfig-config
+12.06   fonts-dejavu-core gcc gcc-11 gcc-11-base libasan6 libbinutils libc-dev-bin
+12.06   libc-devtools libc6-dev libcc1-0 libcrypt-dev libctf-nobfd0 libctf0
+12.06   libdeflate0 libfontconfig1 libfreetype6 libgcc-11-dev libgd3 libgdbm-compat4
+12.06   libgdbm6 libgomp1 libisl23 libitm1 libjbig0 libjpeg-turbo8 libjpeg8 liblsan0
+12.06   libltdl-dev libmagic-mgc libmagic1 libmpc3 libnsl-dev libodbc1 libperl5.34
+12.06   libpng16-16 libquadmath0 libtiff5 libtirpc-dev libtool libtsan0 libubsan1
+12.06   libwebp7 libx11-6 libx11-data libxau6 libxcb1 libxdmcp6 libxpm4
+12.06   linux-libc-dev m4 manpages manpages-dev netbase odbcinst1debian2 perl
+12.06   perl-modules-5.34 rpcsvc-proto unixodbc-dev
+12.06 The following packages will be upgraded:
+12.06   libc6 libc6-dbg odbcinst unixodbc
+12.27 4 upgraded, 68 newly installed, 0 to remove and 16 not upgraded.
+12.27 Need to get 82.6 MB of archives.
+12.27 After this operation, 238 MB of additional disk space will be used.
+12.27 Get:1 https://packages.microsoft.com/debian/10/prod buster/main amd64 libodbc1 amd64 2.3.11-1 [486 kB]
+12.31 Get:2 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 perl-modules-5.34 all 5.34.0-3ubuntu1.4 [2977 kB]
+12.49 Get:3 https://packages.microsoft.com/debian/10/prod buster/main amd64 odbcinst1debian2 amd64 2.3.11-1 [99.8 kB]
+12.51 Get:4 https://packages.microsoft.com/debian/10/prod buster/main amd64 odbcinst amd64 2.3.11-1 [21.3 kB]
+12.51 Get:5 https://packages.microsoft.com/debian/10/prod buster/main amd64 unixodbc amd64 2.3.11-1 [51.5 kB]
+12.53 Get:6 https://packages.microsoft.com/debian/10/prod buster/main amd64 unixodbc-dev amd64 2.3.11-1 [42.4 kB]
+13.43 Get:7 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libc6-dbg amd64 2.35-0ubuntu3.10 [13.8 MB]
+13.77 Get:8 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libc6 amd64 2.35-0ubuntu3.10 [3235 kB]
+13.84 Get:9 http://archive.ubuntu.com/ubuntu jammy/main amd64 libgdbm6 amd64 1.23-1 [33.9 kB]
+13.85 Get:10 http://archive.ubuntu.com/ubuntu jammy/main amd64 libgdbm-compat4 amd64 1.23-1 [6606 B]
+13.85 Get:11 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libperl5.34 amd64 5.34.0-3ubuntu1.4 [4820 kB]
+13.92 Get:12 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 perl amd64 5.34.0-3ubuntu1.4 [232 kB]
+13.92 Get:13 http://archive.ubuntu.com/ubuntu jammy/main amd64 netbase all 6.3 [12.9 kB]
+13.93 Get:14 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libmagic-mgc amd64 1:5.41-3ubuntu0.1 [257 kB]
+13.93 Get:15 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libmagic1 amd64 1:5.41-3ubuntu0.1 [87.2 kB]
+13.94 Get:16 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 file amd64 1:5.41-3ubuntu0.1 [21.5 kB]
+13.94 Get:17 http://archive.ubuntu.com/ubuntu jammy/main amd64 libpng16-16 amd64 1.6.37-3build5 [191 kB]
+13.95 Get:18 http://archive.ubuntu.com/ubuntu jammy/main amd64 libxau6 amd64 1:1.0.9-1build5 [7634 B]
+13.96 Get:19 http://archive.ubuntu.com/ubuntu jammy/main amd64 libxdmcp6 amd64 1:1.1.3-0ubuntu5 [10.9 kB]
+13.96 Get:20 http://archive.ubuntu.com/ubuntu jammy/main amd64 libxcb1 amd64 1.14-3ubuntu3 [49.0 kB]
+14.03 Get:21 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libx11-data all 2:1.7.5-1ubuntu0.3 [120 kB]
+14.03 Get:22 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libx11-6 amd64 2:1.7.5-1ubuntu0.3 [667 kB]
+14.05 Get:23 http://archive.ubuntu.com/ubuntu jammy/main amd64 manpages all 5.10-1ubuntu1 [1375 kB]
+14.22 Get:24 http://archive.ubuntu.com/ubuntu jammy/main amd64 m4 amd64 1.4.18-5ubuntu2 [199 kB]
+14.23 Get:25 http://archive.ubuntu.com/ubuntu jammy/main amd64 autoconf all 2.71-2 [338 kB]
+14.23 Get:26 http://archive.ubuntu.com/ubuntu jammy/main amd64 autotools-dev all 20220109.1 [44.9 kB]
+14.24 Get:27 http://archive.ubuntu.com/ubuntu jammy/main amd64 automake all 1:1.16.5-1.3 [558 kB]
+14.25 Get:28 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 binutils-common amd64 2.38-4ubuntu2.8 [223 kB]
+14.26 Get:29 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libbinutils amd64 2.38-4ubuntu2.8 [661 kB]
+14.27 Get:30 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libctf-nobfd0 amd64 2.38-4ubuntu2.8 [108 kB]
+14.28 Get:31 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libctf0 amd64 2.38-4ubuntu2.8 [103 kB]
+14.28 Get:32 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 binutils-x86-64-linux-gnu amd64 2.38-4ubuntu2.8 [2324 kB]
+14.36 Get:33 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 binutils amd64 2.38-4ubuntu2.8 [3196 B]
+14.36 Get:34 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gcc-11-base amd64 11.4.0-1ubuntu1~22.04 [20.2 kB]
+14.36 Get:35 http://archive.ubuntu.com/ubuntu jammy/main amd64 libisl23 amd64 0.24-2build1 [727 kB]
+14.39 Get:36 http://archive.ubuntu.com/ubuntu jammy/main amd64 libmpc3 amd64 1.2.1-2build1 [46.9 kB]
+14.39 Get:37 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 cpp-11 amd64 11.4.0-1ubuntu1~22.04 [10.0 MB]
+15.29 Get:38 http://archive.ubuntu.com/ubuntu jammy/main amd64 cpp amd64 4:11.2.0-1ubuntu1 [27.7 kB]
+15.29 Get:39 http://archive.ubuntu.com/ubuntu jammy/main amd64 fonts-dejavu-core all 2.37-2build1 [1041 kB]
+15.32 Get:40 http://archive.ubuntu.com/ubuntu jammy/main amd64 fontconfig-config all 2.13.1-4.2ubuntu5 [29.1 kB]
+15.32 Get:41 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libcc1-0 amd64 12.3.0-1ubuntu1~22.04 [48.3 kB]
+15.32 Get:42 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libgomp1 amd64 12.3.0-1ubuntu1~22.04 [126 kB]
+15.33 Get:43 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libitm1 amd64 12.3.0-1ubuntu1~22.04 [30.2 kB]
+15.33 Get:44 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libasan6 amd64 11.4.0-1ubuntu1~22.04 [2282 kB]
+15.42 Get:45 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 liblsan0 amd64 12.3.0-1ubuntu1~22.04 [1069 kB]
+15.44 Get:46 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libtsan0 amd64 11.4.0-1ubuntu1~22.04 [2260 kB]
+15.49 Get:47 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libubsan1 amd64 12.3.0-1ubuntu1~22.04 [976 kB]
+15.51 Get:48 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libquadmath0 amd64 12.3.0-1ubuntu1~22.04 [154 kB]
+15.59 Get:49 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libgcc-11-dev amd64 11.4.0-1ubuntu1~22.04 [2517 kB]
+15.66 Get:50 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 gcc-11 amd64 11.4.0-1ubuntu1~22.04 [20.1 MB]
+16.42 Get:51 http://archive.ubuntu.com/ubuntu jammy/main amd64 gcc amd64 4:11.2.0-1ubuntu1 [5112 B]
+16.42 Get:52 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libc-dev-bin amd64 2.35-0ubuntu3.10 [20.3 kB]
+16.43 Get:53 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libfreetype6 amd64 2.11.1+dfsg-1ubuntu0.3 [388 kB]
+16.43 Get:54 http://archive.ubuntu.com/ubuntu jammy/main amd64 libfontconfig1 amd64 2.13.1-4.2ubuntu5 [131 kB]
+16.43 Get:55 http://archive.ubuntu.com/ubuntu jammy/main amd64 libjpeg-turbo8 amd64 2.1.2-0ubuntu1 [134 kB]
+16.43 Get:56 http://archive.ubuntu.com/ubuntu jammy/main amd64 libjpeg8 amd64 8c-2ubuntu10 [2264 B]
+16.44 Get:57 http://archive.ubuntu.com/ubuntu jammy/main amd64 libdeflate0 amd64 1.10-2 [70.9 kB]
+16.44 Get:58 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libjbig0 amd64 2.1-3.1ubuntu0.22.04.1 [29.2 kB]
+16.44 Get:59 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libwebp7 amd64 1.2.2-2ubuntu0.22.04.2 [206 kB]
+16.54 Get:60 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libtiff5 amd64 4.3.0-6ubuntu0.10 [185 kB]
+16.55 Get:61 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libxpm4 amd64 1:3.5.12-1ubuntu0.22.04.2 [36.7 kB]
+16.55 Get:62 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libgd3 amd64 2.3.0-2ubuntu2.3 [129 kB]
+16.55 Get:63 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libc-devtools amd64 2.35-0ubuntu3.10 [29.0 kB]
+16.55 Get:64 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 linux-libc-dev amd64 5.15.0-141.151 [1313 kB]
+16.57 Get:65 http://archive.ubuntu.com/ubuntu jammy/main amd64 libcrypt-dev amd64 1:4.4.27-1 [112 kB]
+16.58 Get:66 http://archive.ubuntu.com/ubuntu jammy/main amd64 rpcsvc-proto amd64 1.4.2-0ubuntu6 [68.5 kB]
+16.58 Get:67 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libtirpc-dev amd64 1.3.2-2ubuntu0.1 [192 kB]
+16.59 Get:68 http://archive.ubuntu.com/ubuntu jammy/main amd64 libnsl-dev amd64 1.3.0-2build2 [71.3 kB]
+16.59 Get:69 http://archive.ubuntu.com/ubuntu jammy-updates/main amd64 libc6-dev amd64 2.35-0ubuntu3.10 [2100 kB]
+16.89 Get:70 http://archive.ubuntu.com/ubuntu jammy/main amd64 libltdl-dev amd64 2.4.6-15build2 [169 kB]
+16.90 Get:71 http://archive.ubuntu.com/ubuntu jammy/main amd64 libtool all 2.4.6-15build2 [164 kB]
+16.90 Get:72 http://archive.ubuntu.com/ubuntu jammy/main amd64 manpages-dev all 5.10-1ubuntu1 [2309 kB]
+17.02 debconf: delaying package configuration, since apt-utils is not installed
+17.04 Fetched 82.6 MB in 5s (17.0 MB/s)
+17.08 Selecting previously unselected package perl-modules-5.34.
+(Reading database ... 10171 files and directories currently installed.)
+17.09 Preparing to unpack .../perl-modules-5.34_5.34.0-3ubuntu1.4_all.deb ...
+17.09 Unpacking perl-modules-5.34 (5.34.0-3ubuntu1.4) ...
+17.47 Preparing to unpack .../libc6-dbg_2.35-0ubuntu3.10_amd64.deb ...
+17.50 Unpacking libc6-dbg:amd64 (2.35-0ubuntu3.10) over (2.35-0ubuntu3.9) ...
+18.77 Preparing to unpack .../libc6_2.35-0ubuntu3.10_amd64.deb ...
+18.87 debconf: unable to initialize frontend: Dialog
+18.87 debconf: (TERM is not set, so the dialog frontend is not usable.)
+18.87 debconf: falling back to frontend: Readline
+18.95 Unpacking libc6:amd64 (2.35-0ubuntu3.10) over (2.35-0ubuntu3.9) ...
+20.96 Setting up libc6:amd64 (2.35-0ubuntu3.10) ...
+21.06 debconf: unable to initialize frontend: Dialog
+21.06 debconf: (TERM is not set, so the dialog frontend is not usable.)
+21.06 debconf: falling back to frontend: Readline
+22.20 Selecting previously unselected package libgdbm6:amd64.
+(Reading database ... 11567 files and directories currently installed.)
+22.21 Preparing to unpack .../00-libgdbm6_1.23-1_amd64.deb ...
+22.22 Unpacking libgdbm6:amd64 (1.23-1) ...
+22.30 Selecting previously unselected package libgdbm-compat4:amd64.
+22.30 Preparing to unpack .../01-libgdbm-compat4_1.23-1_amd64.deb ...
+22.31 Unpacking libgdbm-compat4:amd64 (1.23-1) ...
+22.38 Selecting previously unselected package libperl5.34:amd64.
+22.38 Preparing to unpack .../02-libperl5.34_5.34.0-3ubuntu1.4_amd64.deb ...
+22.39 Unpacking libperl5.34:amd64 (5.34.0-3ubuntu1.4) ...
+22.68 Selecting previously unselected package perl.
+22.69 Preparing to unpack .../03-perl_5.34.0-3ubuntu1.4_amd64.deb ...
+22.71 Unpacking perl (5.34.0-3ubuntu1.4) ...
+22.80 Selecting previously unselected package netbase.
+22.80 Preparing to unpack .../04-netbase_6.3_all.deb ...
+22.81 Unpacking netbase (6.3) ...
+22.86 Selecting previously unselected package libmagic-mgc.
+22.87 Preparing to unpack .../05-libmagic-mgc_1%3a5.41-3ubuntu0.1_amd64.deb ...
+22.88 Unpacking libmagic-mgc (1:5.41-3ubuntu0.1) ...
+22.98 Selecting previously unselected package libmagic1:amd64.
+22.99 Preparing to unpack .../06-libmagic1_1%3a5.41-3ubuntu0.1_amd64.deb ...
+23.00 Unpacking libmagic1:amd64 (1:5.41-3ubuntu0.1) ...
+23.06 Selecting previously unselected package file.
+23.06 Preparing to unpack .../07-file_1%3a5.41-3ubuntu0.1_amd64.deb ...
+23.07 Unpacking file (1:5.41-3ubuntu0.1) ...
+23.14 Selecting previously unselected package libpng16-16:amd64.
+23.14 Preparing to unpack .../08-libpng16-16_1.6.37-3build5_amd64.deb ...
+23.15 Unpacking libpng16-16:amd64 (1.6.37-3build5) ...
+23.23 Selecting previously unselected package libxau6:amd64.
+23.24 Preparing to unpack .../09-libxau6_1%3a1.0.9-1build5_amd64.deb ...
+23.25 Unpacking libxau6:amd64 (1:1.0.9-1build5) ...
+23.32 Selecting previously unselected package libxdmcp6:amd64.
+23.32 Preparing to unpack .../10-libxdmcp6_1%3a1.1.3-0ubuntu5_amd64.deb ...
+23.33 Unpacking libxdmcp6:amd64 (1:1.1.3-0ubuntu5) ...
+23.41 Selecting previously unselected package libxcb1:amd64.
+23.42 Preparing to unpack .../11-libxcb1_1.14-3ubuntu3_amd64.deb ...
+23.43 Unpacking libxcb1:amd64 (1.14-3ubuntu3) ...
+23.48 Selecting previously unselected package libx11-data.
+23.49 Preparing to unpack .../12-libx11-data_2%3a1.7.5-1ubuntu0.3_all.deb ...
+23.50 Unpacking libx11-data (2:1.7.5-1ubuntu0.3) ...
+23.62 Selecting previously unselected package libx11-6:amd64.
+23.62 Preparing to unpack .../13-libx11-6_2%3a1.7.5-1ubuntu0.3_amd64.deb ...
+23.63 Unpacking libx11-6:amd64 (2:1.7.5-1ubuntu0.3) ...
+23.69 Selecting previously unselected package manpages.
+23.70 Preparing to unpack .../14-manpages_5.10-1ubuntu1_all.deb ...
+23.71 Unpacking manpages (5.10-1ubuntu1) ...
+23.84 Selecting previously unselected package m4.
+23.84 Preparing to unpack .../15-m4_1.4.18-5ubuntu2_amd64.deb ...
+23.85 Unpacking m4 (1.4.18-5ubuntu2) ...
+23.92 Selecting previously unselected package autoconf.
+23.92 Preparing to unpack .../16-autoconf_2.71-2_all.deb ...
+23.93 Unpacking autoconf (2.71-2) ...
+24.01 Selecting previously unselected package autotools-dev.
+24.01 Preparing to unpack .../17-autotools-dev_20220109.1_all.deb ...
+24.02 Unpacking autotools-dev (20220109.1) ...
+24.11 Selecting previously unselected package automake.
+24.11 Preparing to unpack .../18-automake_1%3a1.16.5-1.3_all.deb ...
+24.12 Unpacking automake (1:1.16.5-1.3) ...
+24.21 Selecting previously unselected package binutils-common:amd64.
+24.21 Preparing to unpack .../19-binutils-common_2.38-4ubuntu2.8_amd64.deb ...
+24.22 Unpacking binutils-common:amd64 (2.38-4ubuntu2.8) ...
+24.30 Selecting previously unselected package libbinutils:amd64.
+24.30 Preparing to unpack .../20-libbinutils_2.38-4ubuntu2.8_amd64.deb ...
+24.31 Unpacking libbinutils:amd64 (2.38-4ubuntu2.8) ...
+24.38 Selecting previously unselected package libctf-nobfd0:amd64.
+24.38 Preparing to unpack .../21-libctf-nobfd0_2.38-4ubuntu2.8_amd64.deb ...
+24.40 Unpacking libctf-nobfd0:amd64 (2.38-4ubuntu2.8) ...
+24.47 Selecting previously unselected package libctf0:amd64.
+24.47 Preparing to unpack .../22-libctf0_2.38-4ubuntu2.8_amd64.deb ...
+24.48 Unpacking libctf0:amd64 (2.38-4ubuntu2.8) ...
+24.53 Selecting previously unselected package binutils-x86-64-linux-gnu.
+24.54 Preparing to unpack .../23-binutils-x86-64-linux-gnu_2.38-4ubuntu2.8_amd64.deb ...
+24.55 Unpacking binutils-x86-64-linux-gnu (2.38-4ubuntu2.8) ...
+24.69 Selecting previously unselected package binutils.
+24.70 Preparing to unpack .../24-binutils_2.38-4ubuntu2.8_amd64.deb ...
+24.71 Unpacking binutils (2.38-4ubuntu2.8) ...
+24.77 Selecting previously unselected package gcc-11-base:amd64.
+24.77 Preparing to unpack .../25-gcc-11-base_11.4.0-1ubuntu1~22.04_amd64.deb ...
+24.78 Unpacking gcc-11-base:amd64 (11.4.0-1ubuntu1~22.04) ...
+24.86 Selecting previously unselected package libisl23:amd64.
+24.86 Preparing to unpack .../26-libisl23_0.24-2build1_amd64.deb ...
+24.87 Unpacking libisl23:amd64 (0.24-2build1) ...
+24.98 Selecting previously unselected package libmpc3:amd64.
+24.99 Preparing to unpack .../27-libmpc3_1.2.1-2build1_amd64.deb ...
+25.00 Unpacking libmpc3:amd64 (1.2.1-2build1) ...
+25.05 Selecting previously unselected package cpp-11.
+25.06 Preparing to unpack .../28-cpp-11_11.4.0-1ubuntu1~22.04_amd64.deb ...
+25.07 Unpacking cpp-11 (11.4.0-1ubuntu1~22.04) ...
+25.29 Selecting previously unselected package cpp.
+25.29 Preparing to unpack .../29-cpp_4%3a11.2.0-1ubuntu1_amd64.deb ...
+25.30 Unpacking cpp (4:11.2.0-1ubuntu1) ...
+25.36 Selecting previously unselected package fonts-dejavu-core.
+25.36 Preparing to unpack .../30-fonts-dejavu-core_2.37-2build1_all.deb ...
+25.37 Unpacking fonts-dejavu-core (2.37-2build1) ...
+25.52 Selecting previously unselected package fontconfig-config.
+25.52 Preparing to unpack .../31-fontconfig-config_2.13.1-4.2ubuntu5_all.deb ...
+25.53 Unpacking fontconfig-config (2.13.1-4.2ubuntu5) ...
+25.60 Selecting previously unselected package libcc1-0:amd64.
+25.61 Preparing to unpack .../32-libcc1-0_12.3.0-1ubuntu1~22.04_amd64.deb ...
+25.62 Unpacking libcc1-0:amd64 (12.3.0-1ubuntu1~22.04) ...
+25.69 Selecting previously unselected package libgomp1:amd64.
+25.69 Preparing to unpack .../33-libgomp1_12.3.0-1ubuntu1~22.04_amd64.deb ...
+25.70 Unpacking libgomp1:amd64 (12.3.0-1ubuntu1~22.04) ...
+25.77 Selecting previously unselected package libitm1:amd64.
+25.77 Preparing to unpack .../34-libitm1_12.3.0-1ubuntu1~22.04_amd64.deb ...
+25.78 Unpacking libitm1:amd64 (12.3.0-1ubuntu1~22.04) ...
+25.85 Selecting previously unselected package libasan6:amd64.
+25.85 Preparing to unpack .../35-libasan6_11.4.0-1ubuntu1~22.04_amd64.deb ...
+25.86 Unpacking libasan6:amd64 (11.4.0-1ubuntu1~22.04) ...
+25.98 Selecting previously unselected package liblsan0:amd64.
+25.98 Preparing to unpack .../36-liblsan0_12.3.0-1ubuntu1~22.04_amd64.deb ...
+25.99 Unpacking liblsan0:amd64 (12.3.0-1ubuntu1~22.04) ...
+26.07 Selecting previously unselected package libtsan0:amd64.
+26.08 Preparing to unpack .../37-libtsan0_11.4.0-1ubuntu1~22.04_amd64.deb ...
+26.09 Unpacking libtsan0:amd64 (11.4.0-1ubuntu1~22.04) ...
+26.20 Selecting previously unselected package libubsan1:amd64.
+26.20 Preparing to unpack .../38-libubsan1_12.3.0-1ubuntu1~22.04_amd64.deb ...
+26.21 Unpacking libubsan1:amd64 (12.3.0-1ubuntu1~22.04) ...
+26.31 Selecting previously unselected package libquadmath0:amd64.
+26.31 Preparing to unpack .../39-libquadmath0_12.3.0-1ubuntu1~22.04_amd64.deb ...
+26.32 Unpacking libquadmath0:amd64 (12.3.0-1ubuntu1~22.04) ...
+26.38 Selecting previously unselected package libgcc-11-dev:amd64.
+26.39 Preparing to unpack .../40-libgcc-11-dev_11.4.0-1ubuntu1~22.04_amd64.deb ...
+26.39 Unpacking libgcc-11-dev:amd64 (11.4.0-1ubuntu1~22.04) ...
+26.54 Selecting previously unselected package gcc-11.
+26.55 Preparing to unpack .../41-gcc-11_11.4.0-1ubuntu1~22.04_amd64.deb ...
+26.56 Unpacking gcc-11 (11.4.0-1ubuntu1~22.04) ...
+26.94 Selecting previously unselected package gcc.
+26.94 Preparing to unpack .../42-gcc_4%3a11.2.0-1ubuntu1_amd64.deb ...
+26.95 Unpacking gcc (4:11.2.0-1ubuntu1) ...
+27.02 Selecting previously unselected package libc-dev-bin.
+27.02 Preparing to unpack .../43-libc-dev-bin_2.35-0ubuntu3.10_amd64.deb ...
+27.03 Unpacking libc-dev-bin (2.35-0ubuntu3.10) ...
+27.11 Selecting previously unselected package libfreetype6:amd64.
+27.12 Preparing to unpack .../44-libfreetype6_2.11.1+dfsg-1ubuntu0.3_amd64.deb ...
+27.12 Unpacking libfreetype6:amd64 (2.11.1+dfsg-1ubuntu0.3) ...
+27.21 Selecting previously unselected package libfontconfig1:amd64.
+27.22 Preparing to unpack .../45-libfontconfig1_2.13.1-4.2ubuntu5_amd64.deb ...
+27.23 Unpacking libfontconfig1:amd64 (2.13.1-4.2ubuntu5) ...
+27.31 Selecting previously unselected package libjpeg-turbo8:amd64.
+27.31 Preparing to unpack .../46-libjpeg-turbo8_2.1.2-0ubuntu1_amd64.deb ...
+27.33 Unpacking libjpeg-turbo8:amd64 (2.1.2-0ubuntu1) ...
+27.43 Selecting previously unselected package libjpeg8:amd64.
+27.43 Preparing to unpack .../47-libjpeg8_8c-2ubuntu10_amd64.deb ...
+27.44 Unpacking libjpeg8:amd64 (8c-2ubuntu10) ...
+27.51 Selecting previously unselected package libdeflate0:amd64.
+27.52 Preparing to unpack .../48-libdeflate0_1.10-2_amd64.deb ...
+27.52 Unpacking libdeflate0:amd64 (1.10-2) ...
+27.59 Selecting previously unselected package libjbig0:amd64.
+27.59 Preparing to unpack .../49-libjbig0_2.1-3.1ubuntu0.22.04.1_amd64.deb ...
+27.60 Unpacking libjbig0:amd64 (2.1-3.1ubuntu0.22.04.1) ...
+27.67 Selecting previously unselected package libwebp7:amd64.
+27.68 Preparing to unpack .../50-libwebp7_1.2.2-2ubuntu0.22.04.2_amd64.deb ...
+27.69 Unpacking libwebp7:amd64 (1.2.2-2ubuntu0.22.04.2) ...
+27.75 Selecting previously unselected package libtiff5:amd64.
+27.76 Preparing to unpack .../51-libtiff5_4.3.0-6ubuntu0.10_amd64.deb ...
+27.77 Unpacking libtiff5:amd64 (4.3.0-6ubuntu0.10) ...
+27.84 Selecting previously unselected package libxpm4:amd64.
+27.84 Preparing to unpack .../52-libxpm4_1%3a3.5.12-1ubuntu0.22.04.2_amd64.deb ...
+27.85 Unpacking libxpm4:amd64 (1:3.5.12-1ubuntu0.22.04.2) ...
+27.92 Selecting previously unselected package libgd3:amd64.
+27.93 Preparing to unpack .../53-libgd3_2.3.0-2ubuntu2.3_amd64.deb ...
+27.94 Unpacking libgd3:amd64 (2.3.0-2ubuntu2.3) ...
+28.00 Selecting previously unselected package libc-devtools.
+28.00 Preparing to unpack .../54-libc-devtools_2.35-0ubuntu3.10_amd64.deb ...
+28.01 Unpacking libc-devtools (2.35-0ubuntu3.10) ...
+28.07 Selecting previously unselected package linux-libc-dev:amd64.
+28.07 Preparing to unpack .../55-linux-libc-dev_5.15.0-141.151_amd64.deb ...
+28.08 Unpacking linux-libc-dev:amd64 (5.15.0-141.151) ...
+28.33 Selecting previously unselected package libcrypt-dev:amd64.
+28.34 Preparing to unpack .../56-libcrypt-dev_1%3a4.4.27-1_amd64.deb ...
+28.34 Unpacking libcrypt-dev:amd64 (1:4.4.27-1) ...
+28.41 Selecting previously unselected package rpcsvc-proto.
+28.41 Preparing to unpack .../57-rpcsvc-proto_1.4.2-0ubuntu6_amd64.deb ...
+28.42 Unpacking rpcsvc-proto (1.4.2-0ubuntu6) ...
+28.48 Selecting previously unselected package libtirpc-dev:amd64.
+28.48 Preparing to unpack .../58-libtirpc-dev_1.3.2-2ubuntu0.1_amd64.deb ...
+28.49 Unpacking libtirpc-dev:amd64 (1.3.2-2ubuntu0.1) ...
+28.56 Selecting previously unselected package libnsl-dev:amd64.
+28.56 Preparing to unpack .../59-libnsl-dev_1.3.0-2build2_amd64.deb ...
+28.57 Unpacking libnsl-dev:amd64 (1.3.0-2build2) ...
+28.64 Selecting previously unselected package libc6-dev:amd64.
+28.64 Preparing to unpack .../60-libc6-dev_2.35-0ubuntu3.10_amd64.deb ...
+28.65 Unpacking libc6-dev:amd64 (2.35-0ubuntu3.10) ...
+28.86 Selecting previously unselected package libltdl-dev:amd64.
+28.86 Preparing to unpack .../61-libltdl-dev_2.4.6-15build2_amd64.deb ...
+28.87 Unpacking libltdl-dev:amd64 (2.4.6-15build2) ...
+28.96 Selecting previously unselected package libodbc1:amd64.
+28.96 Preparing to unpack .../62-libodbc1_2.3.11-1_amd64.deb ...
+28.97 Unpacking libodbc1:amd64 (2.3.11-1) ...
+28.98 dpkg: error processing archive /tmp/apt-dpkg-install-QnaUxs/62-libodbc1_2.3.11-1_amd64.deb (--unpack):
+28.98  trying to overwrite '/usr/lib/x86_64-linux-gnu/libodbc.so.2.0.0', which is also in package libodbc2:amd64 2.3.9-5ubuntu0.1
+28.98 dpkg-deb: error: paste subprocess was killed by signal (Broken pipe)
+29.01 Selecting previously unselected package libtool.
+29.01 Preparing to unpack .../63-libtool_2.4.6-15build2_all.deb ...
+29.02 Unpacking libtool (2.4.6-15build2) ...
+29.09 Selecting previously unselected package manpages-dev.
+29.09 Preparing to unpack .../64-manpages-dev_5.10-1ubuntu1_all.deb ...
+29.10 Unpacking manpages-dev (5.10-1ubuntu1) ...
+29.37 Selecting previously unselected package odbcinst1debian2:amd64.
+29.37 Preparing to unpack .../65-odbcinst1debian2_2.3.11-1_amd64.deb ...
+29.38 Unpacking odbcinst1debian2:amd64 (2.3.11-1) ...
+29.39 dpkg: error processing archive /tmp/apt-dpkg-install-QnaUxs/65-odbcinst1debian2_2.3.11-1_amd64.deb (--unpack):
+29.39  trying to overwrite '/usr/lib/x86_64-linux-gnu/libodbcinst.so.2.0.0', which is also in package libodbcinst2:amd64 2.3.9-5ubuntu0.1
+29.39 dpkg-deb: error: paste subprocess was killed by signal (Broken pipe)
+29.43 Preparing to unpack .../66-odbcinst_2.3.11-1_amd64.deb ...
+29.46 Unpacking odbcinst (2.3.11-1) over (2.3.9-5ubuntu0.1) ...
+29.46 dpkg: error processing archive /tmp/apt-dpkg-install-QnaUxs/66-odbcinst_2.3.11-1_amd64.deb (--unpack):
+29.46  trying to overwrite '/etc/odbc.ini', which is also in package unixodbc-common 2.3.9-5ubuntu0.1
+29.50 Preparing to unpack .../67-unixodbc_2.3.11-1_amd64.deb ...
+29.53 Unpacking unixodbc (2.3.11-1) over (2.3.9-5ubuntu0.1) ...
+29.62 Selecting previously unselected package unixodbc-dev.
+29.63 Preparing to unpack .../68-unixodbc-dev_2.3.11-1_amd64.deb ...
+29.64 Unpacking unixodbc-dev (2.3.11-1) ...
+29.70 Errors were encountered while processing:
+29.70  /tmp/apt-dpkg-install-QnaUxs/62-libodbc1_2.3.11-1_amd64.deb
+29.70  /tmp/apt-dpkg-install-QnaUxs/65-odbcinst1debian2_2.3.11-1_amd64.deb
+29.70  /tmp/apt-dpkg-install-QnaUxs/66-odbcinst_2.3.11-1_amd64.deb
+29.73 E: Sub-process /usr/bin/dpkg returned an error code (1)
+------
+failed to solve: process "/bin/sh -c apt-get update &&     apt-get install -y curl apt-transport-https gnupg &&     curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - &&     curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list &&     apt-get update &&     ACCEPT_EULA=Y apt-get install -y msodbcsql18 mssql-tools18 unixodbc-dev &&     ln -sfn /opt/mssql-tools18/bin/sqlcmd /usr/bin/sqlcmd &&     chmod +x /usr/bin/sqlcmd &&     apt-get clean" did not complete successfully: exit code: 100
+root@testy:/home/user/Desktop/projekt./projekt# 
+

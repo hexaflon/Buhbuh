@@ -1,0 +1,33 @@
+﻿@page
+@model TestTest.Pages.IndexAdminModel
+
+@{
+    ViewData["Title"] = "Strona główna";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="table-responsive">
+    <h1 class="display-4">Zarejestrowani użytkownicy</h1>
+
+    <table class="table">
+        <thead>
+            <tr class="text-muted text-center">
+                <th>E-mail</th>
+                <th>Hasło</th>
+                <th>Imię</th>
+                <th>Nazwisko</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.User)
+            {
+                <tr class="text1 text-center">
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PasswordHash)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Surname)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

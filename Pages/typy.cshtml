@@ -1,0 +1,43 @@
+﻿@page
+@model ProjektInzynierski.Pages.typyModel
+
+@{
+    ViewData["Title"] = "typy";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1>typy</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TypPytania[0].Nazwa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TypPytania[0].Opis)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.TypPytania) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nazwa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Opis)
+            </td>
+            <td>
+                <a asp-page="./Edit" asp-route-id="@item.IdTypPytania">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.IdTypPytania">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.IdTypPytania">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

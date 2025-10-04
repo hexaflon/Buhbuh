@@ -1,0 +1,37 @@
+﻿@page
+@model TestTest.Pages.Answer.DetailsModel
+
+@{
+    ViewData["Title"] = "Szczegóły pytania";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Szczegóły pytania</h1>
+
+<div class="container">
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Treść odpowiedzi
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Odpowiedzi.TrescOdpowiedzi)
+        </dd>
+        <dt class="col-sm-2">
+            Czy odpowiedź jest poprawna?
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Odpowiedzi.CzyPoprawny)
+        </dd>
+        <dt class="col-sm-2">
+            ID pytania
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Odpowiedzi.IdPytanieNavigation.IdPytanie)
+        </dd>
+    </dl>
+</div>
+<div class="container mt-3">
+    <a class="btn btn-standard" asp-page="./Edit" asp-route-id="@Model.Odpowiedzi?.IdOdpowiedz">Edytuj</a>
+    <a class="btn btn-back ml-2" asp-page="./Index">Powrót</a>
+</div>

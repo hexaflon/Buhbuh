@@ -1,0 +1,97 @@
+﻿@page
+@model ProjektInzynierski.Pages.Exam.ExamListModel
+
+@{
+    ViewData["Title"] = "Twoje testy";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Twoje testy</h1>
+
+<div class="info-section">
+    <p>
+        Przed przystąpieniem do rozwiązania testu zapoznaj się z podstawowymi informacjami, klikając
+        <a href="#" onclick="openExplanation()" class="link">tutaj</a>.
+    </p>
+</div>
+
+<div id="infoModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h4>Podstawowe informacje</h4>
+        <p>
+            Poniżej znajduje się krótkie wyjaśnienie terminów używanych na stronie:
+        </p>
+        <ul>
+            <li><strong>data rozpoczęcia:</strong> określa datę i godzinę, od której uczeń może przystąpić do rozwiązywania testu,</li>
+            <li><strong>data zakończenia:</strong> określa datę i godzinę, o której test zostaje zamknięty i nie ma możliwości dalszego rozwiązywania,</li>
+            <li><strong>czas trwania:</strong> określa czas (wyrażony w minutach) przeznaczony na rozwiązanie testu, liczony jest od momentu naciśnięcia przycisku "Rozwiąż". Po zakończeniu odliczania, test zostaje automatycznie zakończony.</li>
+        </ul>
+    </div>
+</div>
+
+@if (Model.Test.Any())
+{
+    <table class="table">
+        <thead>
+            <tr class="text-muted text-center">
+                <th class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Test[0].DataRozpoczecia)
+                </th>
+                <th class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Test[0].DataZakonczenia)
+                </th>
+                <th class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Test[0].Tytul)
+                </th>
+                <th class="col-sm-3">
+                    @Html.DisplayNameFor(model => model.Test[0].Opis)
+                </th>
+                <th class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Test[0].CzasTrwania)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @{ int i =0;}
+            @foreach (var item in Model.Test)
+            {
+                <tr class="text1 text-center">
+                    <td class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.DataRozpoczecia)
+                    </td>
+                    <td class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.DataZakonczenia)
+                    </td>
+                    <td class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.Tytul)
+                    </td>
+                    <td class="col-sm-3">
+                        @Html.DisplayFor(modelItem => item.Opis)
+                    </td>
+                    <td class="col-sm-2">
+                        @Html.DisplayFor(modelItem => item.CzasTrwania)
+                    </td>
+                    @if (!Model.czyRozwiazany.ElementAt(i))
+                    {
+                        <td class="col-sm-1">
+                            <a class="btn btn-standard" asp-page="./ExamPerform" asp-route-id="@item.IdTest">Rozwiąż</a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td class="col-sm-1">
+                            <a class="btn btn-standard" asp-page="./Marks">Oceny</a>
+                        </td>
+                    }
+                    @{i++;}
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text2">Nie masz aktualnie żadnych testów do rozwiązania.</p>
+}

@@ -1,0 +1,63 @@
+﻿@page
+@model ProjektInzynierski.Pages.Exam.EditModel
+
+@{
+    ViewData["Title"] = "Edytuj test";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Edytuj test</h1>
+<hr />
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <form method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="Test.IdTest" />
+                <input type="hidden" asp-for="Test.IdGrupy" value="@ViewBag.IdGrupy" />
+                <input type="hidden" asp-for="Test.IdNauczyciela" value="@ViewBag.IdNauczyciela" />
+
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Test.CzyWidoczny" /> @Html.DisplayNameFor(model => model.Test.CzyWidoczny)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.DataRozpoczecia" class="control-label">Data rozpoczęcia</label>
+                    <input asp-for="Test.DataRozpoczecia" class="form-control" />
+                    <span asp-validation-for="Test.DataRozpoczecia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.DataZakonczenia" class="control-label">Data zakończenia</label>
+                    <input asp-for="Test.DataZakonczenia" class="form-control" />
+                    <span asp-validation-for="Test.DataZakonczenia" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.Tytul" class="control-label">Tytuł</label>
+                    <input asp-for="Test.Tytul" class="form-control" />
+                    <span asp-validation-for="Test.Tytul" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.Opis" class="control-label">Opis</label>
+                    <input asp-for="Test.Opis" class="form-control" />
+                    <span asp-validation-for="Test.Opis" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Test.CzasTrwania" class="control-label">Czas trwania</label>
+                    <input asp-for="Test.CzasTrwania" class="form-control" />
+                    <span asp-validation-for="Test.CzasTrwania" class="text-danger"></span>
+                </div>
+                <div class="form-group mt-3">
+                    <input type="submit" value="Zapisz" class="btn btn-standard" />
+                    <a class="btn btn-back ml-2" asp-page="./List">Powrót</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

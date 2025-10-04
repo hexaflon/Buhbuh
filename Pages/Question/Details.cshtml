@@ -1,0 +1,43 @@
+﻿@page
+@model TestTest.Pages.Question.DetailsModel
+
+@{
+    ViewData["Title"] = "Szczegóły pytania";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Szczegóły pytania</h1>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pytanie.Tresc)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pytanie.Tresc)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pytanie.IdKategoriaPytaniaNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pytanie.IdKategoriaPytaniaNavigation.IdKategoriaPytania)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pytanie.IdNauczyciela)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pytanie.IdNauczyciela)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Pytanie.IdTypPytaniaNavigation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Pytanie.IdTypPytaniaNavigation.IdTypPytania)
+        </dd>
+    </dl>
+</div>
+<div class="form-group mt-3">
+    <a asp-page="./Edit" asp-route-id="@Model.Pytanie?.IdPytanie" class="btn btn-standard">Edytuj</a>
+    <a asp-page="./Index" class="btn btn-back ml-2">Powrót</a>
+</div>
+

@@ -1,0 +1,48 @@
+﻿@page
+@model ProjektInzynierski.Pages.Exam.MarksModel
+
+@{
+    ViewData["Title"] = "Twoje oceny";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <h1 class="display-4">Twoje oceny</h1>
+
+    @if (Model.Rozwiazanie.Any())
+    {
+        <table class="table mt-4">
+            <thead>
+                <tr class="text-muted text-center">
+                    <th class="col-sm-3">@Html.DisplayNameFor(model => model.Rozwiazanie[0].IdTestNavigation)</th>
+                    <th class="col-sm-2">@Html.DisplayNameFor(model => model.Rozwiazanie[0].LiczbaPunktow)</th>
+                    <th class="col-sm-1">Ocena</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Rozwiazanie)
+                {
+                    <tr class="text1 text-center">
+                        <td class="col-sm-3">@Html.DisplayFor(modelItem => item.IdTestNavigation.Tytul)</td>
+                        <td class="col-sm-2">
+                            @{
+                                var liczbaPunktow = item.LiczbaPunktow % 1 != 0 ? $"{item.LiczbaPunktow:G2}" : $"{item.LiczbaPunktow}";
+                                liczbaPunktow += $" / {item.IdTestNavigation.ListaPytan.Count()}";
+                            }
+                            @Html.Raw(liczbaPunktow)
+                        </td>
+                        <td class="col-sm-1">@Html.Raw($"{Model.Oceny[Model.Rozwiazanie.IndexOf(item)]}")</td>
+                        <td class="col-sm-2">
+                            <a class="btn btn-details" asp-page="./ExamInfo" asp-route-id="@item.IdRozwiazanie">Zobacz więcej</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p class="text2 mt-4">Aktualnie nie masz żadnych ocen.</p>
+    }
+</div>

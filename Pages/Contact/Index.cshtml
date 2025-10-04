@@ -1,0 +1,45 @@
+﻿@page
+@model TestTest.Pages.Contact.IndexModel
+
+@{
+    ViewData["Title"] = "Kontakt";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <h1 class="display-4">Kontakt</h1>
+
+    <p>Masz pytania? Skontaktuj się z nami!</p>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Dane kontaktowe</h3>
+            <p><strong>Adres:</strong> ul. Przykładowa 123, 00-000 Warszawa</p>
+            <p><strong>Telefon:</strong> +48 123 456 789</p>
+            <p><strong>Email:</strong> kontakt@example.com</p>
+        </div>
+        <div class="col-md-6">
+            <h3>Godziny otwarcia</h3>
+            <p><strong>Poniedziałek - Piątek:</strong> 8:00 - 18:00</p>
+            <p><strong>Sobota:</strong> 10:00 - 14:00</p>
+            <p><strong>Niedziela:</strong> Zamknięte</p>
+        </div>
+    </div>
+
+    <h3>Formularz kontaktowy</h3>
+    <form method="post">
+        <div class="form-group">
+            <label for="name">Imię i nazwisko</label>
+            <input type="text" class="form-control" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Adres email</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="message">Wiadomość</label>
+            <textarea class="form-control" id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Wyślij</button>
+    </form>
+</div>

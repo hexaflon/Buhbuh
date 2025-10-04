@@ -1,0 +1,82 @@
+﻿@page
+@model ProjektInzynierski.Pages.Exam.ExamPerformModel
+
+@{
+    ViewData["Title"] = "Rozwiąż test";
+    Layout = "~/Pages/Shared/_Layout.cshtml";
+}
+
+<h1 class="display-4">Rozwiąż test</h1>
+
+<div>
+    <div id="timer" class="mb-3"></div>
+    <form id="examForm" method="post">
+        <table class="table text1">
+            <tbody>
+                @for (int i = 0; i < Model.pytaniaSprawdzianu.Count; i++)
+                {
+                    var question = Model.pytaniaSprawdzianu[i];
+                    <tr>
+                        <td>
+                            <strong>Pytanie @(i + 1):</strong> @question.Tresc
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @if (question.IdTypPytania == ViewBag.idWielokrotnego)
+                            {
+                                foreach (var answer in question.Odpowiedz)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="@answer.IdPytanie" value="@answer.IdOdpowiedz">
+                                        <label class="form-check-label">
+                                            @answer.TrescOdpowiedzi
+                                        </label>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                foreach (var answer in question.Odpowiedz)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="@answer.IdPytanie" value="@answer.IdOdpowiedz">
+                                        <label class="form-check-label">
+                                            @answer.TrescOdpowiedzi
+                                        </label>
+                                    </div>
+                                }
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <input type="submit" value="Zapisz" class="btn btn-standard" />
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        //var countdown = @Model.CzasTrwania; //czas trwania w sekundach (test)
+        var countdown = @Model.CzasTrwania * 60;
+        var timerElement = document.getElementById('timer');
+
+        function updateTimer() {
+            var minutes = Math.floor(countdown / 60);
+            var seconds = countdown % 60;
+
+            timerElement.textContent = 'Czas pozostały: ' + minutes + 'min ' + seconds + 's';
+
+            if (countdown <= 0) {
+                alert('Czas testu minął.');
+                document.getElementById('examForm').submit(); //automatyczne zapisanie odpowiedzi po zakończeniu czasu
+            } else {
+                countdown--;
+                setTimeout(updateTimer, 1000);
+            }
+        }
+
+        updateTimer();
+    </script>
+}
