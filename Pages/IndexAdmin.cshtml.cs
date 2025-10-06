@@ -15,12 +15,10 @@ namespace TestTest.Pages
     public class IndexAdminModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly ILogger<IndexAdminModel> _logger;
         private readonly UserManager<Osoba> _userManager;
         public IndexAdminModel(TestTest.Models.Db.DatabaseContext context, ILogger<IndexAdminModel> logger, UserManager<Osoba> userManager)
         {
             _userManager = userManager;
-            _logger = logger;
             _context = context;
         }
 

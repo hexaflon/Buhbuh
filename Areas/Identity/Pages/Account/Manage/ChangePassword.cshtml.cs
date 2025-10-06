@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
@@ -15,16 +16,15 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<Osoba> _userManager;
         private readonly SignInManager<Osoba> _signInManager;
-        private readonly ILogger<ChangePasswordModel> _logger;
+        private Logger _logger;
 
         public ChangePasswordModel(
             UserManager<Osoba> userManager,
-            SignInManager<Osoba> signInManager,
-            ILogger<ChangePasswordModel> logger)
+            SignInManager<Osoba> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = logger;
+            _logger = Logger.getInstance();
         }
 
         [BindProperty]
@@ -95,7 +95,7 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            _logger.LogInformation("Użytkownik pomyślnie zmienił swoje hasło.");
+            _logger.Log($"Użytkownik:{user.Id} pomyślnie zmienił swoje hasło.");
             StatusMessage = "Twoje hasło zostało zmienione.";
 
             return RedirectToPage();

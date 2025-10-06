@@ -34,5 +34,10 @@ public partial class Pytanie
         public virtual TypPytania? IdTypPytaniaNavigation { get; set; }
         public virtual ICollection<ListaPytan> ListaPytan { get; set; }
         public virtual ICollection<Odpowiedz> Odpowiedz { get; set; }
-    
+
+    public override string ToString()
+    {
+        return $"Pytanie o id: {IdPytanie} - {Tresc}";
+    }
+
 }

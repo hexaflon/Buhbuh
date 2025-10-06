@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
@@ -15,16 +16,15 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<Osoba> _userManager;
         private readonly SignInManager<Osoba> _signInManager;
-        private readonly ILogger<DeletePersonalDataModel> _logger;
+        private Logger _logger;
 
         public DeletePersonalDataModel(
             UserManager<Osoba> userManager,
-            SignInManager<Osoba> signInManager,
-            ILogger<DeletePersonalDataModel> logger)
+            SignInManager<Osoba> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = logger;
+            _logger = Logger.getInstance();
         }
 
         [BindProperty]
@@ -79,7 +79,7 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
 
             await _signInManager.SignOutAsync();
 
-            _logger.LogInformation("Użytkownik o ID '{UserId}' usunął swoje konto.", userId);
+            _logger.Log($"Użytkownik o ID '{userId}' usunął swoje konto.");
 
             return Redirect("~/");
         }

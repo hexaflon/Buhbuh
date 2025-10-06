@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ProjektInzynierski.Pages.Answer;
+using ProjektInzynierski.Pages.Question;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace TestTest.Pages.Question
@@ -18,6 +21,7 @@ namespace TestTest.Pages.Question
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
         public readonly int IdTrueFalse;
+        private Logger _logger;
         public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
@@ -27,6 +31,7 @@ namespace TestTest.Pages.Question
                 .Select(tp => tp.IdTypPytania).First();
             Pytanie = new Pytanie();
             Pytanie.IdTypPytania = 1;
+            _logger = Logger.getInstance();
         }
 
         public IActionResult OnGet()
@@ -43,40 +48,7 @@ namespace TestTest.Pages.Question
         public Pytanie Pytanie { get; set; } = default!;
         [BindProperty]
         public bool isTrueFalse { get; set; } = false;
-        public void dodajOdpowiedzi()
-        {
-            var odpowiedzi = _context.Odpowiedz.ToList();
-            int idOdp = 1;
-            Console.WriteLine(isTrueFalse);
-            if (odpowiedzi != null)
-            {
-                idOdp = odpowiedzi
-                    .OrderByDescending(o => o.IdOdpowiedz)
-                    .Select(o => o.IdOdpowiedz)
-                    .FirstOrDefault() + 1;
-            }
-            for(int i = 1; i <= 2; i++)
-            {
-                var odp = new Odpowiedz();
-                odp.IdPytanie = Pytanie.IdPytanie;
-                if (i % 2 == 1)
-                {
-                    odp.TrescOdpowiedzi = "Prawda";
-                    if (isTrueFalse) odp.CzyPoprawny = isTrueFalse;
-                }
-                if (i % 2 == 0)
-                {
-                    odp.TrescOdpowiedzi = "Fałsz";
-                    if (!isTrueFalse) odp.CzyPoprawny = !isTrueFalse;
-                }
-                odp.IdOdpowiedz = idOdp;
-                idOdp++;
-                _context.Odpowiedz.Add(odp);
-                _context.SaveChanges();
-                
-            }
-        }
-
+       
         public async Task<IActionResult> OnPostAsync()
         {
           if (!ModelState.IsValid || Pytanie == null || _context.Pytanie == null)
@@ -84,20 +56,21 @@ namespace TestTest.Pages.Question
                 return Page();
             }
 
+            Pytanie.IdNauczyciela = _userManager.GetUserAsync(User).Result?.IdOsoba;
 
-            int id;
-            var query = _context.Pytanie.OrderByDescending(x => x.IdPytanie).FirstOrDefault();
-            if (query == null) id = 0;
-            else
-            {
-                id = query.IdPytanie + 1;
-            }
-            Pytanie.IdPytanie = id;
-            Pytanie.IdNauczyciela = _userManager.GetUserAsync(User).Result.IdOsoba;
-            _context.Pytanie.Add(Pytanie);
-            await _context.SaveChangesAsync();
-            if (Pytanie.IdTypPytania == IdTrueFalse)dodajOdpowiedzi();
+            var facade = new QuestionFacade(_context);
 
+            var nowePytanie = facade.CreateQuestion(
+                tresc: Pytanie.Tresc,
+                idNauczyciela: (int)Pytanie.IdNauczyciela,
+                idKategoria: Pytanie.IdKategoriaPytania,
+                idTypPytania: Pytanie.IdTypPytania ?? 1,
+                isTrueFalse: isTrueFalse
+                );
+
+
+            _logger.Log($"User: {User.Identity.Name} utworzyl Pytanie {Pytanie.ToString()}");
+            
             return RedirectToPage("./Index");
         }
     }

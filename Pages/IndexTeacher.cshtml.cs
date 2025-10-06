@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace TestTest.Pages
@@ -15,12 +16,12 @@ namespace TestTest.Pages
     public class IndexTeacherModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly ILogger<IndexTeacherModel> _logger;
+        private Logger _logger;
         private readonly UserManager<Osoba> _userManager;
-        public IndexTeacherModel(TestTest.Models.Db.DatabaseContext context, ILogger<IndexTeacherModel> logger, UserManager<Osoba> userManager)
+        public IndexTeacherModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _userManager = userManager;
-            _logger = logger;
+            _logger = Logger.getInstance();
             _context = context;
         }
 
@@ -31,6 +32,7 @@ namespace TestTest.Pages
             if (_userManager.Users != null)
             {
                 User = await _userManager.Users.ToListAsync();
+                _logger.ShowLogs();
             }
         }
     }

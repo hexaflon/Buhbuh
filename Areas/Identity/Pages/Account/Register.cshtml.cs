@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace TestTest.Areas.Identity.Pages.Account
@@ -28,7 +29,7 @@ namespace TestTest.Areas.Identity.Pages.Account
         private readonly UserManager<Osoba> _userManager;
         private readonly IUserStore<Osoba> _userStore;
         private readonly IUserEmailStore<Osoba> _emailStore;
-        private readonly ILogger<RegisterModel> _logger;
+        private Logger _logger;
         private readonly IEmailSender _emailSender;
         private readonly TestTest.Models.Db.IdentityDatabaseContext _context;
 
@@ -36,7 +37,6 @@ namespace TestTest.Areas.Identity.Pages.Account
             UserManager<Osoba> userManager,
             IUserStore<Osoba> userStore,
             SignInManager<Osoba> signInManager,
-            ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             TestTest.Models.Db.IdentityDatabaseContext context)
         {
@@ -44,7 +44,7 @@ namespace TestTest.Areas.Identity.Pages.Account
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
-            _logger = logger;
+            _logger = Logger.getInstance();
             _emailSender = emailSender;
             _context = context;
         }
@@ -90,6 +90,8 @@ namespace TestTest.Areas.Identity.Pages.Account
             [Required(ErrorMessage = "To pole jest wymagane.")]
             public string Surname { get; set; }
 
+            [Display(Name = "Nadaj rolę nauczyciela")]
+            public bool IsTeacher { get; set; }
         }
 
 
@@ -123,6 +125,7 @@ namespace TestTest.Areas.Identity.Pages.Account
                 user.Name = Input.Name;
                 user.Surname = Input.Surname;
 
+                
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -130,8 +133,16 @@ namespace TestTest.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(user, "Uczen");
-                    _logger.LogInformation("User created a new account with password.");
+                    if (Input.IsTeacher)
+                    {
+                        await _userManager.AddToRoleAsync(user, "Nauczyciel");
+                        _logger.Log("User created a new account with password.");
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, "Uczen");
+                        _logger.Log("User created a new account with password.");
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace ProjektInzynierski.Pages.Group
@@ -17,10 +18,12 @@ namespace ProjektInzynierski.Pages.Group
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
+        private Logger _logger;
         public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _logger = Logger.getInstance();
         }
 
         public IActionResult OnGet()
@@ -53,7 +56,7 @@ namespace ProjektInzynierski.Pages.Group
             Grupy.IdNauczyciela = _userManager.GetUserAsync(User).Result.IdOsoba;
             _context.Grupy.Add(Grupy);
             await _context.SaveChangesAsync();
-
+            _logger.Log($"User: {User.Identity.Name} utworzyl Grupę {Grupy.ToString()}");
             return RedirectToPage("./AddMembers", new {id = Grupy.IdGrupy});
         }
     }

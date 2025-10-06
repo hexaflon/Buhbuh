@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace TestTest.Areas.Identity.Pages.Account
@@ -16,18 +17,18 @@ namespace TestTest.Areas.Identity.Pages.Account
     public class LogoutModel : PageModel
     {
         private readonly SignInManager<Osoba> _signInManager;
-        private readonly ILogger<LogoutModel> _logger;
+        private Logger _logger;
 
-        public LogoutModel(SignInManager<Osoba> signInManager, ILogger<LogoutModel> logger)
+        public LogoutModel(SignInManager<Osoba> signInManager)
         {
             _signInManager = signInManager;
-            _logger = logger;
+            _logger = Logger.getInstance();
         }
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
-            _logger.LogInformation("User logged out.");
+            _logger.Log("User logged out.");
             if (returnUrl != null)
             {
                 return LocalRedirect(returnUrl);

@@ -15,18 +15,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TestTest.Models.Db;
+using ProjektInzynierski.utils;
 
 namespace TestTest.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
         private readonly SignInManager<Osoba> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
+        private Logger _logger;
 
-        public LoginModel(SignInManager<Osoba> signInManager, ILogger<LoginModel> logger)
+        public LoginModel(SignInManager<Osoba> signInManager)
         {
             _signInManager = signInManager;
-            _logger = logger;
+            _logger = Logger.getInstance();
         }
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace TestTest.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.Log("User logged in.");
                     return RedirectToPage("/Index");
                 }
                 if (result.RequiresTwoFactor)
@@ -114,7 +115,7 @@ namespace TestTest.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    _logger.Log("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
                 else

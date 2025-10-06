@@ -24,5 +24,10 @@ namespace TestTest.Models.Db
         
         public virtual ICollection<Test> Test { get; set; }
         public virtual ICollection<Uczestnicy> Uczestnicy { get; set; }
+
+        public override string ToString()
+        {
+            return $"Grupa o id: {IdGrupy} - {Nazwa}";
+        }
     }
 }
