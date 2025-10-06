@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ProjektInzynierski.Pages.Answer;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace TestTest.Pages.Question
@@ -18,6 +20,7 @@ namespace TestTest.Pages.Question
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
         public readonly int IdTrueFalse;
+        private Logger _logger;
         public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
@@ -27,6 +30,7 @@ namespace TestTest.Pages.Question
                 .Select(tp => tp.IdTypPytania).First();
             Pytanie = new Pytanie();
             Pytanie.IdTypPytania = 1;
+            _logger = Logger.getInstance();
         }
 
         public IActionResult OnGet()
@@ -55,21 +59,17 @@ namespace TestTest.Pages.Question
                     .Select(o => o.IdOdpowiedz)
                     .FirstOrDefault() + 1;
             }
-            for(int i = 1; i <= 2; i++)
+            var trescOdpowiedziList = new List<String> { "Prawda","Fałsz"};
+
+            for(int i =1; i <= 2; i++)
             {
-                var odp = new Odpowiedz();
-                odp.IdPytanie = Pytanie.IdPytanie;
-                if (i % 2 == 1)
-                {
-                    odp.TrescOdpowiedzi = "Prawda";
-                    if (isTrueFalse) odp.CzyPoprawny = isTrueFalse;
-                }
-                if (i % 2 == 0)
-                {
-                    odp.TrescOdpowiedzi = "Fałsz";
-                    if (!isTrueFalse) odp.CzyPoprawny = !isTrueFalse;
-                }
-                odp.IdOdpowiedz = idOdp;
+                var odp = AnswerFactory.Create(
+                    idPytanie: Pytanie.IdPytanie,
+                    trescOdpowiedzi: trescOdpowiedziList.ElementAt(i-1),
+                    czyPoprawny: isTrueFalse,
+                    idOdpowiedz:idOdp
+                    );
+
                 idOdp++;
                 _context.Odpowiedz.Add(odp);
                 _context.SaveChanges();
@@ -97,7 +97,7 @@ namespace TestTest.Pages.Question
             _context.Pytanie.Add(Pytanie);
             await _context.SaveChangesAsync();
             if (Pytanie.IdTypPytania == IdTrueFalse)dodajOdpowiedzi();
-
+            _logger.Log($"User: {User.Identity.Name} utworzyl Pytanie {Pytanie.ToString()}");
             return RedirectToPage("./Index");
         }
     }

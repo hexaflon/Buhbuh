@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
+using ProjektInzynierski.Pages.Answer;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace TestTest.Pages.Answer
@@ -18,11 +20,14 @@ namespace TestTest.Pages.Answer
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
+        private Logger _logger;
         public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _logger = Logger.getInstance();
         }
+
         [BindProperty]
         public Odpowiedz Odpowiedz { get; set; }
         public Pytanie wysPytanie { get; set; }
@@ -84,9 +89,18 @@ namespace TestTest.Pages.Answer
             }
             if (id != null) Odpowiedz.IdPytanie = id;
 
+
+            var odpSave = AnswerFactory.Create(
+                    idPytanie: id,
+                    trescOdpowiedzi: Odpowiedz.TrescOdpowiedzi,
+                    czyPoprawny: Odpowiedz.CzyPoprawny,
+                    idOdpowiedz: Odpowiedz.IdOdpowiedz
+                    );
+
+
             _context.Odpowiedz.Add(Odpowiedz);
             await _context.SaveChangesAsync();
-            
+            _logger.Log($"User: {User.Identity.Name} utworzyl odpowiedź {Odpowiedz.ToString()}");
             return RedirectToPage("", new { id = id });
         }
 

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using ProjektInzynierski.utils;
 using TestTest.Models.Db;
 
 namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
@@ -11,14 +12,11 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
     public class PersonalDataModel : PageModel
     {
         private readonly UserManager<Osoba> _userManager;
-        private readonly ILogger<PersonalDataModel> _logger;
 
         public PersonalDataModel(
-            UserManager<Osoba> userManager,
-            ILogger<PersonalDataModel> logger)
+            UserManager<Osoba> userManager)
         {
             _userManager = userManager;
-            _logger = logger;
         }
 
         public async Task<IActionResult> OnGet()

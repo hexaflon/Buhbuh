@@ -42,5 +42,9 @@ namespace TestTest.Models.Db
         
         public virtual ICollection<ListaPytan> ListaPytan { get; set; }
         public virtual ICollection<Rozwiazanie> Rozwiazanie { get; set; }
+        public override string ToString()
+        {
+            return $"Test o id: {IdTest} - {Tytul}";
+        }
     }
 }

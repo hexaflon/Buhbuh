@@ -23,5 +23,9 @@ namespace TestTest.Models.Db
 
         public virtual Pytanie? IdPytanieNavigation { get; set; }
         public virtual ICollection<RozwiazanieDoPytan> RozwiazanieDoPytan { get; set; }
+        public override string ToString()
+        {
+            return $"Odpowiedz o id: {IdOdpowiedz}, Pytania o id: {IdPytanie} - {TrescOdpowiedzi}";
+        }
     }
 }
