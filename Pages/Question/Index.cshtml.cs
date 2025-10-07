@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using ProjektInzynierski.Pages.Question;
 using TestTest.Models.Db;
 
 namespace TestTest.Pages.Question
@@ -32,30 +33,13 @@ namespace TestTest.Pages.Question
 
         public async Task OnGetAsync(int? categoryId, int? typeId, string searchText)
         {
-            var query = _context.Pytanie
-                .Include(p => p.IdKategoriaPytaniaNavigation)
-                .Include(p => p.IdTypPytaniaNavigation)
-                .Include(p => p.Odpowiedz)
-                .OrderByDescending(p => p.IdPytanie)
-                .AsQueryable();
+            var facade = new QuestionFacade(_context);
 
-            if (categoryId.HasValue)
-            {
-                query = query.Where(p => p.IdKategoriaPytania == categoryId);
-            }
-
-            if (typeId.HasValue)
-            {
-                query = query.Where(p => p.IdTypPytania == typeId);
-            }
-
-            if (!string.IsNullOrEmpty(searchText))
-            {
-                query = query.Where(p => p.Tresc.Contains(searchText));
-            }
-
-            Pytanie = await query.ToListAsync();
-            Pytanie = Pytanie.OrderByDescending(p => p.Odpowiedz.FirstOrDefault()?.IdPytanie).ToList();
+            Pytanie = facade.GetPytania(
+                categoryId: categoryId,
+                typeId: typeId,
+                searchText: searchText
+                );
 
             Kategorie = await _context.KategoriaPytania.ToListAsync();
             TypyPytan = await _context.TypPytania.ToListAsync();

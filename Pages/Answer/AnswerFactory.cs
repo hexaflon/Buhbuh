@@ -13,6 +13,8 @@ namespace ProjektInzynierski.Pages.Answer
 
             switch (trescOdpowiedzi)
             {
+                //Dla pytań Prawda/Fałsz argument czyPoprawny można interpretować jako:
+                //czy Prawda to poprawna odpowiedź
                 case "Prawda":
                     {
                         if (czyPoprawny)odpowiedz.CzyPoprawny = true;
