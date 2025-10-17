@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
+using LogLevel = ProjektInzynierski.Utils.LogLevel;
 
 namespace ProjektInzynierski.Pages.Group
 {
@@ -18,12 +20,14 @@ namespace ProjektInzynierski.Pages.Group
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
-        private Logger _logger;
+        private IAppLogger _logger;
         public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
             _userManager = userManager;
             _logger = Logger.getInstance();
+            var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            _logger = new LevelLoggerDecorator(_logger, level);
         }
 
         public IActionResult OnGet()
@@ -47,16 +51,23 @@ namespace ProjektInzynierski.Pages.Group
 
             var grupyList = _context.Grupy.ToList();
 
-            if (grupyList == null) Grupy.IdGrupy = 0;
+            int idgrupy = 0;
+
+            if (grupyList == null) idgrupy = 0;
             else
             {
-                Grupy.IdGrupy = grupyList.OrderByDescending(gr => gr.IdGrupy).Select(gr => gr.IdGrupy).FirstOrDefault()+1;
+                idgrupy = grupyList.OrderByDescending(gr => gr.IdGrupy).Select(gr => gr.IdGrupy).FirstOrDefault()+1;
             }
 
-            Grupy.IdNauczyciela = _userManager.GetUserAsync(User).Result.IdOsoba;
-            _context.Grupy.Add(Grupy);
+            var builder = new GroupBuilder();
+            var grupa = builder.SetNazwa(Grupy.Nazwa)
+                .SetNauczyciel(_userManager.GetUserAsync(User).Result.IdOsoba)
+                .SetID(idgrupy)
+                .Build();
+
+            _context.Grupy.Add(grupa);
             await _context.SaveChangesAsync();
-            _logger.Log($"User: {User.Identity.Name} utworzyl Grupę {Grupy.ToString()}");
+            _logger.Log($"User: {User.Identity.Name} utworzyl Grupę {grupa.ToString()}");
             return RedirectToPage("./AddMembers", new {id = Grupy.IdGrupy});
         }
     }

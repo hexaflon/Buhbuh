@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
+using LogLevel = ProjektInzynierski.Utils.LogLevel;
 
 namespace ProjektInzynierski.Pages.Exam
 {
@@ -18,12 +20,14 @@ namespace ProjektInzynierski.Pages.Exam
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
-        private Logger _logger;
+        private IAppLogger _logger;
         public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
             _userManager = userManager;
             _logger = Logger.getInstance();
+            var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            _logger = new LevelLoggerDecorator(_logger, level);
         }
 
         public IActionResult OnGet()

@@ -8,7 +8,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
+using LogLevel = ProjektInzynierski.Utils.LogLevel;
 
 namespace TestTest.Pages.Question
 {
@@ -17,10 +20,14 @@ namespace TestTest.Pages.Question
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
+        private IAppLogger _logger;
         public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _logger = Logger.getInstance();
+            var level = LogLevelExtensions.ToLabel(LogLevel.ERROR);
+            _logger = new LevelLoggerDecorator(_logger, level);
         }
 
         [BindProperty]
@@ -50,6 +57,7 @@ namespace TestTest.Pages.Question
         {
             if (id == null || _context.Pytanie == null)
             {
+                _logger.Log($"Nie znaleziono pytania o id: {id}");
                 return NotFound();
             }
             var pytanie = await _context.Pytanie.FindAsync(id);
@@ -59,7 +67,11 @@ namespace TestTest.Pages.Question
             {
                 if (!User.IsInRole("Admin"))
                 {
-                    if (pytanie.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba) return RedirectToPage("./Index");
+                    if (pytanie.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba)
+                    {
+                        _logger.Log($"User: {User.Identity.Name} spróbował usunąć nie swoje pytanie o id: {id}");
+                        return RedirectToPage("./Index");
+                    }
                 }
                 Pytanie = pytanie;
 

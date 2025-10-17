@@ -1,8 +1,9 @@
-﻿using TestTest.Models.Db;
+﻿using ProjektInzynierski.Utils;
+using TestTest.Models.Db;
 
 namespace ProjektInzynierski.utils
 {
-    public class Logger
+    public class Logger : IAppLogger
     {
         private static Logger instance;
         private List<String> logList = new List<String>();

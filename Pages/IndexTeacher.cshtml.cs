@@ -8,7 +8,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
+using LogLevel = ProjektInzynierski.Utils.LogLevel;
 
 namespace TestTest.Pages
 {
@@ -16,13 +18,15 @@ namespace TestTest.Pages
     public class IndexTeacherModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private Logger _logger;
+        private IAppLogger _logger;
         private readonly UserManager<Osoba> _userManager;
         public IndexTeacherModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _userManager = userManager;
             _logger = Logger.getInstance();
             _context = context;
+            var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            _logger = new LevelLoggerDecorator(_logger, level);
         }
 
         public IList<Osoba> User { get;set; } = default!;

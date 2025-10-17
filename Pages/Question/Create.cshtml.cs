@@ -11,7 +11,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ProjektInzynierski.Pages.Answer;
 using ProjektInzynierski.Pages.Question;
 using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
+using LogLevel = ProjektInzynierski.Utils.LogLevel;
 
 namespace TestTest.Pages.Question
 {
@@ -21,7 +23,7 @@ namespace TestTest.Pages.Question
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
         public readonly int IdTrueFalse;
-        private Logger _logger;
+        private IAppLogger _logger;
         public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
@@ -32,6 +34,8 @@ namespace TestTest.Pages.Question
             Pytanie = new Pytanie();
             Pytanie.IdTypPytania = 1;
             _logger = Logger.getInstance();
+            var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            _logger = new LevelLoggerDecorator(_logger, level);
         }
 
         public IActionResult OnGet()

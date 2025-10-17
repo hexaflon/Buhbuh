@@ -19,7 +19,9 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
+using LogLevel = ProjektInzynierski.Utils.LogLevel;
 
 namespace TestTest.Areas.Identity.Pages.Account
 {
@@ -29,7 +31,7 @@ namespace TestTest.Areas.Identity.Pages.Account
         private readonly UserManager<Osoba> _userManager;
         private readonly IUserStore<Osoba> _userStore;
         private readonly IUserEmailStore<Osoba> _emailStore;
-        private Logger _logger;
+        private IAppLogger _logger;
         private readonly IEmailSender _emailSender;
         private readonly TestTest.Models.Db.IdentityDatabaseContext _context;
 
@@ -45,6 +47,8 @@ namespace TestTest.Areas.Identity.Pages.Account
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = Logger.getInstance();
+            var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            _logger = new LevelLoggerDecorator(_logger, level);
             _emailSender = emailSender;
             _context = context;
         }
