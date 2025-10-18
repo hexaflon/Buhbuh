@@ -23,9 +23,11 @@ namespace TestTest.Pages
         public IndexTeacherModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _userManager = userManager;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
             _context = context;
             var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            //Declaring a Decorator
             _logger = new LevelLoggerDecorator(_logger, level);
         }
 
@@ -36,6 +38,7 @@ namespace TestTest.Pages
             if (_userManager.Users != null)
             {
                 User = await _userManager.Users.ToListAsync();
+                //Usage of Decorator
                 _logger.ShowLogs();
             }
         }

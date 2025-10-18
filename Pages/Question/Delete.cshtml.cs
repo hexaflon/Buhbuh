@@ -25,8 +25,10 @@ namespace TestTest.Pages.Question
         {
             _context = context;
             _userManager = userManager;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
             var level = LogLevelExtensions.ToLabel(LogLevel.ERROR);
+            //Declaring a Decorator
             _logger = new LevelLoggerDecorator(_logger, level);
         }
 
@@ -57,6 +59,7 @@ namespace TestTest.Pages.Question
         {
             if (id == null || _context.Pytanie == null)
             {
+                //Usage of Decorator
                 _logger.Log($"Nie znaleziono pytania o id: {id}");
                 return NotFound();
             }
@@ -69,6 +72,7 @@ namespace TestTest.Pages.Question
                 {
                     if (pytanie.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba)
                     {
+                        //Usage of Decorator
                         _logger.Log($"User: {User.Identity.Name} spróbował usunąć nie swoje pytanie o id: {id}");
                         return RedirectToPage("./Index");
                     }

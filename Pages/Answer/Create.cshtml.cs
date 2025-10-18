@@ -27,8 +27,10 @@ namespace TestTest.Pages.Answer
         {
             _context = context;
             _userManager = userManager;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
             var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            //Declaring a Decorator
             _logger = new LevelLoggerDecorator(_logger, level);
         }
 
@@ -93,7 +95,7 @@ namespace TestTest.Pages.Answer
             }
             if (id != null) Odpowiedz.IdPytanie = id;
 
-
+            //Usage of Factory
             var odpSave = AnswerFactory.Create(
                     idPytanie: id,
                     trescOdpowiedzi: Odpowiedz.TrescOdpowiedzi,
@@ -104,6 +106,7 @@ namespace TestTest.Pages.Answer
 
             _context.Odpowiedz.Add(Odpowiedz);
             await _context.SaveChangesAsync();
+            //Usage of Decorator
             _logger.Log($"User: {User.Identity.Name} utworzyl odpowiedź {Odpowiedz.ToString()}");
             return RedirectToPage("", new { id = id });
         }

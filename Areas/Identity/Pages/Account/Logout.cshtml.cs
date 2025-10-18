@@ -22,12 +22,14 @@ namespace TestTest.Areas.Identity.Pages.Account
         public LogoutModel(SignInManager<Osoba> signInManager)
         {
             _signInManager = signInManager;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
         }
 
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
+            //Usage of Singleton
             _logger.Log("User logged out.");
             if (returnUrl != null)
             {

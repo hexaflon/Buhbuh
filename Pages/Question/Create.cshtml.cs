@@ -33,8 +33,10 @@ namespace TestTest.Pages.Question
                 .Select(tp => tp.IdTypPytania).First();
             Pytanie = new Pytanie();
             Pytanie.IdTypPytania = 1;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
             var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            //Declaring a Decorator
             _logger = new LevelLoggerDecorator(_logger, level);
         }
 
@@ -62,8 +64,9 @@ namespace TestTest.Pages.Question
 
             Pytanie.IdNauczyciela = _userManager.GetUserAsync(User).Result?.IdOsoba;
 
+            //Declaring a Facade
             var facade = new QuestionFacade(_context);
-
+            //Usage of Facade
             var nowePytanie = facade.CreateQuestion(
                 tresc: Pytanie.Tresc,
                 idNauczyciela: (int)Pytanie.IdNauczyciela,
@@ -72,7 +75,7 @@ namespace TestTest.Pages.Question
                 isTrueFalse: isTrueFalse
                 );
 
-
+            //Usage of Decorator
             _logger.Log($"User: {User.Identity.Name} utworzyl Pytanie {Pytanie.ToString()}");
             
             return RedirectToPage("./Index");

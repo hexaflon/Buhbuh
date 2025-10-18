@@ -25,8 +25,10 @@ namespace ProjektInzynierski.Pages.Group
         {
             _context = context;
             _userManager = userManager;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
             var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            //Declaring a Decorator
             _logger = new LevelLoggerDecorator(_logger, level);
         }
 
@@ -58,15 +60,17 @@ namespace ProjektInzynierski.Pages.Group
             {
                 idgrupy = grupyList.OrderByDescending(gr => gr.IdGrupy).Select(gr => gr.IdGrupy).FirstOrDefault()+1;
             }
-
+            //Declaring a Builder
             var builder = new GroupBuilder();
+            //Usage of Builder
             var grupa = builder.SetNazwa(Grupy.Nazwa)
                 .SetNauczyciel(_userManager.GetUserAsync(User).Result.IdOsoba)
                 .SetID(idgrupy)
                 .Build();
-
+            
             _context.Grupy.Add(grupa);
             await _context.SaveChangesAsync();
+            //Usage of Decorator
             _logger.Log($"User: {User.Identity.Name} utworzyl Grupę {grupa.ToString()}");
             return RedirectToPage("./AddMembers", new {id = Grupy.IdGrupy});
         }

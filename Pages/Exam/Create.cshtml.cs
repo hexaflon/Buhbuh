@@ -25,8 +25,10 @@ namespace ProjektInzynierski.Pages.Exam
         {
             _context = context;
             _userManager = userManager;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
             var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            //Declaring a Decorator
             _logger = new LevelLoggerDecorator(_logger, level);
         }
 
@@ -61,6 +63,7 @@ namespace ProjektInzynierski.Pages.Exam
 
             _context.Test.Add(Test);
             await _context.SaveChangesAsync();
+            //Usage of Decorator
             _logger.Log($"User: {User.Identity.Name} utworzyl test {Test.ToString()}");
             return RedirectToPage("./List");
         }

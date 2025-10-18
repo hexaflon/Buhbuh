@@ -27,6 +27,7 @@ namespace TestTest.Areas.Identity.Pages.Account
         public LoginModel(SignInManager<Osoba> signInManager)
         {
             _signInManager = signInManager;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
         }
 
@@ -106,6 +107,7 @@ namespace TestTest.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    //Usage of Singleton
                     _logger.Log("User logged in.");
                     return RedirectToPage("/Index");
                 }
@@ -115,6 +117,7 @@ namespace TestTest.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
+                    //Usage of Singleton
                     _logger.Log("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }

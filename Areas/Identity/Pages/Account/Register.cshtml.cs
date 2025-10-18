@@ -46,8 +46,10 @@ namespace TestTest.Areas.Identity.Pages.Account
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
             var level = LogLevelExtensions.ToLabel(LogLevel.INFO);
+            //Declaring a Decorator
             _logger = new LevelLoggerDecorator(_logger, level);
             _emailSender = emailSender;
             _context = context;
@@ -140,11 +142,13 @@ namespace TestTest.Areas.Identity.Pages.Account
                     if (Input.IsTeacher)
                     {
                         await _userManager.AddToRoleAsync(user, "Nauczyciel");
+                        //Usage of Decorator
                         _logger.Log("User created a new account with password.");
                     }
                     else
                     {
                         await _userManager.AddToRoleAsync(user, "Uczen");
+                        //Usage of Decorator
                         _logger.Log("User created a new account with password.");
                     }
 

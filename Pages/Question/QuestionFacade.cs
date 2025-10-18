@@ -18,6 +18,7 @@ namespace ProjektInzynierski.Pages.Question
                 .Where(tp => tp.Nazwa.ToLower().Contains("prawda"))
                 .Select(tp => tp.IdTypPytania)
                 .FirstOrDefault();
+            //Getting an Instance of Singleton
             _logger = Logger.getInstance();
         }
 
@@ -61,6 +62,7 @@ namespace ProjektInzynierski.Pages.Question
 
             foreach (var trescOdp in trescOdpList)
             {
+                //Usage of Factory
                 var odp = AnswerFactory.Create(
                     idPytanie:idPytania,
                     trescOdpowiedzi: trescOdp,
