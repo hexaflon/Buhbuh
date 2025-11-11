@@ -52,30 +52,39 @@ namespace TestTest.Pages.Question
         public Pytanie Pytanie { get; set; } = default!;
         [BindProperty]
         public bool isTrueFalse { get; set; } = false;
-       
+
         public async Task<IActionResult> OnPostAsync()
         {
-          if (!ModelState.IsValid || Pytanie == null || _context.Pytanie == null)
-            {
+            if (!ModelState.IsValid || Pytanie == null || _context.Pytanie == null)
                 return Page();
-            }
 
             Pytanie.IdNauczyciela = _userManager.GetUserAsync(User).Result?.IdOsoba;
+            //użycie Template
+            QuestionTemplate creator;
 
-            var facade = new QuestionFacade(_context);
+            switch (Pytanie.IdTypPytania)
+            {
+                case 1: 
+                case 2: 
+                    creator = new ChoiceQuestion(_context, Pytanie.IdTypPytania ?? 1);
+                    break;
+                case 3:
+                    creator = new TrueFalseQuestion(_context, isTrueFalse);
+                    break;
+                default:
+                    throw new Exception("Nieobsługiwany typ pytania");
+            }
 
-            var nowePytanie = facade.CreateQuestion(
-                tresc: Pytanie.Tresc,
-                idNauczyciela: (int)Pytanie.IdNauczyciela,
-                idKategoria: Pytanie.IdKategoriaPytania,
-                idTypPytania: Pytanie.IdTypPytania ?? 1,
-                isTrueFalse: isTrueFalse
-                );
+            var nowePytanie = creator.CreateQuestionTemplate(
+                Pytanie.Tresc,
+                (int)Pytanie.IdNauczyciela,
+                Pytanie.IdKategoriaPytania
+            );
 
+            _logger.Log($"User: {User.Identity.Name} utworzyl Pytanie {nowePytanie.ToString()}");
 
-            _logger.Log($"User: {User.Identity.Name} utworzyl Pytanie {Pytanie.ToString()}");
-            
             return RedirectToPage("./Index");
         }
+
     }
 }

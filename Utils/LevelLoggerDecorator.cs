@@ -4,19 +4,30 @@
     {
         private readonly IAppLogger _logger;
         private readonly string _level;
-
         public LevelLoggerDecorator(IAppLogger logger, string level)
         {
             _logger = logger;
             _level = level;
         }
-
+        public void Log(string message, Utils.LogLevel level) { }
         public void Log(string message)
         {
-            if(_level == LogLevelExtensions.ToLabel(LogLevel.ERROR)) Console.ForegroundColor = ConsoleColor.Red;
-            _logger.Log($"[{_level}] {message}");
-            if(_level != LogLevelExtensions.ToLabel(LogLevel.INFO))Console.ResetColor();
+            if (Enum.TryParse(_level, true, out LogLevel level))
+            {
+                _logger.Log(message, level);
+                
+            }
+            else
+            {
+                _logger.Log(message, LogLevel.INFO);
+            }
         }
+
+        public void SetStrategy(ILogStrategy logStrategy)
+        {
+            _logger.SetStrategy(logStrategy);
+        }
+
 
         public void ShowLogs()
         { 

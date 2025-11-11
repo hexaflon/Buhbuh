@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 
 namespace ProjektInzynierski.Pages.Group
@@ -16,11 +18,15 @@ namespace ProjektInzynierski.Pages.Group
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private readonly UserManager<Osoba> _userManager;
+        private IAppLogger _logger;
 
         public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _logger = Logger.getInstance();
+            var level = LogLevelExtensions.ToLabel(Utils.LogLevel.INFO);
+            _logger = new LevelLoggerDecorator(_logger, level);
         }
 
         [BindProperty]
@@ -46,34 +52,23 @@ namespace ProjektInzynierski.Pages.Group
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync(int? id)
+         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Grupy == null)
-            {
+            if (id == null)
                 return NotFound();
-            }
+
             var grupy = await _context.Grupy.FindAsync(id);
-            
-            if (grupy != null)
-            {
-                if (!User.IsInRole("Admin"))
-                {
-                    if (grupy.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba) return RedirectToPage("./Index");
-                }
-                Grupy = grupy;
-                foreach(var test in _context.Test.Where(t => t.IdGrupy == grupy.IdGrupy))
-                {
-                    test.IdGrupy = null;
-                }
+            if (grupy == null)
+                return NotFound();
 
-                foreach(var os in _context.Uczestnicy.Where(u => u.IdGrupy == grupy.IdGrupy))
-                {
-                    _context.Uczestnicy.Remove(os);
-                }
-                _context.Grupy.Remove(Grupy);
-                await _context.SaveChangesAsync();
-            }
+            //użycie command
+            var deleteCmd = new DeleteGroupCommand(_context, id.Value);
+            var invoker = new GroupInvoker();
+            invoker.AddCommand(deleteCmd);
+            invoker.Run();
 
+
+            _logger.Log($"User: {User.Identity.Name} usunął grupę {grupy.Nazwa}");
             return RedirectToPage("./List");
         }
     }

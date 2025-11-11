@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 
 namespace TestTest
@@ -42,6 +44,11 @@ namespace TestTest
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //u¿ycie Observera
+            var logger = Logger.getInstance();
+            logger.Attach(new ConsoleLogObserver());
+            logger.Attach(new FileLogObserver());
 
             app.Run();
         }

@@ -69,6 +69,8 @@ namespace TestTest.Pages.Question
                 {
                     if (pytanie.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba)
                     {
+                        //Użycie strategii
+                        _logger.SetStrategy(new ColoredLogStrategy());
                         _logger.Log($"User: {User.Identity.Name} spróbował usunąć nie swoje pytanie o id: {id}");
                         return RedirectToPage("./Index");
                     }

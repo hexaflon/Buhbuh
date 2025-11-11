@@ -8,7 +8,13 @@ namespace ProjektInzynierski.utils
         private static Logger instance;
         private List<String> logList = new List<String>();
         private int logCount = 0;
-        Logger(){}
+
+        private ILogStrategy logStrategy;
+        private List<ILogObserver> observers = new();
+
+        private Logger(){
+            logStrategy = new SimpleLogStrategy();
+        }
 
         public static Logger getInstance()
         {
@@ -20,12 +26,39 @@ namespace ProjektInzynierski.utils
             return Logger.instance;
         }
 
+        public void SetStrategy(ILogStrategy logStrategy)
+        {
+            this.logStrategy = logStrategy;
+        }
+
         public void Log(string message)
         {
-            var logMessage = $"{DateTime.Now} : {message}";
-            Console.WriteLine(logMessage);
-            logList.Add(logMessage);
+            logStrategy.WriteLog(message, Utils.LogLevel.INFO);
+            logList.Add(message);
             logCount++;
+            Notify(message);
+        }
+        public void Log(string message, Utils.LogLevel level)
+        {
+            logStrategy.WriteLog(message, level);
+            logList.Add(message);
+            logCount++;
+            Notify(message);
+        }
+
+        public void Attach(ILogObserver observer) 
+        { 
+            observers.Add(observer); 
+        }
+        public void Detach(ILogObserver observer) 
+        { 
+            observers.Remove(observer); 
+        }
+
+        public void Notify(string message)
+        {
+            foreach (var observer in observers)
+                observer.Update(message);
         }
 
         public void ShowLogs()
@@ -41,5 +74,7 @@ namespace ProjektInzynierski.utils
         {
             Console.WriteLine($"Jest {logCount} logów.");
         }
+
+
     }
 }

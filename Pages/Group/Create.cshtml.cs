@@ -39,9 +39,7 @@ namespace ProjektInzynierski.Pages.Group
 
         [BindProperty]
         public Grupy Grupy { get; set; } = default!;
-        
 
-        // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid || _context.Grupy == null || Grupy == null)
@@ -49,26 +47,19 @@ namespace ProjektInzynierski.Pages.Group
                 return Page();
             }
 
-            var grupyList = _context.Grupy.ToList();
 
-            int idgrupy = 0;
+            var userId = _userManager.GetUserAsync(User).Result.IdOsoba;
+            //użycie command
+            var createCmd = new CreateGroupCommand(_context, Grupy.Nazwa, userId); 
+            var invoker = new GroupInvoker();
+            invoker.AddCommand(createCmd);
+            invoker.Run(); 
 
-            if (grupyList == null) idgrupy = 0;
-            else
-            {
-                idgrupy = grupyList.OrderByDescending(gr => gr.IdGrupy).Select(gr => gr.IdGrupy).FirstOrDefault()+1;
-            }
+            var nowaGrupa = createCmd.Result;
 
-            var builder = new GroupBuilder();
-            var grupa = builder.SetNazwa(Grupy.Nazwa)
-                .SetNauczyciel(_userManager.GetUserAsync(User).Result.IdOsoba)
-                .SetID(idgrupy)
-                .Build();
+            _logger.Log($"User: {User.Identity.Name} utworzył grupę {nowaGrupa.Nazwa}");
 
-            _context.Grupy.Add(grupa);
-            await _context.SaveChangesAsync();
-            _logger.Log($"User: {User.Identity.Name} utworzyl Grupę {grupa.ToString()}");
-            return RedirectToPage("./AddMembers", new {id = Grupy.IdGrupy});
+            return RedirectToPage("./AddMembers", new { id = nowaGrupa.IdGrupy });
         }
     }
 }
