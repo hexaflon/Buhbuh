@@ -7,7 +7,7 @@
 
 <h1 class="display-4">Zarządzaj odpowiedziami</h1>
 <div class="container">
-    @if (Model.wysPytanie.Odpowiedz != null && Model.wysPytanie.Odpowiedz.Any())
+    @if (Model.VisibleQuestion.Answers != null && Model.VisibleQuestion.Answers.Any())
     {
         <hr />
         <div class="row">
@@ -27,14 +27,14 @@
                             var nr_pytania = 1;
                         }
 
-                        @foreach (var odp in Model.wysPytanie.Odpowiedz)
+                        @foreach (var odp in Model.VisibleQuestion.Answers)
                         {
                             <tr class="text1 col-sm-3 text-center">
                                 <td>@nr_pytania</td>
-                                <td>@Html.DisplayFor(z => odp.TrescOdpowiedzi)</td>
-                                <td>@Html.DisplayFor(z => odp.CzyPoprawny)</td>
+                                <td>@Html.DisplayFor(z => odp.Text)</td>
+                                <td>@Html.DisplayFor(z => odp.IsCorrect)</td>
                                 <td>
-                                    <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@odp.IdOdpowiedz" asp-route-idPyt="@odp.IdPytanie">Usuń</a>
+                                    <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@odp.Id" asp-route-idPyt="@odp.QuestionId">Usuń</a>
                                 </td>
                             </tr>
                             nr_pytania++;
@@ -48,7 +48,7 @@
 
     <div class="row">
         <div class="col-md-4">
-            @if (!Model.wysPytanie.Odpowiedz.Any())
+            @if (!Model.VisibleQuestion.Answers.Any())
             {
                 <p class="text2">To pytanie aktualnie nie ma żadnych odpowiedzi. Możesz dodać je poniżej.</p>
             }
@@ -57,13 +57,13 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                 <div class="form-group">
-                    <label asp-for="Odpowiedz.TrescOdpowiedzi" class="control-label">Treść odpowiedzi</label>
-                    <input asp-for="Odpowiedz.TrescOdpowiedzi" class="form-control" />
-                    <span asp-validation-for="Odpowiedz.TrescOdpowiedzi" class="text-danger"></span>
+                    <label asp-for="Answer.Text" class="control-label">Treść odpowiedzi</label>
+                    <input asp-for="Answer.Text" class="form-control" />
+                    <span asp-validation-for="Answer.Text" class="text-danger"></span>
                 </div>
                 <div class="form-group form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" asp-for="Odpowiedz.CzyPoprawny" disabled="@(Model.hasCorrectAnswer ? "disabled" : null)" /> Czy odpowiedź jest poprawna?
+                        <input class="form-check-input" asp-for="Answer.IsCorrect" disabled="@(Model.hasCorrectAnswer ? "disabled" : null)" /> Czy odpowiedź jest poprawna?
                     </label>
                 </div>
                 <div class="form-group mt-3">

@@ -1,23 +1,19 @@
 ﻿namespace ProjektInzynierski.Utils
 {
-    public class ColoredLogStrategy : ILogStrategy
+    //Podstawienie Liskov
+    public class ColoredLogStrategy : BaseLogStrategy
     {
-        public void WriteLog(string message, LogLevel level)
+        public override void WriteLog(string message, LogLevel level)
         {
-            switch (level)
+            var prev = Console.ForegroundColor;
+            Console.ForegroundColor = level switch
             {
-                case LogLevel.ERROR:
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    break;
-                case LogLevel.WARNING:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    break;
-                case LogLevel.INFO:
-                    Console.ForegroundColor = ConsoleColor.White;
-                    break;
-            }
+                LogLevel.ERROR => ConsoleColor.Red,
+                LogLevel.WARNING => ConsoleColor.Yellow,
+                _ => ConsoleColor.White
+            };
             Console.WriteLine($"{DateTime.Now} [{level.ToLabel()}] {message}");
-            Console.ResetColor();
+            Console.ForegroundColor = prev;
         }
     }
 }

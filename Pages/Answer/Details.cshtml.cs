@@ -21,23 +21,23 @@ namespace TestTest.Pages.Answer
             _context = context;
         }
 
-      public Odpowiedz Odpowiedzi { get; set; } = default!; 
+      public Models.Db.Answer Answers { get; set; } = default!; 
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Odpowiedz == null)
+            if (id == null || _context.Answer == null)
             {
                 return NotFound();
             }
 
-            var odpowiedzi = await _context.Odpowiedz.FirstOrDefaultAsync(m => m.IdOdpowiedz == id);
-            if (odpowiedzi == null)
+            var answers = await _context.Answer.FirstOrDefaultAsync(m => m.Id == id);
+            if (answers == null)
             {
                 return NotFound();
             }
             else 
             {
-                Odpowiedzi = odpowiedzi;
+                Answers = answers;
             }
             return Page();
         }

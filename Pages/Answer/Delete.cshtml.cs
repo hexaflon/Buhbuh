@@ -16,62 +16,62 @@ namespace TestTest.Pages.Answer
     public class DeleteModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         [BindProperty]
-      public Odpowiedz Odpowiedzi { get; set; } = default!;
+      public Models.Db.Answer Answers { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Odpowiedz == null)
+            if (id == null || _context.Answer == null)
             {
                 return NotFound();
             }
 
-            var odpowiedzi = await _context.Odpowiedz.FirstOrDefaultAsync(m => m.IdOdpowiedz == id);
+            var answers = await _context.Answer.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (odpowiedzi == null)
+            if (answers == null)
             {
                 return NotFound();
             }
             else 
             {
-                Odpowiedzi = odpowiedzi;
+                Answers = answers;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Odpowiedz == null)
+            if (id == null || _context.Answer == null)
             {
                 return NotFound();
             }
-            var odpowiedzi = _context.Odpowiedz.Include(o => o.IdPytanieNavigation).Where(o => o.IdOdpowiedz == id).First();
-            var rDPList = _context.RozwiazanieDoPytan.Where(rdp => rdp.IdOdpowiedz == id).ToList();
+            var answers = _context.Answer.Include(o => o.Questions).Where(o => o.Id == id).First();
+            var rDPList = _context.QuestionResult.Where(rdp => rdp.AnswerId == id).ToList();
 
             foreach(var rdp in rDPList)
             {
-                _context.RozwiazanieDoPytan.Remove(rdp);
+                _context.QuestionResult.Remove(rdp);
                 _context.SaveChanges();
             }
 
-            if (odpowiedzi != null)
+            if (answers != null)
             {
                 if (!User.IsInRole("Admin"))
                 {
-                    if (odpowiedzi.IdPytanieNavigation.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba) return RedirectToPage("./Index");
+                    if (answers.Questions.TeacherId != _userManager.GetUserAsync(User).Result.PersonId) return RedirectToPage("./Index");
                 }
-                Odpowiedzi = odpowiedzi;
-                _context.Odpowiedz.Remove(Odpowiedzi);
+                Answers = answers;
+                _context.Answer.Remove(Answers);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage("./Create", new { id = Odpowiedzi.IdPytanie });
+            return RedirectToPage("./Create", new { id = Answers.QuestionId });
             return RedirectToPage("./Index");
         }
     }

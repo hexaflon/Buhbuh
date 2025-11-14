@@ -15,32 +15,32 @@ namespace ProjektInzynierski.Pages.Exam
     public class ExamInfoModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        private readonly SignInManager<Osoba> _signInManager;
+        private readonly UserManager<Person> _userManager;
+        private readonly SignInManager<Person> _signInManager;
 
-        public ExamInfoModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager, SignInManager<Osoba> signInManager)
+        public ExamInfoModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager, SignInManager<Person> signInManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        public Rozwiazanie Rozwiazanie { get; set; } = default!;
+        public Result Result { get; set; } = default!;
         public Test Test { get; set; } = default!;
-        public List<double> Oceny { get; set; } = new List<double>();
+        public List<double> Marks { get; set; } = new List<double>();
         public int OriginalTestId { get; set; } //do powrotu na stronę Details
 
-        public void Ocena()
+        public void Mark()
         {
-            var division = Rozwiazanie.LiczbaPunktow / Rozwiazanie.IdTestNavigation.ListaPytan.Count();
+            var division = Result.Points / Result.Tests.Questions.Count();
             division *= 100;
             division %= 100;
-            if (division >= 90) Oceny.Add(5);
-            else if (division >= 80 && division < 90) Oceny.Add(4.5);
-            else if (division >= 70 && division < 80) Oceny.Add(4);
-            else if (division >= 60 && division < 70) Oceny.Add(3.5);
-            else if (division >= 50 && division < 60) Oceny.Add(3);
-            else Oceny.Add(2);
+            if (division >= 90) Marks.Add(5);
+            else if (division >= 80 && division < 90) Marks.Add(4.5);
+            else if (division >= 70 && division < 80) Marks.Add(4);
+            else if (division >= 60 && division < 70) Marks.Add(3.5);
+            else if (division >= 50 && division < 60) Marks.Add(3);
+            else Marks.Add(2);
         }
 
         public async Task<IActionResult> OnGetAsync([FromQuery] int id)
@@ -51,25 +51,25 @@ namespace ProjektInzynierski.Pages.Exam
                 return NotFound();
             }
 
-            var rozwiazanie = await _context.Rozwiazanie.FirstOrDefaultAsync(m => m.IdRozwiazanie == id);
-            if (rozwiazanie == null)
+            var result = await _context.Result.FirstOrDefaultAsync(m => m.Id == id);
+            if (result == null)
             {
                 return NotFound();
             }
             else
             {
-                var idOsoba = _userManager.GetUserAsync(User).Result.IdOsoba;
-                if (idOsoba == rozwiazanie.IdUcznia || User.IsInRole("Admin") || User.IsInRole("Nauczyciel"))
+                var userId = _userManager.GetUserAsync(User).Result.PersonId;
+                if (userId == result.StudentId || User.IsInRole("Admin") || User.IsInRole("Nauczyciel"))
                 {
                     Test = await _context.Test
-                        .Include(t => t.ListaPytan)
-                        .FirstOrDefaultAsync(t => t.IdTest == rozwiazanie.IdTest);
+                        .Include(t => t.Questions)
+                        .FirstOrDefaultAsync(t => t.Id == result.TestId);
                     if (Test == null) return NotFound();
-                    OriginalTestId = Test.IdTest;
-                    Rozwiazanie = rozwiazanie;
+                    OriginalTestId = Test.Id;
+                    Result = result;
                 }
                 else return Forbid();
-                Ocena();
+                Mark();
             }
             return Page();
         }

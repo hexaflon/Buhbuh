@@ -15,54 +15,54 @@ namespace ProjektInzynierski.Pages.Exam
     public class DetailsModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public DetailsModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public DetailsModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         public Test Test { get; set; } = default!;
-        public List<Wynik> Wyniki { get; set; } = default!;
-        public List<double> Oceny { get; set; } = new List<double>();
-        public IList<Rozwiazanie> Rozwiazanie { get; set; } = default!;
+        public List<Score> Scores { get; set; } = default!;
+        public List<double> Mark { get; set; } = new List<double>();
+        public IList<Result> Results { get; set; } = default!;
         public double Avg { get; set; } = 0.0;
 
 
-        public void Srednia()
+        public void Average()
         {
-            double suma = 0;
-            int liczbaPytan = Test.ListaPytan.Count();
-            foreach(var wynik in Wyniki)
+            double sum = 0;
+            int questionCount = Test.Questions.Count();
+            foreach(var score in Scores)
             {
-                var division = wynik.punkty / liczbaPytan;
+                var division = score.points / questionCount;
                 division *= 100;
                 division %= 100;
-                if (division >= 90) suma += 5;
-                else if (division >= 80 && division < 90) suma += 4.5;
-                else if (division >= 70 && division < 80) suma += 4;
-                else if (division >= 60 && division < 70) suma += 3.5;
-                else if (division >= 50 && division < 60) suma += 3;
-                else suma += 2;
+                if (division >= 90) sum += 5;
+                else if (division >= 80 && division < 90) sum += 4.5;
+                else if (division >= 70 && division < 80) sum += 4;
+                else if (division >= 60 && division < 70) sum += 3.5;
+                else if (division >= 50 && division < 60) sum += 3;
+                else sum += 2;
             }
-            Avg = suma / Wyniki.Count();
+            Avg = sum / Scores.Count();
         }
 
-        public void Ocena()
+        public void MarkTest()
         {
-            if (Oceny.Count == 0)
+            if (Mark.Count == 0)
             {
-                foreach (var wynik in Rozwiazanie)
+                foreach (var score in Results)
                 {
-                    var division = wynik.LiczbaPunktow / wynik.IdTestNavigation.ListaPytan.Count();
+                    var division = score.Points / score.Tests.Questions.Count();
                     division *= 100;
                     division %= 100;
-                    if (division >= 90) Oceny.Add(5);
-                    else if (division >= 80 && division < 90) Oceny.Add(4.5);
-                    else if (division >= 70 && division < 80) Oceny.Add(4);
-                    else if (division >= 60 && division < 70) Oceny.Add(3.5);
-                    else if (division >= 50 && division < 60) Oceny.Add(3);
-                    else Oceny.Add(2);
+                    if (division >= 90) Mark.Add(5);
+                    else if (division >= 80 && division < 90) Mark.Add(4.5);
+                    else if (division >= 70 && division < 80) Mark.Add(4);
+                    else if (division >= 60 && division < 70) Mark.Add(3.5);
+                    else if (division >= 50 && division < 60) Mark.Add(3);
+                    else Mark.Add(2);
                 }
             }
         }
@@ -74,34 +74,34 @@ namespace ProjektInzynierski.Pages.Exam
                 return NotFound();
             }
 
-            var test = await _context.Test.Include(t=>t.ListaPytan).FirstOrDefaultAsync(m => m.IdTest == id);
+            var test = await _context.Test.Include(t=>t.Questions).FirstOrDefaultAsync(m => m.Id == id);
             if (test == null)
             {
                 return NotFound();
             }
             
-            var rozwiazania = _context.Rozwiazanie.Where(r => r.IdTest == id).ToList();
-            Wyniki = new List<Wynik>();
-            Rozwiazanie = rozwiazania;
-            foreach (var rozwiazanie in rozwiazania)
+            var scores = _context.Result.Where(r => r.TestId == id).ToList();
+            Scores = new List<Score>();
+            Results = scores;
+            foreach (var result in scores)
             {
                 var user = _userManager.Users
-                    .Where(u => u.IdOsoba == rozwiazanie.IdUcznia)
+                    .Where(u => u.PersonId == result.StudentId)
                     .Select(u => new {u.Name, u.Surname}).First();
-                var wynik = new Wynik();
-                wynik.idUcznia = rozwiazanie.IdUcznia;
-                wynik.imie = user.Name;
-                wynik.nazwisko = user.Surname;
-                wynik.punkty = (double)rozwiazanie.LiczbaPunktow;
+                var wynik = new Score();
+                wynik.studentId = result.StudentId;
+                wynik.name = user.Name;
+                wynik.surname = user.Surname;
+                wynik.points = (double)result.Points;
 
-                wynik.nowaWiadomosc(test.ListaPytan.Count());
-                Wyniki.Add(wynik);
+                wynik.newMessage(test.Questions.Count());
+                Scores.Add(wynik);
 
             }
 
             Test = test;
-            Srednia();
-            Ocena();
+            Average();
+            MarkTest();
             return Page();
         }
     }

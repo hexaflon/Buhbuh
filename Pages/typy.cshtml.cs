@@ -21,13 +21,13 @@ namespace ProjektInzynierski.Pages
             _context = context;
         }
 
-        public IList<TypPytania> TypPytania { get;set; } = default!;
+        public IList<QuestionType> TypPytania { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.TypPytania != null)
+            if (_context.QuestionType != null)
             {
-                TypPytania = await _context.TypPytania.ToListAsync();
+                TypPytania = await _context.QuestionType.ToListAsync();
             }
         }
     }

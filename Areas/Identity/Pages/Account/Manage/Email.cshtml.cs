@@ -16,13 +16,13 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
 {
     public class EmailModel : PageModel
     {
-        private readonly UserManager<Osoba> _userManager;
-        private readonly SignInManager<Osoba> _signInManager;
+        private readonly UserManager<Person> _userManager;
+        private readonly SignInManager<Person> _signInManager;
         private readonly IEmailSender _emailSender;
 
         public EmailModel(
-            UserManager<Osoba> userManager,
-            SignInManager<Osoba> signInManager,
+            UserManager<Person> userManager,
+            SignInManager<Person> signInManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -48,7 +48,7 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
             public string NewEmail { get; set; }
         }
 
-        private async Task LoadAsync(Osoba user)
+        private async Task LoadAsync(Person user)
         {
             var email = await _userManager.GetEmailAsync(user);
             Email = email;

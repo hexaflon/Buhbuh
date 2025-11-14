@@ -8,16 +8,16 @@ namespace TestTest.Models.Db
     {
         public Status()
         {
-            Osoba = new HashSet<Osoba>();
+            Person = new HashSet<Person>();
         }
 
         [Display(Name = "ID statusu")]
-        public int IdStatus { get; set; }
+        public int Id { get; set; }
         [Display(Name = "Nazwa statusu")]
-        public string Nazwa { get; set; } = null!;
+        public string Name { get; set; } = null!;
         [Display(Name = "Opis statusu")]
-        public string Opis { get; set; } = null!;
+        public string Description { get; set; } = null!;
 
-        public virtual ICollection<Osoba> Osoba { get; set; }
+        public virtual ICollection<Person> Person { get; set; }
     }
 }

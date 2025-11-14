@@ -46,23 +46,23 @@
     <form id="examForm" method="post">
         <table class="table text1">
             <tbody>
-                @for (int i = 0; i < Model.pytaniaSprawdzianu.Count; i++)
+                @for (int i = 0; i < Model.testQuestions.Count; i++)
                 {
-                    var question = Model.pytaniaSprawdzianu[i];
+                    var question = Model.testQuestions[i];
                     <tr>
                         <td>
-                            <strong>Pytanie @(i + 1):</strong> @question.Tresc
+                            <strong>Pytanie @(i + 1):</strong> @question.Text
                         </td>
                     </tr>
                     <tr>
                         <td>
-                            @if (question.IdTypPytania == ViewBag.idWielokrotnego)
+                            @if (question.TypeId == ViewBag.idWielokrotnego)
                             {
-                                foreach (var answer in question.Odpowiedz)
+                                foreach (var answer in question.Answers)
                                 {
-                                    if (Model.wybraneOdp.Contains(answer))
+                                    if (Model.selectedAnswers.Contains(answer))
                                     {
-                                        if (answer.CzyPoprawny)
+                                        if (answer.IsCorrect)
                                         {
                                             Model.newStyleInput = "form-check-input correct";
                                             Model.newStyleLabel = "form-check-label correct";
@@ -75,7 +75,7 @@
                                             Model.IconClass = "fas fa-times-circle text-danger";
                                         }
                                     }
-                                    else if (answer.CzyPoprawny)
+                                    else if (answer.IsCorrect)
                                     {
                                         Model.newStyleInput = "form-check-input missed-correct";
                                         Model.newStyleLabel = "form-check-label missed-correct";
@@ -89,10 +89,10 @@
                                     }
 
                                     <div class="form-check">
-                                        <input class="@Model.newStyleInput" disabled type="checkbox" name="pytanie@(i + 1)" value="@answer.IdOdpowiedz" id="pytanie@(i + 1)_odp@(answer.IdOdpowiedz)">
-                                        <label class="@Model.newStyleLabel" for="pytanie@(i + 1)_odp@(answer.IdOdpowiedz)">
+                                        <input class="@Model.newStyleInput" disabled type="checkbox" name="pytanie@(i + 1)" value="@answer.Id" id="pytanie@(i + 1)_odp@(answer.Id)">
+                                        <label class="@Model.newStyleLabel" for="pytanie@(i + 1)_odp@(answer.Id)">
                                             <div>
-                                                @answer.TrescOdpowiedzi
+                                                @answer.Text
                                                 @if (!string.IsNullOrEmpty(Model.IconClass))
                                                 {
                                                     <i class="icon @Model.IconClass"></i>
@@ -104,11 +104,11 @@
                             }
                             else
                             {
-                                foreach (var answer in question.Odpowiedz)
+                                foreach (var answer in question.Answers)
                                 {
-                                    if (Model.wybraneOdp.Contains(answer))
+                                    if (Model.selectedAnswers.Contains(answer))
                                     {
-                                        if (answer.CzyPoprawny)
+                                        if (answer.IsCorrect)
                                         {
                                             Model.newStyleInput = "form-check-input correct";
                                             Model.newStyleLabel = "form-check-label correct";
@@ -121,7 +121,7 @@
                                             Model.IconClass = "fas fa-times-circle text-danger";
                                         }
                                     }
-                                    else if (answer.CzyPoprawny)
+                                    else if (answer.IsCorrect)
                                     {
                                         Model.newStyleInput = "form-check-input missed-correct";
                                         Model.newStyleLabel = "form-check-label missed-correct";
@@ -135,10 +135,10 @@
                                     }
 
                                     <div class="form-check">
-                                        <input class="@Model.newStyleInput" disabled type="radio" name="pytanie@(i + 1)" value="@answer.IdOdpowiedz" id="pytanie@(i + 1)_odp@(answer.IdOdpowiedz)">
-                                        <label class="@Model.newStyleLabel" for="pytanie@(i + 1)_odp@(answer.IdOdpowiedz)">
+                                        <input class="@Model.newStyleInput" disabled type="radio" name="pytanie@(i + 1)" value="@answer.Id" id="pytanie@(i + 1)_odp@(answer.Id)">
+                                        <label class="@Model.newStyleLabel" for="pytanie@(i + 1)_odp@(answer.Id)">
                                             <div>
-                                                @answer.TrescOdpowiedzi
+                                                @answer.Text
                                                 @if (!string.IsNullOrEmpty(Model.IconClass))
                                                 {
                                                     <i class="icon @Model.IconClass"></i>
@@ -153,6 +153,6 @@
                 }
             </tbody>
         </table>
-        <a class="btn btn-back" asp-page="./ExamInfo" asp-route-id="@Model.Rozwiazanie.IdRozwiazanie">Powrót</a>
+        <a class="btn btn-back" asp-page="./ExamInfo" asp-route-id="@Model.Result.Id">Powrót</a>
     </form>
 </div>

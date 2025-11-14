@@ -11,39 +11,39 @@ namespace ProjektInzynierski.Pages.Question
         public TrueFalseQuestion(DatabaseContext context, bool isTrueFalse) : base(context)
         {
             _isTrueFalse = isTrueFalse;
-            _idTrueFalse = _context.TypPytania
-                .Where(tp => tp.Nazwa.ToLower().Contains("prawda"))
-                .Select(tp => tp.IdTypPytania)
+            _idTrueFalse = _context.QuestionType
+                .Where(tp => tp.Name.ToLower().Contains("prawda"))
+                .Select(tp => tp.Id)
                 .FirstOrDefault();
         }
 
-        protected override Pytanie PrepareQuestion(string tresc, int idNauczyciela, int? idKategoria)
+        protected override TestTest.Models.Db.Question PrepareQuestion(string text, int teacherId, int? categoryId)
         {
-            return new Pytanie
+            return new TestTest.Models.Db.Question
             {
-                Tresc = tresc,
-                IdNauczyciela = idNauczyciela,
-                IdKategoriaPytania = idKategoria,
-                IdTypPytania = _idTrueFalse
+                Text = text,
+                TeacherId = teacherId,
+                CategoryId = categoryId,
+                TypeId = _idTrueFalse
             };
         }
 
-        protected override void AddAnswers(Pytanie pytanie)
+        protected override void AddAnswers(TestTest.Models.Db.Question question)
         {
-            var id = _context.Odpowiedz.OrderByDescending(o => o.IdOdpowiedz).FirstOrDefault()?.IdOdpowiedz ?? 0;
+            var id = _context.Answer.OrderByDescending(o => o.Id).FirstOrDefault()?.Id ?? 0;
             id++;
-            var trescOdpList = new List<string> { "Prawda", "Fałsz" };
+            var questionTextList = new List<string> { "Prawda", "Fałsz" };
 
-            foreach (var trescOdp in trescOdpList)
+            foreach (var questionText in questionTextList)
             {
                 var odp = AnswerFactory.Create(
-                    idPytanie: pytanie.IdPytanie,
-                    trescOdpowiedzi: trescOdp,
-                    czyPoprawny: _isTrueFalse,
-                    idOdpowiedz: id
+                    questionId: question.Id,
+                    text: questionText,
+                    isCorrect: _isTrueFalse,
+                    AnswerId: id
                 );
                 id++;
-                _context.Odpowiedz.Add(odp);
+                _context.Answer.Add(odp);
             }
             _context.SaveChanges();
         }

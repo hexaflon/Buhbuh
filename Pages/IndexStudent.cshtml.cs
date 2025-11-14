@@ -15,16 +15,16 @@ namespace TestTest.Pages
     public class IndexStudentModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
 
-        public IndexStudentModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public IndexStudentModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         public IList<Test> Test { get; set; } = default!;
-        public IList<Rozwiazanie> Rozwiazanie { get; set; } = default!;
+        public IList<Result> Result { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
@@ -33,20 +33,20 @@ namespace TestTest.Pages
                 if (User.IsInRole("Admin"))
                 {
                     Test = _context.Test
-                        .Where(t => t.DataRozpoczecia <= DateTime.Now && t.DataZakonczenia >= DateTime.Now)
-                        .OrderBy(t => t.DataZakonczenia)
+                        .Where(t => t.StartDate <= DateTime.Now && t.EndDate >= DateTime.Now)
+                        .OrderBy(t => t.EndDate)
                         .ToList();
                 }
                 else
                 {
-                    var iducznia = _userManager.GetUserAsync(User).Result.IdOsoba;
-                    var grupucznia = _context.Uczestnicy.Where(u => u.IdUcznia == iducznia)
-                        .Select(u => u.IdGrupy);
+                    var studentId = _userManager.GetUserAsync(User).Result.PersonId;
+                    var studentGroup = _context.Participant.Where(u => u.StudentId == studentId)
+                        .Select(u => u.GroupId);
 
                     Test = _context.Test
-                        .Where(t => grupucznia.Contains(t.IdGrupy))
-                        .Where(t => t.DataRozpoczecia <= DateTime.Now && t.DataZakonczenia >= DateTime.Now)
-                        .OrderBy(t => t.DataZakonczenia)
+                        .Where(t => studentGroup.Contains(t.GroupId))
+                        .Where(t => t.StartDate <= DateTime.Now && t.EndDate >= DateTime.Now)
+                        .OrderBy(t => t.EndDate)
                         .ToList();
                 }
             }

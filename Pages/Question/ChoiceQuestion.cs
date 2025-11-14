@@ -11,18 +11,18 @@ namespace ProjektInzynierski.Pages.Question
             _typeId = typeId;
         }
 
-        protected override Pytanie PrepareQuestion(string tresc, int idNauczyciela, int? idKategoria)
+        protected override TestTest.Models.Db.Question PrepareQuestion(string text, int teacherId, int? categoryId)
         {
-            return new Pytanie
+            return new TestTest.Models.Db.Question
             {
-                Tresc = tresc,
-                IdNauczyciela = idNauczyciela,
-                IdKategoriaPytania = idKategoria,
-                IdTypPytania = _typeId
+                Text = text,
+                TeacherId = teacherId,
+                CategoryId = categoryId,
+                TypeId = _typeId
             };
         }
 
-        protected override void AddAnswers(Pytanie pytanie)
+        protected override void AddAnswers(TestTest.Models.Db.Question question)
         {
         }
     }

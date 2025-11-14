@@ -13,21 +13,21 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Grupy.IdNauczyciela)
+            @Html.DisplayNameFor(model => model.Group.TeacherId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Grupy.IdNauczyciela)
+            @Html.DisplayFor(model => model.Group.TeacherId)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Grupy.Nazwa)
+            @Html.DisplayNameFor(model => model.Group.Name)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Grupy.Nazwa)
+            @Html.DisplayFor(model => model.Group.Name)
         </dd>
     </dl>
     
     <form method="post">
-        <input type="hidden" asp-for="Grupy.IdGrupy" />
+        <input type="hidden" asp-for="Group.Id" />
         <input type="submit" value="Usuń" class="btn btn-delete" />
         <a class="btn btn-back ml-2" asp-page="List">Powrót</a>
     </form>

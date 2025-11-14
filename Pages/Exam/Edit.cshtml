@@ -13,39 +13,39 @@
         <div class="col-md-4">
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Test.IdTest" />
-                <input type="hidden" asp-for="Test.IdGrupy" value="@ViewBag.IdGrupy" />
-                <input type="hidden" asp-for="Test.IdNauczyciela" value="@ViewBag.IdNauczyciela" />
+                <input type="hidden" asp-for="Test.Id" />
+                <input type="hidden" asp-for="Test.GroupId" value="@ViewBag.IdGrupy" />
+                <input type="hidden" asp-for="Test.TeacherId" value="@ViewBag.IdNauczyciela" />
 
                 <div class="form-group form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" asp-for="Test.CzyWidoczny" /> @Html.DisplayNameFor(model => model.Test.CzyWidoczny)
+                        <input class="form-check-input" asp-for="Test.IsVisible" /> @Html.DisplayNameFor(model => model.Test.IsVisible)
                     </label>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.DataRozpoczecia" class="control-label">Data rozpoczęcia</label>
-                    <input asp-for="Test.DataRozpoczecia" class="form-control" />
-                    <span asp-validation-for="Test.DataRozpoczecia" class="text-danger"></span>
+                    <label asp-for="Test.StartDate" class="control-label">Data rozpoczęcia</label>
+                    <input asp-for="Test.StartDate" class="form-control" />
+                    <span asp-validation-for="Test.StartDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.DataZakonczenia" class="control-label">Data zakończenia</label>
-                    <input asp-for="Test.DataZakonczenia" class="form-control" />
-                    <span asp-validation-for="Test.DataZakonczenia" class="text-danger"></span>
+                    <label asp-for="Test.EndDate" class="control-label">Data zakończenia</label>
+                    <input asp-for="Test.EndDate" class="form-control" />
+                    <span asp-validation-for="Test.EndDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.Tytul" class="control-label">Tytuł</label>
-                    <input asp-for="Test.Tytul" class="form-control" />
-                    <span asp-validation-for="Test.Tytul" class="text-danger"></span>
+                    <label asp-for="Test.Title" class="control-label">Tytuł</label>
+                    <input asp-for="Test.Title" class="form-control" />
+                    <span asp-validation-for="Test.Title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.Opis" class="control-label">Opis</label>
-                    <input asp-for="Test.Opis" class="form-control" />
-                    <span asp-validation-for="Test.Opis" class="text-danger"></span>
+                    <label asp-for="Test.Description" class="control-label">Opis</label>
+                    <input asp-for="Test.Description" class="form-control" />
+                    <span asp-validation-for="Test.Description" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.CzasTrwania" class="control-label">Czas trwania</label>
-                    <input asp-for="Test.CzasTrwania" class="form-control" />
-                    <span asp-validation-for="Test.CzasTrwania" class="text-danger"></span>
+                    <label asp-for="Test.Duration" class="control-label">Czas trwania</label>
+                    <input asp-for="Test.Duration" class="form-control" />
+                    <span asp-validation-for="Test.Duration" class="text-danger"></span>
                 </div>
                 <div class="form-group mt-3">
                     <input type="submit" value="Zapisz" class="btn btn-standard" />

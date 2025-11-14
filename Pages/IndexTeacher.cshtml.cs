@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.utils;
 using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 using LogLevel = ProjektInzynierski.Utils.LogLevel;
@@ -19,8 +18,8 @@ namespace TestTest.Pages
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private IAppLogger _logger;
-        private readonly UserManager<Osoba> _userManager;
-        public IndexTeacherModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public IndexTeacherModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _userManager = userManager;
             _logger = Logger.getInstance();
@@ -29,7 +28,7 @@ namespace TestTest.Pages
             _logger = new LevelLoggerDecorator(_logger, level);
         }
 
-        public IList<Osoba> User { get;set; } = default!;
+        public IList<Person> User { get;set; } = default!;
 
         public async Task OnGetAsync()
         {

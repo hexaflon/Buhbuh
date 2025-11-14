@@ -13,24 +13,24 @@
         <div class="col-md-4">
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Pytanie.IdPytanie" />
+                <input type="hidden" asp-for="Question.Id" />
                 <div hidden>
-                    <input asp-for="Pytanie.IdNauczyciela" value="@ViewBag.IdNauczyciela" />
+                    <input asp-for="Question.TeacherId" value="@ViewBag.IdNauczyciela" />
                 </div>                
                 <div class="form-group">
-                    <label asp-for="Pytanie.IdKategoriaPytania" class="control-label">@Html.DisplayNameFor(model => model.Pytanie.IdKategoriaPytania)</label>
-                    <select asp-for="Pytanie.IdKategoriaPytania" class="form-control" asp-items="ViewBag.IdKategoriaPytania"></select>
-                    <span asp-validation-for="Pytanie.IdKategoriaPytania" class="text-danger"></span>
+                    <label asp-for="Question.CategoryId" class="control-label">@Html.DisplayNameFor(model => model.Question.CategoryId)</label>
+                    <select asp-for="Question.CategoryId" class="form-control" asp-items="ViewBag.IdKategoriaPytania"></select>
+                    <span asp-validation-for="Question.CategoryId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Pytanie.IdTypPytania" class="control-label">@Html.DisplayNameFor(model => model.Pytanie.IdTypPytania)</label>
-                    <select asp-for="Pytanie.IdTypPytania" class="form-control" asp-items="ViewBag.IdTypPytania"></select>
-                    <span asp-validation-for="Pytanie.IdTypPytania" class="text-danger"></span>
+                    <label asp-for="Question.TypeId" class="control-label">@Html.DisplayNameFor(model => model.Question.TypeId)</label>
+                    <select asp-for="Question.TypeId" class="form-control" asp-items="ViewBag.IdTypPytania"></select>
+                    <span asp-validation-for="Question.TypeId" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Pytanie.Tresc" class="control-label">@Html.DisplayNameFor(model => model.Pytanie.Tresc)</label>
-                    <input asp-for="Pytanie.Tresc" class="form-control" />
-                    <span asp-validation-for="Pytanie.Tresc" class="text-danger"></span>
+                    <label asp-for="Question.Text" class="control-label">@Html.DisplayNameFor(model => model.Question.Text)</label>
+                    <input asp-for="Question.Text" class="form-control" />
+                    <span asp-validation-for="Question.Text" class="text-danger"></span>
                 </div>
                 <div class="form-group mt-3">
                     <input type="submit" value="Zapisz" class="btn btn-standard" />

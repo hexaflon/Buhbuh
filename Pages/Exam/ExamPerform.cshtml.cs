@@ -16,41 +16,41 @@ namespace ProjektInzynierski.Pages.Exam
     public class ExamPerformModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
         private static int idWielokrotngo;
 
-        public ExamPerformModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public ExamPerformModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
-            idWielokrotngo =  _context.TypPytania
-                .Where(tp => tp.Nazwa == "Wielokrotnego wyboru")
-                .Select(tp => tp.IdTypPytania).FirstOrDefault();
+            idWielokrotngo =  _context.QuestionType
+                .Where(tp => tp.Name == "Wielokrotnego wyboru")
+                .Select(tp => tp.Id).FirstOrDefault();
         }
 
-        public List<Pytanie> pytaniaSprawdzianu { get;set; } = default!;
-        public int CzasTrwania { get; set; }
+        public List<TestTest.Models.Db.Question> testQuestions { get;set; } = default!;
+        public int Duration { get; set; }
 
-        public List<Pytanie> GetQuestions(int examId)
+        public List<TestTest.Models.Db.Question> GetQuestions(int examId)
         {
-            var questions = _context.ListaPytan
-                .Include(lp => lp.IdPytanieNavigation)
-                .ThenInclude(p => p.Odpowiedz)
-                .Where(lp => lp.IdTest == examId)
-                .Select(lp => lp.IdPytanieNavigation).ToList();
+            var questions = _context.QuestionList
+                .Include(lp => lp.Questions)
+                .ThenInclude(p => p.Answers)
+                .Where(lp => lp.TestId == examId)
+                .Select(lp => lp.Questions).ToList();
 
             return questions;
         }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            pytaniaSprawdzianu = GetQuestions(id);
-            if (pytaniaSprawdzianu == null) return NotFound();
+            testQuestions = GetQuestions(id);
+            if (testQuestions == null) return NotFound();
             
             ViewData["idWielokrotnego"] = idWielokrotngo;
 
             var test = await _context.Test.FindAsync(id);
-            CzasTrwania = test.CzasTrwania ?? 0;
+            Duration = test.Duration ?? 0;
 
             return Page();
         }
@@ -60,17 +60,17 @@ namespace ProjektInzynierski.Pages.Exam
         {
             int rDPId;
             Console.WriteLine($"id:{id} Odpowiedz:{idOdpowiedz} rozwiazanie:{idRozwiazanie}");
-            if (_context.RozwiazanieDoPytan.ToList() == null) rDPId = 1;
+            if (_context.QuestionResult.ToList() == null) rDPId = 1;
             else
             {
-                rDPId = _context.RozwiazanieDoPytan.OrderByDescending(rdp => rdp.IdRozwiazanieDoPytan)
-                    .Select(rdp => rdp.IdRozwiazanieDoPytan).FirstOrDefault() + 1;
+                rDPId = _context.QuestionResult.OrderByDescending(rdp => rdp.Id)
+                    .Select(rdp => rdp.Id).FirstOrDefault() + 1;
             }
-            var RDP = new RozwiazanieDoPytan();
-            RDP.IdRozwiazanieDoPytan = rDPId;
-            RDP.IdOdpowiedz = idOdpowiedz;
-            RDP.IdRozwiazanie = idRozwiazanie;
-            _context.RozwiazanieDoPytan.Add(RDP);
+            var RDP = new QuestionResult();
+            RDP.Id = rDPId;
+            RDP.AnswerId = idOdpowiedz;
+            RDP.ResultId = idRozwiazanie;
+            _context.QuestionResult.Add(RDP);
             rDPId++;
             _context.SaveChanges();
         }
@@ -79,20 +79,20 @@ namespace ProjektInzynierski.Pages.Exam
         public async Task<IActionResult> OnPostAsync(int id)
         {
             var selectedAnswers = Request.Form;
-            int ilePoprawnych = 0, zaznaczonePoprawne=0;
-            double punkty = 0;
+            int correctCount = 0, selectedCorrect=0;
+            double points = 0;
             Console.WriteLine(selectedAnswers);
             
-            Rozwiazanie rozwiazanieSprawdzianu = new Rozwiazanie();
-            if (_context.Rozwiazanie.ToList() == null) rozwiazanieSprawdzianu.IdRozwiazanie = 1;
+            Result testResult = new Result();
+            if (_context.Result.ToList() == null) testResult.Id = 1;
             else
             {
-                rozwiazanieSprawdzianu.IdRozwiazanie =
-                    _context.Rozwiazanie.OrderByDescending(r => r.IdRozwiazanie)
-                    .Select(r => r.IdRozwiazanie).FirstOrDefault() + 1;
+                testResult.Id =
+                    _context.Result.OrderByDescending(r => r.Id)
+                    .Select(r => r.Id).FirstOrDefault() + 1;
             }
 
-            List<int> odpIds = new List<int>();
+            List<int> answerList = new List<int>();
 
             foreach (var question in selectedAnswers)
             {
@@ -110,13 +110,13 @@ namespace ProjektInzynierski.Pages.Exam
                     continue;
                 }
 
-                var pytanie = _context.Pytanie.Include(p => p.Odpowiedz)
-                    .Where(p => p.IdPytanie == key).FirstOrDefault();
-                bool czyWielokrotnego = pytanie.IdTypPytania == idWielokrotngo;
+                var testQuestion = _context.Question.Include(p => p.Answers)
+                    .Where(p => p.Id == key).FirstOrDefault();
+                bool czyWielokrotnego = testQuestion.TypeId == idWielokrotngo;
                 if (czyWielokrotnego)
                 {
-                    ilePoprawnych = pytanie.Odpowiedz
-                        .Where(o => o.CzyPoprawny == true)
+                    correctCount = testQuestion.Answers
+                        .Where(o => o.IsCorrect == true)
                         .Count();
                 }
 
@@ -141,50 +141,50 @@ namespace ProjektInzynierski.Pages.Exam
                         Console.WriteLine($"Failed to convert '{temp}' to integer: {ex.Message}");
                         continue;
                     }
-                    var isCorrect = pytanie.Odpowiedz.Any(o => o.IdOdpowiedz == val && o.CzyPoprawny);
+                    var isCorrect = testQuestion.Answers.Any(o => o.Id == val && o.IsCorrect);
 
 
-                    odpIds.Add(val);
+                    answerList.Add(val);
 
 
                     if (czyWielokrotnego)
                     {
                         if (isCorrect)
                         {
-                            zaznaczonePoprawne++;
+                            selectedCorrect++;
                         }
                         else
                         {
-                            zaznaczonePoprawne--;
+                            selectedCorrect--;
                         }
                     }
                     else
                     {
                         if (isCorrect)
                         {
-                            punkty++;
+                            points++;
                         }
                     }
                 }
                 if (czyWielokrotnego)
                 {
-                    double punkt = (double)zaznaczonePoprawne / (double)ilePoprawnych;
-                    if (zaznaczonePoprawne > 0) {
+                    double punkt = (double)selectedCorrect / (double)correctCount;
+                    if (selectedCorrect > 0) {
                         
-                        punkty += punkt; }
-                    Console.WriteLine($"Po {punkty} {zaznaczonePoprawne} {ilePoprawnych}, {punkt}");
-                    zaznaczonePoprawne = 0;
-                    ilePoprawnych = 0;
+                        points += punkt; }
+                    Console.WriteLine($"Po {points} {selectedCorrect} {correctCount}, {punkt}");
+                    selectedCorrect = 0;
+                    correctCount = 0;
                 }
             }
             
 
             
 
-            rozwiazanieSprawdzianu.IdTest = id;
-            rozwiazanieSprawdzianu.IdUcznia = _userManager.GetUserAsync(User).Result.IdOsoba;
-            rozwiazanieSprawdzianu.LiczbaPunktow = punkty;
-            _context.Rozwiazanie.Add(rozwiazanieSprawdzianu);
+            testResult.TestId = id;
+            testResult.StudentId = _userManager.GetUserAsync(User).Result.PersonId;
+            testResult.Points = points;
+            _context.Result.Add(testResult);
 
 
             
@@ -195,13 +195,13 @@ namespace ProjektInzynierski.Pages.Exam
 
 
             _context.SaveChanges();
-            foreach(var odp in odpIds)
+            foreach(var odp in answerList)
             {
 
-                RozwiazanieDoPytanPrzetworzenie(id, odp, rozwiazanieSprawdzianu.IdRozwiazanie);
+                RozwiazanieDoPytanPrzetworzenie(id, odp, testResult.Id);
             }
 
-            return RedirectToPage("./ExamInfo", new { id = rozwiazanieSprawdzianu.IdRozwiazanie });
+            return RedirectToPage("./ExamInfo", new { id = testResult.Id });
         }
     }
 }

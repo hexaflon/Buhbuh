@@ -4,16 +4,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TestTest.Models.Db
 {
-    public partial class Uczestnicy
+    public partial class Participant
     {
         [Display(Name = "ID uczestnika")]
-        public int IdUczestnicy { get; set; }
+        public int Id { get; set; }
         [Display(Name = "ID grupy")]
-        public int? IdGrupy { get; set; }
+        public int? GroupId { get; set; }
         [Display(Name = "ID ucznia")]
-        public int? IdUcznia { get; set; }
+        public int? StudentId { get; set; }
 
-        public virtual Grupy? IdGrupyNavigation { get; set; }
+        public virtual Group? Groups { get; set; }
         
     }
 }

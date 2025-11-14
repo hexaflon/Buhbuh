@@ -15,10 +15,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.TypPytania[0].Nazwa)
+                @Html.DisplayNameFor(model => model.TypPytania[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TypPytania[0].Opis)
+                @Html.DisplayNameFor(model => model.TypPytania[0].Description)
             </th>
             <th></th>
         </tr>
@@ -27,15 +27,15 @@
 @foreach (var item in Model.TypPytania) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Nazwa)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Opis)
+                @Html.DisplayFor(modelItem => item.Description)
             </td>
             <td>
-                <a asp-page="./Edit" asp-route-id="@item.IdTypPytania">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.IdTypPytania">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.IdTypPytania">Delete</a>
+                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
             </td>
         </tr>
 }

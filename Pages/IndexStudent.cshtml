@@ -36,9 +36,9 @@
                         @foreach (var item in Model.Test.Take(5))
                         {
                             <tr class="text1 text-center">
-                                <td>@Html.DisplayFor(modelItem => item.Tytul)</td>
-                                <td>@Html.DisplayFor(modelItem => item.DataRozpoczecia)</td>
-                                <td>@Html.DisplayFor(modelItem => item.DataZakonczenia)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                                <td>@Html.DisplayFor(modelItem => item.StartDate)</td>
+                                <td>@Html.DisplayFor(modelItem => item.EndDate)</td>
                             </tr>
                         }
                     </tbody>

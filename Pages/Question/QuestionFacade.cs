@@ -1,11 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.Pages.Answer;
-using ProjektInzynierski.utils;
-using TestTest.Models.Db;
+﻿
 
 namespace ProjektInzynierski.Pages.Question
 {
-    public class QuestionFacade
+    using Microsoft.EntityFrameworkCore;
+    using ProjektInzynierski.Pages.Answer;
+    using ProjektInzynierski.Utils;
+    using TestTest.Models.Db;
+    public class QuestionFacade :
+     IQuestionCreator,
+     IQuestionReader,
+     ITrueFalseAnswerGenerator
     {
         private readonly DatabaseContext _context;
         private readonly int _idTrueFalseQuestion;
@@ -14,100 +18,94 @@ namespace ProjektInzynierski.Pages.Question
         public QuestionFacade(DatabaseContext context)
         {
             _context = context;
-            _idTrueFalseQuestion = _context.TypPytania
-                .Where(tp => tp.Nazwa.ToLower().Contains("prawda"))
-                .Select(tp => tp.IdTypPytania)
+            _idTrueFalseQuestion = _context.QuestionType
+                .Where(tp => tp.Name.ToLower().Contains("prawda"))
+                .Select(tp => tp.Id)
                 .FirstOrDefault();
             _logger = Logger.getInstance();
         }
 
-        public Pytanie CreateQuestion(
-            string tresc,
-            int idNauczyciela,
-            int? idKategoria,
-            int idTypPytania,
+        public Question CreateQuestion(
+            string text,
+            int teacherId,
+            int? categoryId,
+            int questionType,
             bool isTrueFalse
-            )
+        )
         {
-            var pyt = new Pytanie
+            var pyt = new Question
             {
-                Tresc = tresc,
-                IdNauczyciela = idNauczyciela,
-                IdKategoriaPytania = idKategoria,
-                IdTypPytania = idTypPytania,
+                Text = text,
+                TeacherId = teacherId,
+                CategoryId = categoryId,
+                TypeId = questionType,
             };
 
-            var id = _context.Pytanie.OrderByDescending(p => p.IdPytanie).FirstOrDefault()?.IdPytanie ?? 0;
-            pyt.IdPytanie = id + 1;
+            var id = _context.Question.OrderByDescending(p => p.Id).FirstOrDefault()?.Id ?? 0;
+            pyt.Id = id + 1;
 
-            _context.Pytanie.Add(pyt);
+            _context.Question.Add(pyt);
             _context.SaveChanges();
-            Console.Write($"{idTypPytania} : {_idTrueFalseQuestion}\n");
-            if (idTypPytania == _idTrueFalseQuestion)
+
+            if (questionType == _idTrueFalseQuestion)
             {
-                AddTrueFalseAnswers(pyt.IdPytanie, isTrueFalse);
+                AddTrueFalseAnswers(pyt.Id, isTrueFalse);
             }
 
             return pyt;
-
         }
 
-        private void AddTrueFalseAnswers(int idPytania, bool isTrueFalse)
+        public void AddTrueFalseAnswers(int questionId, bool isTrueFalse)
         {
-            var id = _context.Odpowiedz.OrderByDescending(o => o.IdOdpowiedz).FirstOrDefault()?.IdOdpowiedz ?? 0;
+            var id = _context.Answer.OrderByDescending(o => o.Id).FirstOrDefault()?.Id ?? 0;
             id++;
 
-            var trescOdpList = new List<string> { "Prawda", "Fałsz" };
+            var questionTextList = new List<string> { "Prawda", "Fałsz" };
 
-            foreach (var trescOdp in trescOdpList)
+            foreach (var questionText in questionTextList)
             {
                 var odp = AnswerFactory.Create(
-                    idPytanie:idPytania,
-                    trescOdpowiedzi: trescOdp,
-                    czyPoprawny: isTrueFalse,
-                    idOdpowiedz: id
-                    );
+                    questionId: questionId,
+                    text: questionText,
+                    isCorrect: isTrueFalse,
+                    AnswerId: id
+                );
                 id++;
 
-                _context.Odpowiedz.Add( odp );
+                _context.Answer.Add(odp);
             }
 
             _context.SaveChanges();
         }
 
-
-        public List<Pytanie> GetPytania(string? searchText = null, int? categoryId = null, int? typeId = null)
+        public List<Question> GetQuestionList(string? searchText = null, int? categoryId = null, int? typeId = null)
         {
-            
-            var query = _context.Pytanie
-                .Include(p => p.IdKategoriaPytaniaNavigation)
-                .Include(p => p.IdTypPytaniaNavigation)
-                .Include(p => p.Odpowiedz)
-                .OrderByDescending(p => p.IdPytanie)
+            var query = _context.Question
+                .Include(p => p.Category)
+                .Include(p => p.Type)
+                .Include(p => p.Answers)
+                .OrderByDescending(p => p.Id)
                 .AsQueryable();
 
             if (categoryId.HasValue)
             {
-                query = query.Where(p => p.IdKategoriaPytania == categoryId);
+                query = query.Where(p => p.CategoryId == categoryId);
             }
 
             if (typeId.HasValue)
             {
-                query = query.Where(p => p.IdTypPytania == typeId);
+                query = query.Where(p => p.TypeId == typeId);
             }
 
             if (!string.IsNullOrEmpty(searchText))
             {
-                query = query.Where(p => p.Tresc.Contains(searchText));
+                query = query.Where(p => p.Text.Contains(searchText));
             }
 
             var results = query.ToList();
 
-
-
-            return results.OrderByDescending(p => p.Odpowiedz.FirstOrDefault()?.IdPytanie).ToList();
+            return results.OrderByDescending(p => p.Answers.FirstOrDefault()?.QuestionId).ToList();
         }
-
-
     }
+
 }

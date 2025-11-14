@@ -17,8 +17,8 @@ namespace ProjektInzynierski.Pages.Exam
     public class EditModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public EditModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public EditModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -34,14 +34,14 @@ namespace ProjektInzynierski.Pages.Exam
                 return NotFound();
             }
 
-            var test =  await _context.Test.FirstOrDefaultAsync(m => m.IdTest == id);
+            var test =  await _context.Test.FirstOrDefaultAsync(m => m.Id == id);
             if (test == null)
             {
                 return NotFound();
             }
             Test = test;
-            ViewData["IdGrupy"] = test.IdGrupy;
-            ViewData["IdNauczyciela"] = test.IdNauczyciela;
+            ViewData["IdGrupy"] = test.GroupId;
+            ViewData["IdNauczyciela"] = test.TeacherId;
             return Page();
         }
 
@@ -55,7 +55,7 @@ namespace ProjektInzynierski.Pages.Exam
             }
             if (!User.IsInRole("Admin"))
             {
-                if (Test.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba) return RedirectToPage("./List");
+                if (Test.TeacherId != _userManager.GetUserAsync(User).Result.PersonId) return RedirectToPage("./List");
             }
             _context.Attach(Test).State = EntityState.Modified;
 
@@ -65,7 +65,7 @@ namespace ProjektInzynierski.Pages.Exam
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!TestExists(Test.IdTest))
+                if (!TestExists(Test.Id))
                 {
                     return NotFound();
                 }
@@ -80,7 +80,7 @@ namespace ProjektInzynierski.Pages.Exam
 
         private bool TestExists(int id)
         {
-          return (_context.Test?.Any(e => e.IdTest == id)).GetValueOrDefault();
+          return (_context.Test?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

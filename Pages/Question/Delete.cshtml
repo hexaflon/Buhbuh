@@ -12,21 +12,21 @@
 <div>
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Pytanie.Tresc)
+            @Html.DisplayNameFor(model => model.Question.Text)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Pytanie.Tresc)
+            @Html.DisplayFor(model => model.Question.Text)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Pytanie.IdNauczyciela)
+            @Html.DisplayNameFor(model => model.Question.TeacherId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Pytanie.IdNauczyciela)
+            @Html.DisplayFor(model => model.Question.TeacherId)
         </dd>
     </dl>
 
     <form method="post">
-        <input type="hidden" asp-for="Pytanie.IdPytanie" />
+        <input type="hidden" asp-for="Question.Id" />
         <div class="form-group mt-3">
             <input type="submit" value="Usuń" class="btn btn-delete" />
             <a class="btn btn-back ml-2" asp-page="Index">Powrót</a>

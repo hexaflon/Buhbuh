@@ -17,33 +17,33 @@ namespace TestTest.Pages.Question
     public class EditModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public EditModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public EditModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         [BindProperty]
-        public Pytanie Pytanie { get; set; } = default!;
+        public Models.Db.Question Question { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync([FromQuery]int? id)
         {
-            if (id == null || _context.Pytanie == null)
+            if (id == null || _context.Question == null)
             {
                 return NotFound();
             }
 
-            var pytanie =  await _context.Pytanie.FirstOrDefaultAsync(m => m.IdPytanie == id);
-            if (pytanie == null)
+            var question =  await _context.Question.FirstOrDefaultAsync(m => m.Id == id);
+            if (question == null)
             {
                 return NotFound();
             }
-            Pytanie = pytanie;
+            Question = question;
 
-            ViewData["idNauczyciela"] = pytanie.IdNauczyciela;
-            ViewData["IdKategoriaPytania"] = new SelectList(_context.KategoriaPytania, "IdKategoriaPytania", "Nazwa");
-            ViewData["IdTypPytania"] = new SelectList(_context.TypPytania, "IdTypPytania", "Nazwa");
+            ViewData["idNauczyciela"] = question.TeacherId;
+            ViewData["IdKategoriaPytania"] = new SelectList(_context.QuestionCategory, "IdKategoriaPytania", "Nazwa");
+            ViewData["IdTypPytania"] = new SelectList(_context.QuestionType, "IdTypPytania", "Nazwa");
             return Page();
         }
 
@@ -56,13 +56,13 @@ namespace TestTest.Pages.Question
                 return Page();
             }
             if (id!=null) { 
-                Pytanie.IdPytanie = (int)id;
+                Question.Id = (int)id;
             }
             if (!User.IsInRole("Admin"))
             {
-                if (Pytanie.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba) return RedirectToPage("./Index");
+                if (Question.TeacherId != _userManager.GetUserAsync(User).Result.PersonId) return RedirectToPage("./Index");
             }
-            _context.Attach(Pytanie).State = EntityState.Modified;
+            _context.Attach(Question).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +70,7 @@ namespace TestTest.Pages.Question
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PytanieExists(Pytanie.IdPytanie))
+                if (!PytanieExists(Question.Id))
                 {
                     return NotFound();
                 }
@@ -85,7 +85,7 @@ namespace TestTest.Pages.Question
 
         private bool PytanieExists(int id)
         {
-          return (_context.Pytanie?.Any(e => e.IdPytanie == id)).GetValueOrDefault();
+          return (_context.Question?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

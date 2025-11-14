@@ -17,9 +17,9 @@ namespace ProjektInzynierski.Pages.Group
     public class AddMembersModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
 
-        public AddMembersModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public AddMembersModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -30,30 +30,30 @@ namespace ProjektInzynierski.Pages.Group
             if (!id.HasValue) return RedirectToPage("./List");
             
 
-            var uzytkownicy = _userManager.GetUsersInRoleAsync("Uczen");
-            var uczniowie = uzytkownicy.Result.ToList();
-            uczniowie = uczniowie.Where(o => !_context.Uczestnicy.Any(u => u.IdUcznia == o.IdOsoba && u.IdGrupy == id)).ToList();
+            var users = _userManager.GetUsersInRoleAsync("Uczen");
+            var students = users.Result.ToList();
+            students = students.Where(o => !_context.Participant.Any(u => u.StudentId == o.PersonId && u.GroupId == id)).ToList();
 
 
-            var wysuzytkownicy = _userManager.GetUsersInRoleAsync("Uczen");
-            wysUczniowie = wysuzytkownicy.Result.ToList();
-            wysUczniowie = wysUczniowie
-                .Where(o => _context.Uczestnicy.Any(u => u.IdUcznia == o.IdOsoba && u.IdGrupy == id))
+            var foundUsers = _userManager.GetUsersInRoleAsync("Uczen");
+            foundStudents = foundUsers.Result.ToList();
+            foundStudents = foundStudents
+                .Where(o => _context.Participant.Any(u => u.StudentId == o.PersonId && u.GroupId == id))
                 .ToList();
 
-            var uczniowieList = uczniowie.Select(osoba => new SelectListItem
+            var studentList = students.Select(person => new SelectListItem
             {
-                Value = osoba.IdOsoba.ToString(),
-                Text = $"{osoba.Surname} {osoba.Name} {osoba.Email}"
+                Value = person.PersonId.ToString(),
+                Text = $"{person.Surname} {person.Name} {person.Email}"
             }).ToList();
-            ViewData["IdUcznia"] = new SelectList(uczniowieList, "Value","Text");
-            ViewData["idGrupy"] = id; 
+            ViewData["studentId"] = new SelectList(studentList, "Value","Text");
+            ViewData["groupId"] = id; 
             return Page();
         }
 
         [BindProperty]
-        public Uczestnicy Uczestnicy { get; set; } = default!;
-        public List<Osoba> wysUczniowie { get; set; } = default!;
+        public Participant Participants { get; set; } = default!;
+        public List<Person> foundStudents { get; set; } = default!;
 
 
         
@@ -63,28 +63,28 @@ namespace ProjektInzynierski.Pages.Group
         {
             if (!id.HasValue) return RedirectToPage("./List");
 
-            if (!ModelState.IsValid || _context.Uczestnicy == null || Uczestnicy == null)
+            if (!ModelState.IsValid || _context.Participant == null || Participants == null)
             {
                 return Page();
             }
 
-            int? grupyList = _context.Grupy.Where(gr => gr.IdGrupy == id).Select(gr => gr.IdGrupy).FirstOrDefault();
-            if (grupyList == null) return NotFound();
-            Uczestnicy.IdGrupy = id;
+            int? groupList = _context.Group.Where(gr => gr.Id == id).Select(gr => gr.Id).FirstOrDefault();
+            if (groupList == null) return NotFound();
+            Participants.GroupId = id;
 
-            var uczestnicyList = _context.Uczestnicy.ToList();
-            if (uczestnicyList == null) Uczestnicy.IdUczestnicy = 0;
+            var participantList = _context.Participant.ToList();
+            if (participantList == null) Participants.Id = 0;
             else
             {
-                Uczestnicy.IdUczestnicy = uczestnicyList.OrderByDescending(u => u.IdUczestnicy)
-                                                        .Select(u => u.IdUczestnicy).FirstOrDefault() + 1;
+                Participants.Id = participantList.OrderByDescending(u => u.Id)
+                                                        .Select(u => u.Id).FirstOrDefault() + 1;
             }
 
             
             //dodać dla użytkownika
             
 
-            _context.Uczestnicy.Add(Uczestnicy);
+            _context.Participant.Add(Participants);
             await _context.SaveChangesAsync();
 
             return RedirectToPage("", new {id=id});
@@ -93,18 +93,18 @@ namespace ProjektInzynierski.Pages.Group
 
         
 
-        public async Task<IActionResult> OnGetDelete([FromQuery]int? idUcznia, [FromQuery]int? idGrupy)
+        public async Task<IActionResult> OnGetDelete([FromQuery]int? personId, [FromQuery]int? groupId)
         {
             
-            if(idUcznia == null || idGrupy == null) return NotFound();
-            var uczestnikDoUsunieca = await _context.Uczestnicy.FirstOrDefaultAsync(u => u.IdUcznia == idUcznia && u.IdGrupy == idGrupy);
+            if(personId == null || groupId == null) return NotFound();
+            var userToRemove = await _context.Participant.FirstOrDefaultAsync(u => u.StudentId == personId && u.GroupId == groupId);
             
-            if (uczestnikDoUsunieca != null)
+            if (userToRemove != null)
             {
-                _context.Uczestnicy.Remove(uczestnikDoUsunieca);
+                _context.Participant.Remove(userToRemove);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage("", new { id = idGrupy });
+            return RedirectToPage("", new { id = groupId });
         }
     }
 }

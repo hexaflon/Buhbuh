@@ -4,30 +4,31 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TestTest.Models.Db
 {
-    public partial class Grupy
+    public partial class Group
     {
-        public Grupy()
+        public Group()
         {
             Test = new HashSet<Test>();
-            Uczestnicy = new HashSet<Uczestnicy>();
+            Participants = new HashSet<Participant>();
         }
 
         [Display(Name = "ID grupy")]
-        public int IdGrupy { get; set; }
+        public int Id { get; set; }
+
         [Display(Name = "ID nauczyciela")]
-        public int? IdNauczyciela { get; set; }
+        public int? TeacherId { get; set; }
         [Display(Name = "Nazwa grupy")]
         [Required(ErrorMessage = "To pole jest wymagane.")]
         [StringLength(45, ErrorMessage = "Maksymalna długość to 45 znaków.")]
-        public string Nazwa { get; set; } = null!;
+        public string Name { get; set; } = null!;
 
         
         public virtual ICollection<Test> Test { get; set; }
-        public virtual ICollection<Uczestnicy> Uczestnicy { get; set; }
+        public virtual ICollection<Participant> Participants { get; set; }
 
         public override string ToString()
         {
-            return $"Grupa o id: {IdGrupy} - {Nazwa}";
+            return $"Grupa o id: {Id} - {Name}";
         }
     }
 }

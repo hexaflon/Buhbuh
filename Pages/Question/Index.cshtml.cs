@@ -16,16 +16,16 @@ namespace TestTest.Pages.Question
     public class IndexModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public IndexModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public IndexModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        public IList<Pytanie> Pytanie { get; set; } = default!;
-        public IList<KategoriaPytania> Kategorie { get; set; } = default!;
-        public IList<TypPytania> TypyPytan { get; set; } = default!;
+        public IList<Models.Db.Question> Question { get; set; } = default!;
+        public IList<QuestionCategory> QuestionCategory { get; set; } = default!;
+        public IList<QuestionType> QuestionType { get; set; } = default!;
 
         public int? CategoryId { get; set; }
         public int? TypeId { get; set; }
@@ -35,14 +35,14 @@ namespace TestTest.Pages.Question
         {
             var facade = new QuestionFacade(_context);
 
-            Pytanie = facade.GetPytania(
+            Question = facade.GetQuestionList(
                 categoryId: categoryId,
                 typeId: typeId,
                 searchText: searchText
                 );
 
-            Kategorie = await _context.KategoriaPytania.ToListAsync();
-            TypyPytan = await _context.TypPytania.ToListAsync();
+            QuestionCategory = await _context.QuestionCategory.ToListAsync();
+            QuestionType = await _context.QuestionType.ToListAsync();
         }
 
 

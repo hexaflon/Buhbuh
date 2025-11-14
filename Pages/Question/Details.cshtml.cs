@@ -21,23 +21,23 @@ namespace TestTest.Pages.Question
             _context = context;
         }
 
-      public Pytanie Pytanie { get; set; } = default!; 
+      public Models.Db.Question Question { get; set; } = default!; 
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Pytanie == null)
+            if (id == null || _context.Question == null)
             {
                 return NotFound();
             }
 
-            var pytanie = await _context.Pytanie.FirstOrDefaultAsync(m => m.IdPytanie == id);
-            if (pytanie == null)
+            var question = await _context.Question.FirstOrDefaultAsync(m => m.Id == id);
+            if (question == null)
             {
                 return NotFound();
             }
             else 
             {
-                Pytanie = pytanie;
+                Question = question;
             }
             return Page();
         }

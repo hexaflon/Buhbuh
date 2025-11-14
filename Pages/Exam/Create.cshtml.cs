@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ProjektInzynierski.utils;
 using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 using LogLevel = ProjektInzynierski.Utils.LogLevel;
@@ -19,9 +18,9 @@ namespace ProjektInzynierski.Pages.Exam
     public class CreateModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
         private IAppLogger _logger;
-        public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -32,8 +31,8 @@ namespace ProjektInzynierski.Pages.Exam
 
         public IActionResult OnGet()
         {
-            var userId = _userManager.GetUserAsync(User).Result.IdOsoba; 
-            ViewData["IdGrupy"] = new SelectList(_context.Grupy.Where(g => g.IdNauczyciela==userId), "IdGrupy", "Nazwa");
+            var userId = _userManager.GetUserAsync(User).Result.PersonId; 
+            ViewData["IdGrupy"] = new SelectList(_context.Group.Where(g => g.TeacherId==userId), "Id", "Name");
             return Page();
         }
 
@@ -48,15 +47,15 @@ namespace ProjektInzynierski.Pages.Exam
             {
                 return Page();
             }
-            Test.DataUtworzenia = DateTime.Now;
+            Test.CreationDate = DateTime.Now;
             //dodać dla obecnego użytkownika
-            Test.IdNauczyciela = _userManager.GetUserAsync(User).Result.IdOsoba;
+            Test.TeacherId = _userManager.GetUserAsync(User).Result.PersonId;
 
-            var testyList = _context.Test.ToList();
-            if (testyList == null) Test.IdTest = 0;
+            var testList = _context.Test.ToList();
+            if (testList == null) Test.Id = 0;
             else
             {
-                Test.IdTest = testyList.OrderByDescending(test => test.IdTest).Select(test => test.IdTest).FirstOrDefault()+1;
+                Test.Id = testList.OrderByDescending(test => test.Id).Select(test => test.Id).FirstOrDefault()+1;
             }
 
             _context.Test.Add(Test);

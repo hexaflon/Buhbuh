@@ -18,7 +18,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using ProjektInzynierski.utils;
 using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 using LogLevel = ProjektInzynierski.Utils.LogLevel;
@@ -27,18 +26,18 @@ namespace TestTest.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<Osoba> _signInManager;
-        private readonly UserManager<Osoba> _userManager;
-        private readonly IUserStore<Osoba> _userStore;
-        private readonly IUserEmailStore<Osoba> _emailStore;
+        private readonly SignInManager<Person> _signInManager;
+        private readonly UserManager<Person> _userManager;
+        private readonly IUserStore<Person> _userStore;
+        private readonly IUserEmailStore<Person> _emailStore;
         private IAppLogger _logger;
         private readonly IEmailSender _emailSender;
         private readonly TestTest.Models.Db.IdentityDatabaseContext _context;
 
         public RegisterModel(
-            UserManager<Osoba> userManager,
-            IUserStore<Osoba> userStore,
-            SignInManager<Osoba> signInManager,
+            UserManager<Person> userManager,
+            IUserStore<Person> userStore,
+            SignInManager<Person> signInManager,
             IEmailSender emailSender,
             TestTest.Models.Db.IdentityDatabaseContext context)
         {
@@ -114,17 +113,17 @@ namespace TestTest.Areas.Identity.Pages.Account
                 var user = CreateUser();
 
                 var users = await _userManager.Users
-                    .OrderByDescending(u => u.IdOsoba)
-                    .Select(u => u.IdOsoba)
+                    .OrderByDescending(u => u.PersonId)
+                    .Select(u => u.PersonId)
                     .ToListAsync();
 
                 if(users == null)
                 {
-                    user.IdOsoba = 1;
+                    user.PersonId = 1;
                 }
                 else
                 {
-                    user.IdOsoba = users.FirstOrDefault()+1;
+                    user.PersonId = users.FirstOrDefault()+1;
                 }
                 user.Name = Input.Name;
                 user.Surname = Input.Surname;
@@ -180,27 +179,27 @@ namespace TestTest.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private Osoba CreateUser()
+        private Person CreateUser()
         {
             try
             {
-                return Activator.CreateInstance<Osoba>();
+                return Activator.CreateInstance<Person>();
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(Osoba)}'. " +
-                    $"Ensure that '{nameof(Osoba)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(Person)}'. " +
+                    $"Ensure that '{nameof(Person)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<Osoba> GetEmailStore()
+        private IUserEmailStore<Person> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<Osoba>)_userStore;
+            return (IUserEmailStore<Person>)_userStore;
         }
     }
 }

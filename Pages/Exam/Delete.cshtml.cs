@@ -16,8 +16,8 @@ namespace ProjektInzynierski.Pages.Exam
     public class DeleteModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -33,7 +33,7 @@ namespace ProjektInzynierski.Pages.Exam
                 return NotFound();
             }
 
-            var test = await _context.Test.FirstOrDefaultAsync(m => m.IdTest == id);
+            var test = await _context.Test.FirstOrDefaultAsync(m => m.Id == id);
 
             if (test == null)
             {
@@ -58,21 +58,21 @@ namespace ProjektInzynierski.Pages.Exam
             {
                 if (!User.IsInRole("Admin"))
                 {
-                    if (test.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba) return RedirectToPage("./List");
+                    if (test.TeacherId != _userManager.GetUserAsync(User).Result.PersonId) return RedirectToPage("./List");
                 }
                 Test = test;
-                foreach(var lp in _context.ListaPytan.Where(l => l.IdTest == test.IdTest))
+                foreach(var lp in _context.QuestionList.Where(l => l.TestId == test.Id))
                 {
-                    _context.ListaPytan.Remove(lp);
+                    _context.QuestionList.Remove(lp);
                 }
-                var rozwiazania = _context.Rozwiazanie.Where(r => r.IdTest == test.IdTest).ToList();
-                foreach (var roz in rozwiazania)
+                var results = _context.Result.Where(r => r.TestId == test.Id).ToList();
+                foreach (var roz in results)
                 {
-                    foreach(var rozDP in _context.RozwiazanieDoPytan.Where(rdp => rdp.IdRozwiazanie == roz.IdRozwiazanie))
+                    foreach(var rozDP in _context.QuestionResult.Where(rdp => rdp.ResultId == roz.Id))
                     {
-                        _context.RozwiazanieDoPytan.Remove(rozDP);
+                        _context.QuestionResult.Remove(rozDP);
                     }
-                    _context.Rozwiazanie.Remove(roz);
+                    _context.Result.Remove(roz);
                 }
                 _context.Test.Remove(Test);
                 await _context.SaveChangesAsync();

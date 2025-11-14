@@ -16,51 +16,51 @@ namespace ProjektInzynierski.Pages.Exam
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
         private static int idWielokrotngo;
-        private readonly UserManager<Osoba> _userManager;
-        public ExamDetailedInfoModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public ExamDetailedInfoModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
-            idWielokrotngo = _context.TypPytania
-                .Where(tp => tp.Nazwa == "Wielokrotnego wyboru")
-                .Select(tp => tp.IdTypPytania).FirstOrDefault();
+            idWielokrotngo = _context.QuestionType
+                .Where(tp => tp.Name == "Wielokrotnego wyboru")
+                .Select(tp => tp.Id).FirstOrDefault();
             _userManager = userManager;
         }
 
-        public List<Pytanie> pytaniaSprawdzianu { get; set; } = default!;
-        public List<Pytanie> GetQuestions(int examId)
+        public List<TestTest.Models.Db.Question> testQuestions { get; set; } = default!;
+        public List<TestTest.Models.Db.Question> GetQuestions(int examId)
         {
-            var questions = _context.ListaPytan
-                .Include(lp => lp.IdPytanieNavigation)
-                .ThenInclude(p => p.Odpowiedz)
-                .Where(lp => lp.IdTest == examId)
-                .Select(lp => lp.IdPytanieNavigation).ToList();
+            var questions = _context.QuestionList
+                .Include(lp => lp.Questions)
+                .ThenInclude(p => p.Answers)
+                .Where(lp => lp.TestId == examId)
+                .Select(lp => lp.Questions).ToList();
 
             return questions;
         }
-        public List<Odpowiedz> wybraneOdp { get; set; } = default!;
+        public List<TestTest.Models.Db.Answer> selectedAnswers { get; set; } = default!;
         public string IconClass { get; set; }
         public string newStyleInput;
         public string newStyleLabel;
-        public Rozwiazanie Rozwiazanie { get; set; } = default!;
+        public Result Result { get; set; } = default!;
         public async Task<IActionResult> OnGetAsync(int id)
         {
-            if (_context.Rozwiazanie != null)
+            if (_context.Result != null)
             {
-                Rozwiazanie = _context.Rozwiazanie
-                .FirstOrDefault(r => r.IdRozwiazanie == id);
+                Result = _context.Result
+                .FirstOrDefault(r => r.Id == id);
 
                 if (User.IsInRole("Uczen") && _context.Test
-                    .Where(t => t.IdTest == Rozwiazanie.IdTest)
-                    .Select(t => t.CzyWidoczny)
+                    .Where(t => t.Id == Result.TestId)
+                    .Select(t => t.IsVisible)
                     .FirstOrDefault()==false) return RedirectToPage("./Marks");
 
-                wybraneOdp = _context.RozwiazanieDoPytan
-                    .Where(rdp => rdp.IdRozwiazanie==id)
-                    .Select(rdp => rdp.IdOdpowiedzNavigation)
+                selectedAnswers = _context.QuestionResult
+                    .Where(rdp => rdp.ResultId==id)
+                    .Select(rdp => rdp.Answers)
                     .ToList();
-                pytaniaSprawdzianu = GetQuestions((int)_context.Rozwiazanie
-                    .Where(r => r.IdRozwiazanie==id)
-                    .Select(r => r.IdTest).First());
+                testQuestions = GetQuestions((int)_context.Result
+                    .Where(r => r.Id==id)
+                    .Select(r => r.TestId).First());
                 ViewData["idWielokrotnego"] = idWielokrotngo;
                 
             }

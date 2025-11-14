@@ -36,19 +36,19 @@
         <thead>
             <tr class="text-muted text-center">
                 <th class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Test[0].DataRozpoczecia)
+                    @Html.DisplayNameFor(model => model.Test[0].StartDate)
                 </th>
                 <th class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Test[0].DataZakonczenia)
+                    @Html.DisplayNameFor(model => model.Test[0].EndDate)
                 </th>
                 <th class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Test[0].Tytul)
+                    @Html.DisplayNameFor(model => model.Test[0].Title)
                 </th>
                 <th class="col-sm-3">
-                    @Html.DisplayNameFor(model => model.Test[0].Opis)
+                    @Html.DisplayNameFor(model => model.Test[0].Description)
                 </th>
                 <th class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Test[0].CzasTrwania)
+                    @Html.DisplayNameFor(model => model.Test[0].Duration)
                 </th>
                 <th></th>
             </tr>
@@ -59,24 +59,24 @@
             {
                 <tr class="text1 text-center">
                     <td class="col-sm-2">
-                        @Html.DisplayFor(modelItem => item.DataRozpoczecia)
+                        @Html.DisplayFor(modelItem => item.StartDate)
                     </td>
                     <td class="col-sm-2">
-                        @Html.DisplayFor(modelItem => item.DataZakonczenia)
+                        @Html.DisplayFor(modelItem => item.EndDate)
                     </td>
                     <td class="col-sm-2">
-                        @Html.DisplayFor(modelItem => item.Tytul)
+                        @Html.DisplayFor(modelItem => item.Title)
                     </td>
                     <td class="col-sm-3">
-                        @Html.DisplayFor(modelItem => item.Opis)
+                        @Html.DisplayFor(modelItem => item.Description)
                     </td>
                     <td class="col-sm-2">
-                        @Html.DisplayFor(modelItem => item.CzasTrwania)
+                        @Html.DisplayFor(modelItem => item.Duration)
                     </td>
-                    @if (!Model.czyRozwiazany.ElementAt(i))
+                    @if (!Model.isSolved.ElementAt(i))
                     {
                         <td class="col-sm-1">
-                            <a class="btn btn-standard" asp-page="./ExamPerform" asp-route-id="@item.IdTest">Rozwiąż</a>
+                            <a class="btn btn-standard" asp-page="./ExamPerform" asp-route-id="@item.Id">Rozwiąż</a>
                         </td>
                     }
                     else

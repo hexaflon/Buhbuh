@@ -11,24 +11,24 @@
 <div>
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Odpowiedzi.TrescOdpowiedzi)
+            @Html.DisplayNameFor(model => model.Answers.Text)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Odpowiedzi.TrescOdpowiedzi)
+            @Html.DisplayFor(model => model.Answers.Text)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Odpowiedzi.CzyPoprawny)
+            @Html.DisplayNameFor(model => model.Answers.IsCorrect)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Odpowiedzi.CzyPoprawny)
+            @Html.DisplayFor(model => model.Answers.IsCorrect)
         </dd>
     </dl>
 
     <form method="post">
-        <input type="hidden" asp-for="Odpowiedzi.IdOdpowiedz" />
+        <input type="hidden" asp-for="Answers.Id" />
         <div class="form-group mt-3">
             <input type="submit" value="Usuń" class="btn btn-delete" />
-            <a class="btn btn-back ml-2" asp-page="Create"  asp-route-id="@Model.Odpowiedzi.IdPytanie">Powrót</a>
+            <a class="btn btn-back ml-2" asp-page="Create"  asp-route-id="@Model.Answers.QuestionId">Powrót</a>
         </div>
     </form>
 </div>

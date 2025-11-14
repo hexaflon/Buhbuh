@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Net.Http.Headers;
 using ProjektInzynierski.Pages.Answer;
-using ProjektInzynierski.utils;
 using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 using LogLevel = ProjektInzynierski.Utils.LogLevel;
@@ -21,9 +20,9 @@ namespace TestTest.Pages.Answer
     public class CreateModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
         private IAppLogger _logger;
-        public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -33,8 +32,8 @@ namespace TestTest.Pages.Answer
         }
 
         [BindProperty]
-        public Odpowiedz Odpowiedz { get; set; }
-        public Pytanie wysPytanie { get; set; }
+        public Models.Db.Answer Answer { get; set; }
+        public Models.Db.Question VisibleQuestion { get; set; }
 
         public bool hasCorrectAnswer { get; set; } = false;
 
@@ -45,20 +44,20 @@ namespace TestTest.Pages.Answer
                 ViewData["id"] = id;
                 
 
-                if (_context.Pytanie == null) return Page();
-                var PytanieList = _context.Pytanie.Include(p => p.Odpowiedz).ToList();
-                wysPytanie = (from pyt in PytanieList
-                              where pyt.IdPytanie == id
+                if (_context.Question == null) return Page();
+                var QuestionList = _context.Question.Include(p => p.Answers).ToList();
+                VisibleQuestion = (from pyt in QuestionList
+                              where pyt.Id == id
                               select pyt).FirstOrDefault();
-                if (wysPytanie == null)
+                if (VisibleQuestion == null)
                 {
-                    if (wysPytanie.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba) return Forbid();
+                    if (VisibleQuestion.TeacherId != _userManager.GetUserAsync(User).Result.PersonId) return Forbid();
                     return RedirectToPage("/Question/Index");
                 }
 
-                if (wysPytanie.IdTypPytania != 2)
+                if (VisibleQuestion.TypeId != 2)
                 {
-                    if (wysPytanie.Odpowiedz.Any(o => o.CzyPoprawny == true)) hasCorrectAnswer = true;
+                    if (VisibleQuestion.Answers.Any(o => o.IsCorrect == true)) hasCorrectAnswer = true;
                 }
 
 
@@ -76,35 +75,35 @@ namespace TestTest.Pages.Answer
         public async Task<IActionResult> OnPostAsync([FromQuery] int id)
         {
 
-            var pytanie = _context.Pytanie.FirstOrDefault(p => p.IdPytanie == id);
-            if (pytanie == null) return NotFound();
-            if (!ModelState.IsValid || _context.Odpowiedz == null || Odpowiedz == null)
+            var question = _context.Question.FirstOrDefault(p => p.Id == id);
+            if (question == null) return NotFound();
+            if (!ModelState.IsValid || _context.Answer == null || Answer == null)
             {
                 return Page();
             }
-            if (_context.Odpowiedz == null) Odpowiedz.IdOdpowiedz = 0;
+            if (_context.Answer == null) Answer.Id = 0;
             else
             {
-                var OdpowiedziList = _context.Odpowiedz.ToList();
-                Odpowiedz.IdOdpowiedz = (from odp in OdpowiedziList
-                                         orderby odp.IdOdpowiedz descending
-                                         select odp.IdOdpowiedz).FirstOrDefault() + 1;
+                var AnswerList = _context.Answer.ToList();
+                Answer.Id = (from odp in AnswerList
+                                         orderby odp.Id descending
+                                         select odp.Id).FirstOrDefault() + 1;
 
             }
-            if (id != null) Odpowiedz.IdPytanie = id;
+            if (id != null) Answer.QuestionId = id;
 
 
             var odpSave = AnswerFactory.Create(
-                    idPytanie: id,
-                    trescOdpowiedzi: Odpowiedz.TrescOdpowiedzi,
-                    czyPoprawny: Odpowiedz.CzyPoprawny,
-                    idOdpowiedz: Odpowiedz.IdOdpowiedz
+                    questionId: id,
+                    text: Answer.Text,
+                    isCorrect: Answer.IsCorrect,
+                    AnswerId: Answer.Id
                     );
 
 
-            _context.Odpowiedz.Add(Odpowiedz);
+            _context.Answer.Add(Answer);
             await _context.SaveChangesAsync();
-            _logger.Log($"User: {User.Identity.Name} utworzyl odpowiedź {Odpowiedz.ToString()}");
+            _logger.Log($"User: {User.Identity.Name} utworzyl odpowiedź {Answer.ToString()}");
             return RedirectToPage("", new { id = id });
         }
 

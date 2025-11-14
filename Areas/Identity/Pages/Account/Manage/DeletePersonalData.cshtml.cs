@@ -7,20 +7,20 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 
 namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
 {
     public class DeletePersonalDataModel : PageModel
     {
-        private readonly UserManager<Osoba> _userManager;
-        private readonly SignInManager<Osoba> _signInManager;
+        private readonly UserManager<Person> _userManager;
+        private readonly SignInManager<Person> _signInManager;
         private Logger _logger;
 
         public DeletePersonalDataModel(
-            UserManager<Osoba> userManager,
-            SignInManager<Osoba> signInManager)
+            UserManager<Person> userManager,
+            SignInManager<Person> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

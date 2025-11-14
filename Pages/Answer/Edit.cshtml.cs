@@ -17,30 +17,30 @@ namespace TestTest.Pages.Answer
     public class EditModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public EditModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public EditModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         [BindProperty]
-        public Odpowiedz Odpowiedzi { get; set; } = default!;
+        public Models.Db.Answer Answers { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync([FromQuery]int? id)
         {
-            if (id == null || _context.Odpowiedz == null)
+            if (id == null || _context.Answer == null)
             {
                 return NotFound();
             }            
-            var odpowiedzi =  await _context.Odpowiedz
-                .FirstOrDefaultAsync(m => m.IdOdpowiedz == id);
-            if (odpowiedzi == null)
+            var answers =  await _context.Answer
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (answers == null)
             {
                 return NotFound();
             }
-            Odpowiedzi = odpowiedzi;
-            ViewData["IdPytanie"] = odpowiedzi.IdPytanie;
+            Answers = answers;
+            ViewData["QuestionId"] = answers.QuestionId;
             return Page();
         }
 
@@ -54,14 +54,14 @@ namespace TestTest.Pages.Answer
             }
             if (!User.IsInRole("Admin"))
             {
-                var idNauczyciela = _context.Pytanie
-                .Where(p => p.IdPytanie == Odpowiedzi.IdPytanie)
-                .Select(p => p.IdNauczyciela).FirstOrDefault();
-                var idOsoba = _userManager.GetUserAsync(User).Result.IdOsoba;
-                if (idNauczyciela != idOsoba) return RedirectToPage("./Index");
+                var teacherId = _context.Question
+                .Where(p => p.Id == Answers.QuestionId)
+                .Select(p => p.TeacherId).FirstOrDefault();
+                var idOsoba = _userManager.GetUserAsync(User).Result.PersonId;
+                if (teacherId != idOsoba) return RedirectToPage("./Index");
             }
             
-            _context.Attach(Odpowiedzi).State = EntityState.Modified;
+            _context.Attach(Answers).State = EntityState.Modified;
             
             try
             {
@@ -69,7 +69,7 @@ namespace TestTest.Pages.Answer
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!OdpowiedziExists(Odpowiedzi.IdOdpowiedz))
+                if (!AnswersExists(Answers.Id))
                 {
                     return NotFound();
                 }
@@ -82,9 +82,9 @@ namespace TestTest.Pages.Answer
             return RedirectToPage("./Index");
         }
 
-        private bool OdpowiedziExists(int id)
+        private bool AnswersExists(int id)
         {
-          return (_context.Odpowiedz?.Any(e => e.IdOdpowiedz == id)).GetValueOrDefault();
+          return (_context.Answer?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

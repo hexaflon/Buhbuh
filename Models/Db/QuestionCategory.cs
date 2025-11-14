@@ -4,23 +4,23 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TestTest.Models.Db
 {
-    public partial class KategoriaPytania
+    public partial class QuestionCategory
     {
-        public KategoriaPytania()
+        public QuestionCategory()
         {
-            Pytanie = new HashSet<Pytanie>();
+            Question = new HashSet<Question>();
         }
 
         [Display(Name = "ID kategorii pytania")]
-        public int IdKategoriaPytania { get; set; }
+        public int Id { get; set; }
         [Display(Name = "Kategoria pytania")]
         [Required(ErrorMessage = "To pole jest wymagane.")]
         [StringLength(45, ErrorMessage = "Maksymalna długość to 45 znaków.")]
-        public string Nazwa { get; set; } = null!;
+        public string Name { get; set; } = null!;
         [Display(Name = "Opis kategorii")]
         [StringLength(255, ErrorMessage = "Maksymalna długość to 255 znaków.")]
-        public string Opis { get; set; } = null!;
+        public string Description { get; set; } = null!;
 
-        public virtual ICollection<Pytanie> Pytanie { get; set; }
+        public virtual ICollection<Question> Question { get; set; }
     }
 }

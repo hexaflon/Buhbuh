@@ -12,12 +12,12 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
 {
     public class SetPasswordModel : PageModel
     {
-        private readonly UserManager<Osoba> _userManager;
-        private readonly SignInManager<Osoba> _signInManager;
+        private readonly UserManager<Person> _userManager;
+        private readonly SignInManager<Person> _signInManager;
 
         public SetPasswordModel(
-            UserManager<Osoba> userManager,
-            SignInManager<Osoba> signInManager)
+            UserManager<Person> userManager,
+            SignInManager<Person> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

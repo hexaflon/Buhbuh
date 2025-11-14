@@ -13,12 +13,12 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
-        private readonly UserManager<Osoba> _userManager;
-        private readonly SignInManager<Osoba> _signInManager;
+        private readonly UserManager<Person> _userManager;
+        private readonly SignInManager<Person> _signInManager;
 
         public IndexModel(
-            UserManager<Osoba> userManager,
-            SignInManager<Osoba> signInManager)
+            UserManager<Person> userManager,
+            SignInManager<Person> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -49,7 +49,7 @@ namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
             public string PhoneNumber { get; set; }
         }
 
-        private async Task LoadAsync(Osoba user)
+        private async Task LoadAsync(Person user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);

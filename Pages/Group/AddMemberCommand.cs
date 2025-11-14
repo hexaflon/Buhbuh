@@ -5,28 +5,28 @@ namespace ProjektInzynierski.Pages.Group
     public class AddMemberCommand : IGroupCommand
     {
         private readonly DatabaseContext _context;
-        private readonly int _idGrupy;
-        private readonly int _idUcznia;
+        private readonly int _GroupId;
+        private readonly int _StudentId;
 
-        public AddMemberCommand(DatabaseContext context, int idGrupy, int idUcznia)
+        public AddMemberCommand(DatabaseContext context, int groupId, int studentId)
         {
             _context = context;
-            _idGrupy = idGrupy;
-            _idUcznia = idUcznia;
+            _GroupId = groupId;
+            _StudentId = studentId;
         }
 
         public void Execute()
         {
-            int nextId = (_context.Uczestnicy.OrderByDescending(u => u.IdUczestnicy).FirstOrDefault()?.IdUczestnicy ?? 0) + 1;
+            int nextId = (_context.Participant.OrderByDescending(u => u.Id).FirstOrDefault()?.Id ?? 0) + 1;
 
-            var uczestnik = new Uczestnicy
+            var participant = new Participant
             {
-                IdUczestnicy = nextId,
-                IdGrupy = _idGrupy,
-                IdUcznia = _idUcznia
+                Id = nextId,
+                GroupId = _GroupId,
+                StudentId = _StudentId
             };
 
-            _context.Uczestnicy.Add(uczestnik);
+            _context.Participant.Add(participant);
             _context.SaveChanges();
         }
     }

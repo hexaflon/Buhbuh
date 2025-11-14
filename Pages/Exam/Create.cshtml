@@ -36,39 +36,42 @@
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Test.IdGrupy" class="control-label"></label>
-                    <select asp-for="Test.IdGrupy" class="form-control" asp-items="ViewBag.IdGrupy"></select>
+                    <label asp-for="Test.GroupId" class="control-label"></label>
+                    <select asp-for="Test.GroupId"
+                            class="form-control"
+                            asp-items="@(ViewBag.IdGrupy ?? new SelectList(Enumerable.Empty<SelectListItem>()))">
+                    </select>
                 </div>
 
                 <div class="form-group form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" asp-for="Test.CzyWidoczny" /> @Html.DisplayNameFor(model => model.Test.CzyWidoczny)
+                        <input class="form-check-input" asp-for="Test.IsVisible" /> @Html.DisplayNameFor(model => model.Test.IsVisible)
                     </label>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.DataRozpoczecia" class="control-label"></label>
-                    <input asp-for="Test.DataRozpoczecia" class="form-control" />
-                    <span asp-validation-for="Test.DataRozpoczecia" class="text-danger"></span>
+                    <label asp-for="Test.StartDate" class="control-label"></label>
+                    <input asp-for="Test.StartDate" class="form-control" />
+                    <span asp-validation-for="Test.StartDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.DataZakonczenia" class="control-label"></label>
-                    <input asp-for="Test.DataZakonczenia" class="form-control" />
-                    <span asp-validation-for="Test.DataZakonczenia" class="text-danger"></span>
+                    <label asp-for="Test.EndDate" class="control-label"></label>
+                    <input asp-for="Test.EndDate" class="form-control" />
+                    <span asp-validation-for="Test.EndDate" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.Tytul" class="control-label"></label>
-                    <input asp-for="Test.Tytul" class="form-control" />
-                    <span asp-validation-for="Test.Tytul" class="text-danger"></span>
+                    <label asp-for="Test.Title" class="control-label"></label>
+                    <input asp-for="Test.Title" class="form-control" />
+                    <span asp-validation-for="Test.Title" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.Opis" class="control-label"></label>
-                    <input asp-for="Test.Opis" class="form-control" />
-                    <span asp-validation-for="Test.Opis" class="text-danger"></span>
+                    <label asp-for="Test.Description" class="control-label"></label>
+                    <input asp-for="Test.Description" class="form-control" />
+                    <span asp-validation-for="Test.Description" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label asp-for="Test.CzasTrwania" class="control-label"></label>
-                    <input asp-for="Test.CzasTrwania" class="form-control" />
-                    <span asp-validation-for="Test.CzasTrwania" class="text-danger"></span>
+                    <label asp-for="Test.Duration" class="control-label"></label>
+                    <input asp-for="Test.Duration" class="form-control" />
+                    <span asp-validation-for="Test.Duration" class="text-danger"></span>
                 </div>
                 <div class="form-group mt-3">
                     <input type="submit" value="Utwórz" class="btn btn-standard" />

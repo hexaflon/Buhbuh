@@ -21,9 +21,9 @@
                         <label for="questionFilter" class="row1">Pytanie:</label>
                         <select class="form-control dropdown" id="questionFilter" name="questionFilter">
                             <option value="">Wszystkie</option>
-                            @foreach (var question in Model.Pytania)
+                            @foreach (var question in Model.Questions)
                             {
-                                <option value="@question.IdPytanie">@question.Tresc</option>
+                                <option value="@question.Id">@question.Text</option>
                             }
                         </select>
                     </div>
@@ -49,7 +49,7 @@
         </div>
     </form>
 
-    @if (!Model.Odpowiedzi.Any())
+    @if (!Model.Answers.Any())
     {
         <p class="text2">Aktualnie w bazie danych nie ma żadnych odpowiedzi. Możesz dodać odpowiedzi do konkretnego pytania na stronie "Pytania".</p>
     } else
@@ -64,21 +64,21 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.Odpowiedzi)
+            @foreach (var item in Model.Answers)
             {
                 var correctnessFilter = Request.Query["correctnessFilter"];
                 var questionFilter = Request.Query["questionFilter"];
 
-                @if ((string.IsNullOrEmpty(correctnessFilter) || ToLowerString(item.CzyPoprawny) == ToLowerString(correctnessFilter)) &&
-               (string.IsNullOrEmpty(questionFilter) || item.IdPytanie == int.Parse(questionFilter)))
+                @if ((string.IsNullOrEmpty(correctnessFilter) || ToLowerString(item.IsCorrect) == ToLowerString(correctnessFilter)) &&
+               (string.IsNullOrEmpty(questionFilter) || item.QuestionId == int.Parse(questionFilter)))
                 {
                     <tr class="text1 text-center">
-                        <td class="col-sm-3">@Html.DisplayFor(modelItem => item.TrescOdpowiedzi)</td>
-                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.CzyPoprawny)</td>
-                        <td class="col-sm-3">@Html.DisplayFor(modelItem => item.IdPytanieNavigation.Tresc)</td>
+                        <td class="col-sm-3">@Html.DisplayFor(modelItem => item.Text)</td>
+                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.IsCorrect)</td>
+                        <td class="col-sm-3">@Html.DisplayFor(modelItem => item.Questions.Text)</td>
                         <td class="col-sm-3">
-                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.IdOdpowiedz">Edytuj</a>
-                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.IdOdpowiedz">Usuń</a>
+                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.Id">Edytuj</a>
+                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.Id">Usuń</a>
                         </td>
                     </tr>
                 }

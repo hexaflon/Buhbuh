@@ -39,7 +39,7 @@
                             <option value="">Wszystkie</option>
                             @foreach (var group in Model.Groups)
                             {
-                                <option value="@group.Nazwa">@group.Nazwa</option>
+                                <option value="@group.Name">@group.Name</option>
                             }
                         </select>
                     </div>
@@ -87,38 +87,38 @@
                 var groupNameFilter = Request.Query["groupName"];
                 var searchTextFilter = Request.Query["searchText"];
 
-                @if ((string.IsNullOrEmpty(visibilityFilter) || ToLowerString(item.CzyWidoczny) == ToLowerString(visibilityFilter)) &&
-               (string.IsNullOrEmpty(groupNameFilter) || item.IdGrupyNavigation.Nazwa == groupNameFilter) &&
-               (string.IsNullOrEmpty(searchTextFilter) || item.Tytul.Contains(searchTextFilter, StringComparison.OrdinalIgnoreCase)))
+                @if ((string.IsNullOrEmpty(visibilityFilter) || ToLowerString(item.IsVisible) == ToLowerString(visibilityFilter)) &&
+               (string.IsNullOrEmpty(groupNameFilter) || item.Groups.Name == groupNameFilter) &&
+               (string.IsNullOrEmpty(searchTextFilter) || item.Title.Contains(searchTextFilter, StringComparison.OrdinalIgnoreCase)))
                 {
                     <tr class="text1 no-border text-center">
-                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.CzyWidoczny)</td>
-                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.DataRozpoczecia)</td>
-                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.DataZakonczenia)</td>
-                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.Tytul)</td>
-                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.CzasTrwania)</td>
-                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.IdGrupyNavigation.IdGrupy)</td>
+                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.IsVisible)</td>
+                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.StartDate)</td>
+                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.EndDate)</td>
+                        <td class="col-sm-2">@Html.DisplayFor(modelItem => item.Title)</td>
+                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.Duration)</td>
+                        <td class="col-sm-1">@Html.DisplayFor(modelItem => item.Groups.Id)</td>
                         <td>
-                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.IdTest">Edytuj</a>
-                            <a class="btn btn-details" asp-page="./Details" asp-route-id="@item.IdTest">Oceny</a>
-                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.IdTest">Usuń</a>
+                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.Id">Edytuj</a>
+                            <a class="btn btn-details" asp-page="./Details" asp-route-id="@item.Id">Oceny</a>
+                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.Id">Usuń</a>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="9">
-                            <a class="btn btn-create" asp-page="./AddQuestion" asp-route-id="@item.IdTest">Zarządzaj pytaniami</a>
-                            <button class="btn btn-show-hide" data-test-id="@item.IdTest" data-toggle-text="Pokaż pytania">Pokaż pytania</button>
+                            <a class="btn btn-create" asp-page="./AddQuestion" asp-route-id="@item.Id">Zarządzaj pytaniami</a>
+                            <button class="btn btn-show-hide" data-test-id="@item.Id" data-toggle-text="Pokaż pytania">Pokaż pytania</button>
                         </td>
                     </tr>
-                    <tr class="text-muted questions-row" id="questions-row-@item.IdTest" style="display: none;">
+                    <tr class="text-muted questions-row" id="questions-row-@item.Id" style="display: none;">
                         <td colspan="9">
                             <b>Pytania</b>
                             <table>
-                                @foreach (var pytanie in item.ListaPytan)
+                                @foreach (var pytanie in item.Questions)
                                 {
                                     <tr class="text1">
                                         <td colspan="8">
-                                            @Html.DisplayFor(x => pytanie.IdPytanieNavigation.Tresc)
+                                            @Html.DisplayFor(x => pytanie.Questions.Text)
                                         </td>
                                     </tr>
                                 }
@@ -138,7 +138,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
     <script>
         $(document).ready(function () {
-            var tytulyArray = @Html.Raw(Json.Serialize(Model.Test.Select(t => t.Tytul).ToList()));
+            var tytulyArray = @Html.Raw(Json.Serialize(Model.Test.Select(t => t.Title).ToList()));
 
             $("#searchText").autocomplete({
                 source: function (request, response) {

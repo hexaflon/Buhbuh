@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ProjektInzynierski.utils;
+
 using TestTest.Models.Db;
 
 namespace ProjektInzynierski.Areas.Identity.Pages.Account.Manage
 {
     public class PersonalDataModel : PageModel
     {
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
 
         public PersonalDataModel(
-            UserManager<Osoba> userManager)
+            UserManager<Person> userManager)
         {
             _userManager = userManager;
         }

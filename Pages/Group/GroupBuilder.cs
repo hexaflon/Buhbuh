@@ -4,41 +4,41 @@ namespace ProjektInzynierski.Pages.Group
 {
     public class GroupBuilder
     {
-        private Grupy _group;
+        private TestTest.Models.Db.Group _group;
 
 
         public GroupBuilder()
         {
-            _group = new Grupy();
+            _group = new TestTest.Models.Db.Group();
         }
 
         public GroupBuilder SetID(int id)
         {
-            _group.IdGrupy = id;
+            _group.Id = id;
             return this;
         }
 
-        public GroupBuilder SetNazwa(string nazwa)
+        public GroupBuilder SetName(string name)
         {
-            _group.Nazwa = nazwa;
+            _group.Name = name;
             return this;
         }
 
-        public GroupBuilder SetNauczyciel(int idNauczyciel)
+        public GroupBuilder SetTeacherId(int teacherId)
         {
-            _group.IdNauczyciela = idNauczyciel;
+            _group.TeacherId = teacherId;
             return this;
         }
-        public GroupBuilder AddUczestnik(Uczestnicy uczestnik)
+        public GroupBuilder AddParticipant(Participant participant)
         {
-            _group.Uczestnicy.Add(uczestnik);
+            _group.Participants.Add(participant);
             return this;
         }
-        public GroupBuilder AddListUczestnik(List<Uczestnicy> list)
+        public GroupBuilder AddParticipantList(List<Participant> list)
         {
-            foreach (Uczestnicy uczestnik in list)
+            foreach (Participant participant in list)
             {
-                _group.Uczestnicy.Add(uczestnik);
+                _group.Participants.Add(participant);
             }
             return this;
         }
@@ -47,7 +47,7 @@ namespace ProjektInzynierski.Pages.Group
 
 
 
-        public Grupy Build()
+        public TestTest.Models.Db.Group Build()
         {
             return _group;
         }

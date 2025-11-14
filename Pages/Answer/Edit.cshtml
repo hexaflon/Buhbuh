@@ -13,19 +13,19 @@
         <div class="col-md-4">
             <form method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="Odpowiedzi.IdOdpowiedz" />
+                <input type="hidden" asp-for="Answers.Id" />
 
                 <div hidden>
-                    <input asp-for="Odpowiedzi.IdPytanie" value="@ViewBag.IdPytanie" />
+                    <input asp-for="Answers.QuestionId" value="@ViewBag.IdPytanie" />
                 </div>
                 <div class="form-group">
-                    <label asp-for="Odpowiedzi.TrescOdpowiedzi" class="control-label">@Html.DisplayNameFor(model => model.Odpowiedzi.TrescOdpowiedzi)</label>
-                    <input asp-for="Odpowiedzi.TrescOdpowiedzi" class="form-control" />
-                    <span asp-validation-for="Odpowiedzi.TrescOdpowiedzi" class="text-danger"></span>
+                    <label asp-for="Answers.Text" class="control-label">@Html.DisplayNameFor(model => model.Answers.Text)</label>
+                    <input asp-for="Answers.Text" class="form-control" />
+                    <span asp-validation-for="Answers.Text" class="text-danger"></span>
                 </div>
                 <div class="form-group form-check">
                     <label class="form-check-label">
-                        <input class="form-check-input" asp-for="Odpowiedzi.CzyPoprawny" /> @Html.DisplayNameFor(model => model.Odpowiedzi.CzyPoprawny)
+                        <input class="form-check-input" asp-for="Answers.IsCorrect" /> @Html.DisplayNameFor(model => model.Answers.IsCorrect)
                     </label>
                 </div>
                 <div class="form-group mt-3">

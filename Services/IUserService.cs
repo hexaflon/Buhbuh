@@ -6,19 +6,19 @@ namespace TestTest.Services
 {
     public interface IUserService
     {
-        Task<Osoba> GetUserAsync(ClaimsPrincipal principal);
+        Task<Person> GetUserAsync(ClaimsPrincipal principal);
     }
 
     public class UserService : IUserService
     {
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
 
-        public UserService(UserManager<Osoba> userManager)
+        public UserService(UserManager<Person> userManager)
         {
             _userManager = userManager;
         }
 
-        public async Task<Osoba> GetUserAsync(ClaimsPrincipal principal)
+        public async Task<Person> GetUserAsync(ClaimsPrincipal principal)
         {
             var user = await _userManager.GetUserAsync(principal);
             return user;

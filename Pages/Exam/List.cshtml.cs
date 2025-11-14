@@ -16,16 +16,16 @@ namespace ProjektInzynierski.Pages.Exam
     public class ListModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
 
-        public ListModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public ListModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
         public IList<Test> Test { get; set; } = default!;
-        public IList<Grupy> Groups { get; set; } = default!;
+        public IList<TestTest.Models.Db.Group> Groups { get; set; } = default!;
 
         [BindProperty(SupportsGet = true)]
         public string Visibility { get; set; }
@@ -39,50 +39,50 @@ namespace ProjektInzynierski.Pages.Exam
         public async Task OnGetAsync()
         {
             var query = _context.Test
-                .OrderByDescending(t => t.IdTest)
-                .Include(t => t.IdGrupyNavigation)
-                .Include(t => t.ListaPytan)
-                .ThenInclude(lp => lp.IdPytanieNavigation)
+                .OrderByDescending(t => t.Id)
+                .Include(t => t.Groups)
+                .Include(t => t.Questions)
+                .ThenInclude(lp => lp.Questions)
                 .AsQueryable();
 
             //do wyszukiwania testów
             if (!string.IsNullOrEmpty(Visibility))
             {
                 var visibilityValue = bool.Parse(Visibility);
-                query = query.Where(t => t.CzyWidoczny == visibilityValue);
+                query = query.Where(t => t.IsVisible == visibilityValue);
             }
 
             if (!string.IsNullOrEmpty(GroupName))
             {
-                query = query.Where(t => t.IdGrupyNavigation.Nazwa == GroupName);
+                query = query.Where(t => t.Groups.Name == GroupName);
             }
 
             if (!string.IsNullOrEmpty(SearchText))
             {
                 query = query
-                    .Where(t => t.ListaPytan.Any(lp => EF.Functions.Like(lp.IdPytanieNavigation.Tresc, $"%{SearchText}%")));
+                    .Where(t => t.Questions.Any(lp => EF.Functions.Like(lp.Questions.Text, $"%{SearchText}%")));
             }
 
             if (User.IsInRole("Admin"))
             {
                 Test = await _context.Test
-                    .OrderByDescending(t => t.IdTest)
-                    .Include(t => t.IdGrupyNavigation)
-                    .Include(t => t.ListaPytan)
-                    .ThenInclude(lp => lp.IdPytanieNavigation).ToListAsync();
+                    .OrderByDescending(t => t.Id)
+                    .Include(t => t.Groups)
+                    .Include(t => t.Questions)
+                    .ThenInclude(lp => lp.Questions).ToListAsync();
             }
             else
             {
-                var iduser = _userManager.GetUserAsync(User).Result.IdOsoba;
+                var iduser = _userManager.GetUserAsync(User).Result.PersonId;
                 Test = await _context.Test
-                    .OrderByDescending(t => t.IdTest)
-                    .Where(t => t.IdNauczyciela == iduser)
-                    .Include(t => t.IdGrupyNavigation)
-                    .Include(t => t.ListaPytan)
-                    .ThenInclude(lp => lp.IdPytanieNavigation).ToListAsync();
+                    .OrderByDescending(t => t.Id)
+                    .Where(t => t.TeacherId == iduser)
+                    .Include(t => t.Groups)
+                    .Include(t => t.Questions)
+                    .ThenInclude(lp => lp.Questions).ToListAsync();
             }
 
-            Groups = await _context.Grupy.ToListAsync();
+            Groups = await _context.Group.ToListAsync();
         }
     }
 }

@@ -15,14 +15,14 @@ namespace TestTest.Pages
     public class IndexAdminModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public IndexAdminModel(TestTest.Models.Db.DatabaseContext context, ILogger<IndexAdminModel> logger, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public IndexAdminModel(TestTest.Models.Db.DatabaseContext context, ILogger<IndexAdminModel> logger, UserManager<Person> userManager)
         {
             _userManager = userManager;
             _context = context;
         }
 
-        public IList<Osoba> User { get;set; } = default!;
+        public IList<Person> User { get;set; } = default!;
 
         public async Task OnGetAsync()
         {

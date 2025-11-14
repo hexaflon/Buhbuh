@@ -21,9 +21,9 @@
                         <label for="categoryId" class="row1">Kategoria:</label>
                         <select class="form-control dropdown" id="categoryId" name="categoryId">
                             <option value="">Wszystkie</option>
-                            @foreach (var category in Model.Kategorie)
+                            @foreach (var category in Model.QuestionCategory)
                             {
-                                <option value="@category.IdKategoriaPytania">@category.Nazwa</option>
+                                <option value="@category.Id">@category.Name</option>
                             }
                         </select>
                     </div>
@@ -34,9 +34,9 @@
                         <label for="typeId" class="row1">Typ pytania:</label>
                         <select class="form-control dropdown" id="typeId" name="typeId">
                             <option value="">Wszystkie</option>
-                            @foreach (var type in Model.TypyPytan)
+                            @foreach (var type in Model.QuestionType)
                             {
-                                <option value="@type.IdTypPytania">@type.Nazwa</option>
+                                <option value="@type.Id">@type.Name</option>
                             }
                         </select>
                     </div>
@@ -59,7 +59,7 @@
         </div>
     </form>
 
-     @if (!Model.Pytanie.Any())
+     @if (!Model.Question.Any())
     {
         <p class="text2">Aktualnie w bazie danych nie ma żadnych pytań. Możesz je dodać za pomocą przycisku "Utwórz pytanie".</p>
     }
@@ -68,39 +68,39 @@
         <table class="table">
             <thead>
                 <tr class="text-muted text-center">
-                    <th class="col-sm-5">@Html.DisplayNameFor(model => model.Pytanie.FirstOrDefault().Tresc)</th>
-                    <th class="col-sm-2">@Html.DisplayNameFor(model => model.Pytanie.FirstOrDefault().IdKategoriaPytaniaNavigation.Nazwa)</th>
-                    <th class="col-sm-2">@Html.DisplayNameFor(model => model.Pytanie.FirstOrDefault().IdTypPytaniaNavigation.Nazwa)</th>
+                    <th class="col-sm-5">@Html.DisplayNameFor(model => model.Question.FirstOrDefault().Text)</th>
+                    <th class="col-sm-2">@Html.DisplayNameFor(model => model.Question.FirstOrDefault().Category.Name)</th>
+                    <th class="col-sm-2">@Html.DisplayNameFor(model => model.Question.FirstOrDefault().Type.Name)</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model.Pytanie)
+                @foreach (var item in Model.Question)
                 {
                     <tr class="text1 no-border">
-                        <td class="col-sm-5">@Html.DisplayFor(modelItem => item.Tresc)</td>
-                        <td class="text-center col-sm-2">@Html.DisplayFor(modelItem => item.IdKategoriaPytaniaNavigation.Nazwa)</td>
-                        <td class="text-center col-sm-2">@Html.DisplayFor(modelItem => item.IdTypPytaniaNavigation.Nazwa)</td>
+                        <td class="col-sm-5">@Html.DisplayFor(modelItem => item.Text)</td>
+                        <td class="text-center col-sm-2">@Html.DisplayFor(modelItem => item.Category.Name)</td>
+                        <td class="text-center col-sm-2">@Html.DisplayFor(modelItem => item.Type.Name)</td>
                         <td class="text-center">
-                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.IdPytanie">Edytuj</a>
-                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.IdPytanie">Usuń</a>
+                            <a class="btn btn-edit" asp-page="./Edit" asp-route-id="@item.Id">Edytuj</a>
+                            <a class="btn btn-delete" asp-page="./Delete" asp-route-id="@item.Id">Usuń</a>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="5" class="text-left">
-                            <a class="btn btn-create" asp-page="/Answer/Create" asp-route-id="@item.IdPytanie">Zarządzaj odpowiedziami</a>
-                            <button class="btn btn-show-hide" data-question-id="@item.IdPytanie" data-toggle-text="Pokaż odpowiedzi">Pokaż odpowiedzi</button>
+                            <a class="btn btn-create" asp-page="/Answer/Create" asp-route-id="@item.Id">Zarządzaj odpowiedziami</a>
+                            <button class="btn btn-show-hide" data-question-id="@item.Id" data-toggle-text="Pokaż odpowiedzi">Pokaż odpowiedzi</button>
                         </td>
                     </tr>
-                    <tr class="text-muted answers-row" id="answers-row-@item.IdPytanie" style="display: none;">
+                    <tr class="text-muted answers-row" id="answers-row-@item.Id" style="display: none;">
                         <td colspan="5">
                             <b>Odpowiedzi</b>
                             <table>
-                                @foreach (var answer in item.Odpowiedz)
+                                @foreach (var answer in item.Answers)
                                 {
                                     <tr class="text1">
-                                        <td class="answer1">@Html.DisplayFor(model => answer.TrescOdpowiedzi)</td>
-                                        <td class="answer1">@Html.DisplayFor(model => answer.CzyPoprawny)</td>
+                                        <td class="answer1">@Html.DisplayFor(model => answer.Text)</td>
+                                        <td class="answer1">@Html.DisplayFor(model => answer.IsCorrect)</td>
                                     </tr>
                                 }
                             </table>
@@ -118,7 +118,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
     <script>
         $(document).ready(function () {
-            var pytaniaArray = @Html.Raw(Json.Serialize(Model.Pytanie.Select(p => p.Tresc).ToList()));
+            var pytaniaArray = @Html.Raw(Json.Serialize(Model.Question.Select(p => p.Text).ToList()));
 
             $("#searchText").autocomplete({
                 source: function (request, response) {

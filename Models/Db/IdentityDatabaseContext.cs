@@ -4,7 +4,7 @@ using TestTest.Models.Db;
 
 namespace TestTest.Models.Db
 {
-    public class IdentityDatabaseContext : IdentityDbContext<Osoba>
+    public class IdentityDatabaseContext : IdentityDbContext<Person>
     {
         public IdentityDatabaseContext(DbContextOptions<IdentityDatabaseContext> options)
             : base(options)

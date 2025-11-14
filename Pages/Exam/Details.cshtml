@@ -11,25 +11,25 @@
 
     <div class="card mt-4">
         <div class="card-body">
-            <h4 class="card-title">@Html.DisplayFor(model => model.Test.Tytul)</h4>
+            <h4 class="card-title">@Html.DisplayFor(model => model.Test.Title)</h4>
             <hr />
 
             <table class="table">
                 <tbody>
                     <tr>
                         <th scope="row" class="col-sm-3 text-muted">ID nauczyciela:</th>
-                        <td class="col-sm-9 text1">@Html.DisplayFor(model => model.Test.IdNauczyciela)</td>
+                        <td class="col-sm-9 text1">@Html.DisplayFor(model => model.Test.TeacherId)</td>
                     </tr>
                     <tr>
                         <th scope="row" class="col-sm-3 text-muted">Opis testu:</th>
                         <td class="col-sm-9 text1">
-                            @if (String.IsNullOrEmpty(Model.Test.Opis))
+                            @if (String.IsNullOrEmpty(Model.Test.Description))
                             {
                                 @Html.Raw("-")
                             }
                             else
                             {
-                                @Html.DisplayFor(model => model.Test.Opis)
+                                @Html.DisplayFor(model => model.Test.Description)
                             }
                         </td>
                     </tr>
@@ -49,7 +49,7 @@
                     <tr>
                         <th scope="row" class="col-sm-3 text-muted">Wyniki</th>
                         <td>
-                            @if (!Model.Wyniki.Any())
+                            @if (!Model.Scores.Any())
                             {
                                 <p class="text1">Brak wyników.</p>
                             }
@@ -70,23 +70,23 @@
                                     </div>
                                 </div>
 
-                                @for (int i = 0; i < Model.Wyniki.Count; i++)
+                                @for (int i = 0; i < Model.Scores.Count; i++)
                                 {
                                     <div class="row text1">
                                         <div class="col-sm-1">
-                                            @Html.Raw($"{Model.Wyniki[i].idUcznia}")
+                                            @Html.Raw($"{Model.Scores[i].studentId}")
                                         </div>
                                         <div class="col-sm-3 text-center">
-                                            @Html.Raw($"{Model.Wyniki[i].nazwisko} {Model.Wyniki[i].imie}")
+                                            @Html.Raw($"{Model.Scores[i].surname} {Model.Scores[i].name}")
                                         </div>
                                         <div class="col-sm-2 text-center">
-                                            @Html.Raw($"{Model.Wyniki[i].wiadomosc}")
+                                            @Html.Raw($"{Model.Scores[i].message}")
                                         </div>
                                         <div class="col-sm-2 text-center">
-                                            @Model.Oceny[i]
+                                            @Model.Mark[i]
                                         </div>
                                         <div class="col-sm-3 text-center">
-                                            <a class="btn btn-details" asp-page="./ExamInfo" asp-route-id="@Model.Rozwiazanie[i].IdRozwiazanie">Zobacz więcej</a>
+                                            <a class="btn btn-details" asp-page="./ExamInfo" asp-route-id="@Model.Results[i].Id">Zobacz więcej</a>
                                         </div>
                                     </div>
                                     <br />

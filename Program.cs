@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using ProjektInzynierski.utils;
 using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 
@@ -18,7 +17,7 @@ namespace TestTest
             builder.Services.AddDbContext<IdentityDatabaseContext>(options =>
             options.UseSqlServer(connectionString));
 
-            builder.Services.AddDefaultIdentity<Osoba>(options =>
+            builder.Services.AddDefaultIdentity<Person>(options =>
             options.SignIn.RequireConfirmedAccount = false)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<IdentityDatabaseContext>();
@@ -46,9 +45,24 @@ namespace TestTest
             app.UseAuthorization();
 
             //u¿ycie Observera
-            var logger = Logger.getInstance();
+
+            //Przyk³ad 1 ad2
+            //BaseLogger logger = new BufferedLogger(new ColoredLogStrategy());
+            //Przyk³ad 2 ad2 
+            /*
+            ILogStrategy strategy= new ColoredLogStrategy();
+            BaseLogger logger = Logger.getInstance();
+            logger.SetStrategy(strategy);
+            */
+            //Przyk³ad 3 ad2
+            BaseLogger logger = Logger.getInstance();
+            ILogObserver observer = new ConsoleLogObserver();
+            
+
             logger.Attach(new ConsoleLogObserver());
             logger.Attach(new FileLogObserver());
+
+            logger.Log("START.");
 
             app.Run();
         }

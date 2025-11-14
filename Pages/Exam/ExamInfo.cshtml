@@ -3,8 +3,8 @@
 @using TestTest.Models.Db;
 @using Microsoft.AspNetCore.Mvc;
 @using Microsoft.AspNetCore.Identity
-@inject SignInManager<Osoba> SignInManager
-@inject UserManager<Osoba> UserManager
+@inject SignInManager<Person> SignInManager
+@inject UserManager<Person> UserManager
 
 
 @{
@@ -20,24 +20,24 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Test.Tytul):
+            @Html.DisplayNameFor(model => model.Test.Title):
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Test.Tytul)
+            @Html.DisplayFor(model => model.Test.Title)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Test.Opis):
+            @Html.DisplayNameFor(model => model.Test.Description):
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Test.Opis)
+            @Html.DisplayFor(model => model.Test.Description)
         </dd>
         <dt class="col-sm-2">
             Liczba punktów:
         </dt>
         <dd class="col-sm-10">
             @{
-                var maxPunkt = Model.Test.ListaPytan.Count();
-                var liczbaPunktow = Model.Rozwiazanie.LiczbaPunktow % 1 != 0 ? $"{Model.Rozwiazanie.LiczbaPunktow:G2}" : $"{Model.Rozwiazanie.LiczbaPunktow}";
+                var maxPunkt = Model.Test.Questions.Count();
+                var liczbaPunktow = Model.Result.Points % 1 != 0 ? $"{Model.Result.Points:G2}" : $"{Model.Result.Points}";
                 liczbaPunktow += $"/{maxPunkt.ToString()} pkt.";
                 Console.WriteLine(liczbaPunktow);
             }
@@ -47,17 +47,17 @@
             Ocena:
         </dt>
         <dd class="col-sm-10">
-            <text>@Html.Raw($"{Model.Oceny.First()}")</text>
+            <text>@Html.Raw($"{Model.Marks.First()}")</text>
         </dd>
 
     </dl>
 </div>
 <div>
-    @if (User.IsInRole("Uczen") && @Model.Test.CzyWidoczny == false)
+    @if (User.IsInRole("Uczen") && @Model.Test.IsVisible== false)
     {}
     else
     {
-        <a class="btn btn-standard" asp-page="./ExamDetailedInfo" asp-route-id="@Model.Rozwiazanie.IdRozwiazanie">Zobacz szczegóły</a>
+        <a class="btn btn-standard" asp-page="./ExamDetailedInfo" asp-route-id="@Model.Result.Id">Zobacz szczegóły</a>
     }
     @if (SignInManager.IsSignedIn(User))
     {

@@ -15,16 +15,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using TestTest.Models.Db;
-using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 
 namespace TestTest.Areas.Identity.Pages.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<Osoba> _signInManager;
+        private readonly SignInManager<Person> _signInManager;
         private Logger _logger;
 
-        public LoginModel(SignInManager<Osoba> signInManager)
+        public LoginModel(SignInManager<Person> signInManager)
         {
             _signInManager = signInManager;
             _logger = Logger.getInstance();

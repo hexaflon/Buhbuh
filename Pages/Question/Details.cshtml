@@ -11,33 +11,33 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Pytanie.Tresc)
+            @Html.DisplayNameFor(model => model.Question.Text)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Pytanie.Tresc)
+            @Html.DisplayFor(model => model.Question.Text)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Pytanie.IdKategoriaPytaniaNavigation)
+            @Html.DisplayNameFor(model => model.Question.Category)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Pytanie.IdKategoriaPytaniaNavigation.IdKategoriaPytania)
+            @Html.DisplayFor(model => model.Question.Category.Id)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Pytanie.IdNauczyciela)
+            @Html.DisplayNameFor(model => model.Question.TeacherId)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Pytanie.IdNauczyciela)
+            @Html.DisplayFor(model => model.Question.TeacherId)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Pytanie.IdTypPytaniaNavigation)
+            @Html.DisplayNameFor(model => model.Question.Type)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Pytanie.IdTypPytaniaNavigation.IdTypPytania)
+            @Html.DisplayFor(model => model.Question.Type.Id)
         </dd>
     </dl>
 </div>
 <div class="form-group mt-3">
-    <a asp-page="./Edit" asp-route-id="@Model.Pytanie?.IdPytanie" class="btn btn-standard">Edytuj</a>
+    <a asp-page="./Edit" asp-route-id="@Model.Question?.Id" class="btn btn-standard">Edytuj</a>
     <a asp-page="./Index" class="btn btn-back ml-2">Powrót</a>
 </div>
 

@@ -20,25 +20,25 @@ namespace TestTest.Pages.Answer
             _context = context;
         }
 
-        public IList<Odpowiedz> Odpowiedzi { get; set; } = default!;
-        public IList<Pytanie> Pytania { get; set; } = default!;
+        public IList<Models.Db.Answer> Answers { get; set; } = default!;
+        public IList<Models.Db.Question> Questions { get; set; } = default!;
 
         public async Task OnGetAsync()
         {
-            IQueryable<Odpowiedz> query = _context.Odpowiedz
-                .Include(o => o.IdPytanieNavigation);
+            IQueryable<Models.Db.Answer> query = _context.Answer
+                .Include<Models.Db.Answer, Models.Db.Question>((System.Linq.Expressions.Expression<Func<Models.Db.Answer, Models.Db.Question?>>)(o => o.Questions));
 
             var correctnessFilter = Request.Query["correctnessFilter"];
             var questionFilter = Request.Query["questionFilter"];
 
             if (!string.IsNullOrEmpty(questionFilter) && int.TryParse(questionFilter, out int questionId))
             {
-                query = query.Where(o => o.IdPytanie == questionId);
+                query = query.Where(o => o.QuestionId == questionId);
             }
 
-            Odpowiedzi = await query.ToListAsync();
+            Answers = await query.ToListAsync();
 
-            Pytania = await _context.Pytanie.ToListAsync();
+            Questions = await _context.Question.ToListAsync();
         }
 
     }

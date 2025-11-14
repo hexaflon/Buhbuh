@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using ProjektInzynierski.utils;
 using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 using LogLevel = ProjektInzynierski.Utils.LogLevel;
@@ -19,9 +18,9 @@ namespace ProjektInzynierski.Pages.Group
     public class CreateModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
         private IAppLogger _logger;
-        public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public CreateModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -38,28 +37,28 @@ namespace ProjektInzynierski.Pages.Group
         }
 
         [BindProperty]
-        public Grupy Grupy { get; set; } = default!;
+        public TestTest.Models.Db.Group Group { get; set; } = default!;
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid || _context.Grupy == null || Grupy == null)
+            if (!ModelState.IsValid || _context.Group == null || Group == null)
             {
                 return Page();
             }
 
 
-            var userId = _userManager.GetUserAsync(User).Result.IdOsoba;
+            var userId = _userManager.GetUserAsync(User).Result.PersonId;
             //użycie command
-            var createCmd = new CreateGroupCommand(_context, Grupy.Nazwa, userId); 
+            var createCmd = new CreateGroupCommand(_context, Group.Name, userId); 
             var invoker = new GroupInvoker();
             invoker.AddCommand(createCmd);
             invoker.Run(); 
 
-            var nowaGrupa = createCmd.Result;
+            var newGroup = createCmd.Result;
 
-            _logger.Log($"User: {User.Identity.Name} utworzył grupę {nowaGrupa.Nazwa}");
+            _logger.Log($"User: {User.Identity.Name} utworzył grupę {newGroup.Name}");
 
-            return RedirectToPage("./AddMembers", new { id = nowaGrupa.IdGrupy });
+            return RedirectToPage("./AddMembers", new { id = newGroup.Id });
         }
     }
 }

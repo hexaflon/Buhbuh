@@ -6,26 +6,26 @@ namespace ProjektInzynierski.Pages.Group
     public class DeleteGroupCommand : IGroupCommand
     {
         private readonly DatabaseContext _context;
-        private readonly int _idGrupy;
+        private readonly int _groupId;
 
-        public DeleteGroupCommand(DatabaseContext context, int idGrupy)
+        public DeleteGroupCommand(DatabaseContext context, int groupId)
         {
             _context = context;
-            _idGrupy = idGrupy;
+            _groupId = groupId;
         }
 
         public void Execute()
         {
-            var grupa = _context.Grupy.Include(g => g.Uczestnicy).FirstOrDefault(g => g.IdGrupy == _idGrupy);
-            if (grupa != null)
+            var group = _context.Group.Include(g => g.Participants).FirstOrDefault(g => g.Id == _groupId);
+            if (group != null)
             {
                 
-                foreach (var uczestnik in grupa.Uczestnicy.ToList())
+                foreach (var participant in group.Participants.ToList())
                 {
-                    _context.Uczestnicy.Remove(uczestnik);
+                    _context.Participant.Remove(participant);
                 }
 
-                _context.Grupy.Remove(grupa);
+                _context.Group.Remove(group);
                 _context.SaveChanges();
             }
         }

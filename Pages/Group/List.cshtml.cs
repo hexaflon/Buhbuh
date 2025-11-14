@@ -16,18 +16,18 @@ namespace ProjektInzynierski.Pages.Group
     public class ListModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
-        public ListModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        private readonly UserManager<Person> _userManager;
+        public ListModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
         }
 
-        public IList<Grupy> Grupy { get;set; } = default!;
+        public IList<TestTest.Models.Db.Group> Group { get;set; } = default!;
 
         public async Task OnGetAsync(string? searchText)
         {
-            IQueryable<Grupy> query = _context.Grupy;
+            IQueryable<TestTest.Models.Db.Group> query = _context.Group;
 
             if (User.IsInRole("Admin"))
             {
@@ -35,16 +35,16 @@ namespace ProjektInzynierski.Pages.Group
             }
             else
             {
-                var userId = _userManager.GetUserAsync(User).Result.IdOsoba;
-                query = query.Where(g => g.IdNauczyciela == userId);
+                var userId = _userManager.GetUserAsync(User).Result.PersonId;
+                query = query.Where(g => g.TeacherId == userId);
             }
 
             if (!string.IsNullOrEmpty(searchText))
             {
-                query = query.Where(g => g.Nazwa.Contains(searchText));
+                query = query.Where(g => g.Name.Contains(searchText));
             }
 
-            Grupy = await query.OrderByDescending(g=>g.IdGrupy).ToListAsync();
+            Group = await query.OrderByDescending(g=>g.Id).ToListAsync();
         }
 
     }

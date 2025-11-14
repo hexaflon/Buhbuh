@@ -2,15 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Xml.Linq;
 
 
 namespace TestTest.Models.Db
 {
-    public partial class Osoba : IdentityUser
+    public partial class Person : IdentityUser
     {
         [Display(Name = "ID użytkownika")]
-        public int IdOsoba { get; set; }
+        [Column("idOsoba")]
+        public int PersonId { get; set; }
         [Display(Name = "Imię")]
         [Required(ErrorMessage = "To pole jest wymagane.")]
         [MinLength(2, ErrorMessage = "Imię musi mieć co najmniej 2 znaki.")]

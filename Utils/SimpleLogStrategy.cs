@@ -1,8 +1,9 @@
 ﻿namespace ProjektInzynierski.Utils
 {
-    public class SimpleLogStrategy:ILogStrategy
+    //Podstawienie Liskov
+    public class SimpleLogStrategy : BaseLogStrategy
     {
-        public void WriteLog(string message, LogLevel level)
+        public override void WriteLog(string message, LogLevel level)
         {
             Console.WriteLine($"{DateTime.Now} [{level.ToLabel()}] {message}");
         }

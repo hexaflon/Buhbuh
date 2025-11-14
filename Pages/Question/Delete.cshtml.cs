@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.utils;
+
 using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 using LogLevel = ProjektInzynierski.Utils.LogLevel;
@@ -19,9 +19,9 @@ namespace TestTest.Pages.Question
     public class DeleteModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
         private IAppLogger _logger;
-        public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -31,43 +31,43 @@ namespace TestTest.Pages.Question
         }
 
         [BindProperty]
-      public Pytanie Pytanie { get; set; } = default!;
+      public Models.Db.Question Question { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Pytanie == null)
+            if (id == null || _context.Question == null)
             {
                 return NotFound();
             }
 
-            var pytanie = await _context.Pytanie.FirstOrDefaultAsync(m => m.IdPytanie == id);
+            var question = await _context.Question.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (pytanie == null)
+            if (question == null)
             {
                 return NotFound();
             }
             else 
             {
-                Pytanie = pytanie;
+                Question = question;
             }
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null || _context.Pytanie == null)
+            if (id == null || _context.Question == null)
             {
                 _logger.Log($"Nie znaleziono pytania o id: {id}");
                 return NotFound();
             }
-            var pytanie = await _context.Pytanie.FindAsync(id);
+            var question = await _context.Question.FindAsync(id);
 
             
-            if (pytanie != null)
+            if (question != null)
             {
                 if (!User.IsInRole("Admin"))
                 {
-                    if (pytanie.IdNauczyciela != _userManager.GetUserAsync(User).Result.IdOsoba)
+                    if (question.TeacherId != _userManager.GetUserAsync(User).Result.PersonId)
                     {
                         //Użycie strategii
                         _logger.SetStrategy(new ColoredLogStrategy());
@@ -75,23 +75,23 @@ namespace TestTest.Pages.Question
                         return RedirectToPage("./Index");
                     }
                 }
-                Pytanie = pytanie;
+                Question = question;
 
-                var odpowiedzi = _context.Odpowiedz.Where(o => o.IdPytanie == pytanie.IdPytanie).ToList();
-                foreach (var odp in odpowiedzi)
+                var answers = _context.Answer.Where(o => o.QuestionId == question.Id).ToList();
+                foreach (var odp in answers)
                 {
-                    foreach(var rozDP in _context.RozwiazanieDoPytan.Where(rdp=> rdp.IdOdpowiedz == odp.IdOdpowiedz))
+                    foreach(var rozDP in _context.QuestionResult.Where(rdp=> rdp.AnswerId == odp.Id))
                     {
-                        _context.RozwiazanieDoPytan.Remove(rozDP);
+                        _context.QuestionResult.Remove(rozDP);
                     }
-                    _context.Odpowiedz.Remove(odp);
+                    _context.Answer.Remove(odp);
                 }
-                foreach(var lp in _context.ListaPytan.Where(l => l.IdPytanie == pytanie.IdPytanie))
+                foreach(var lp in _context.QuestionList.Where(l => l.QuestionId == question.Id))
                 {
-                    _context.ListaPytan.Remove(lp);
+                    _context.QuestionList.Remove(lp);
                 }
 
-                _context.Pytanie.Remove(Pytanie);
+                _context.Question.Remove(Question);
                 await _context.SaveChangesAsync();
             }
 

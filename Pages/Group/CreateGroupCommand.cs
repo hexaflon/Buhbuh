@@ -5,32 +5,32 @@ namespace ProjektInzynierski.Pages.Group
     public class CreateGroupCommand : IGroupCommand
     {
         private readonly DatabaseContext _context;
-        private readonly string _nazwa;
-        private readonly int _idNauczyciela;
-        public Grupy Result { get; private set; }
+        private readonly string _name;
+        private readonly int _teacherId;
+        public TestTest.Models.Db.Group Result { get; private set; }
 
-        public CreateGroupCommand(DatabaseContext context, string nazwa, int idNauczyciela)
+        public CreateGroupCommand(DatabaseContext context, string name, int teacherId)
         {
             _context = context;
-            _nazwa = nazwa;
-            _idNauczyciela = idNauczyciela;
+            _name = name;
+            _teacherId = teacherId;
         }
 
         public void Execute()
         {
-            var id = _context.Grupy.OrderByDescending(g => g.IdGrupy).FirstOrDefault()?.IdGrupy ?? 0;
+            var id = _context.Group.OrderByDescending(g => g.Id).FirstOrDefault()?.Id ?? 0;
             id++;
 
-            var grupa = new Grupy
+            var group = new TestTest.Models.Db.Group
             {
-                IdGrupy = id,
-                Nazwa = _nazwa,
-                IdNauczyciela = _idNauczyciela
+                Id = id,
+                Name = _name,
+                TeacherId = _teacherId
             };
 
-            _context.Grupy.Add(grupa);
+            _context.Group.Add(group);
             _context.SaveChanges();
-            Result = grupa;
+            Result = group;
         }
     }
 }

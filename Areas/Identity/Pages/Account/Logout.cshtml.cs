@@ -9,17 +9,17 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using ProjektInzynierski.utils;
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 
 namespace TestTest.Areas.Identity.Pages.Account
 {
     public class LogoutModel : PageModel
     {
-        private readonly SignInManager<Osoba> _signInManager;
+        private readonly SignInManager<Person> _signInManager;
         private Logger _logger;
 
-        public LogoutModel(SignInManager<Osoba> signInManager)
+        public LogoutModel(SignInManager<Person> signInManager)
         {
             _signInManager = signInManager;
             _logger = Logger.getInstance();

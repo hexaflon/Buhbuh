@@ -1,7 +1,7 @@
 ﻿@using TestTest.Models.Db;
 @using Microsoft.AspNetCore.Identity;
-@inject SignInManager<Osoba> SignInManager
-@inject UserManager<Osoba> UserManager
+@inject SignInManager<Person> SignInManager
+@inject UserManager<Person> UserManager
 
 @{
     var user = await UserManager.GetUserAsync(User);

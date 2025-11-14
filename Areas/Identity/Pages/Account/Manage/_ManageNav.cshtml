@@ -1,4 +1,4 @@
-﻿@inject SignInManager<Osoba> SignInManager
+﻿@inject SignInManager<Person> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

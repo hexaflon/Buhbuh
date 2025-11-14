@@ -1,4 +1,5 @@
-﻿using ProjektInzynierski.utils;
+﻿
+using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 
 namespace ProjektInzynierski.Pages.Question
@@ -13,28 +14,28 @@ namespace ProjektInzynierski.Pages.Question
             _context = context;
             _logger = Logger.getInstance();
         }
-        public Pytanie CreateQuestionTemplate(string tresc,int idNauczyciela,int? idKategoria)
+        public TestTest.Models.Db.Question CreateQuestionTemplate(string text,int teacherId,int? categoryId)
         {
-            var pytanie = PrepareQuestion(tresc, idNauczyciela, idKategoria);
-            SaveQuestion(pytanie);
-            AddAnswers(pytanie);
-            LogCreation(pytanie);
-            return pytanie;
+            var question = PrepareQuestion(text, teacherId, categoryId);
+            SaveQuestion(question);
+            AddAnswers(question);
+            LogCreation(question);
+            return question;
         }
-        protected abstract Pytanie PrepareQuestion(string tresc, int idNauczyciela, int? idKategoria);
-        protected abstract void AddAnswers(Pytanie pytanie);
-        protected virtual void SaveQuestion(Pytanie pytanie)
+        protected abstract TestTest.Models.Db.Question PrepareQuestion(string text, int teacherId, int? categoryId);
+        protected abstract void AddAnswers(TestTest.Models.Db.Question question);
+        protected virtual void SaveQuestion(TestTest.Models.Db.Question question)
         {
-            var id = _context.Pytanie.OrderByDescending(p => p.IdPytanie).FirstOrDefault()?.IdPytanie ?? 0;
-            pytanie.IdPytanie = id + 1;
+            var id = _context.Question.OrderByDescending(p => p.Id).FirstOrDefault()?.Id ?? 0;
+            question.Id = id + 1;
 
-            _context.Pytanie.Add(pytanie);
+            _context.Question.Add(question);
             _context.SaveChanges();
         }
 
-        protected virtual void LogCreation(Pytanie pytanie)
+        protected virtual void LogCreation(TestTest.Models.Db.Question question)
         {
-            _logger.Log($"Pytanie utworzone: {pytanie.Tresc}");
+            _logger.Log($"Pytanie utworzone: {question.Text}");
         }
     }
 }

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using ProjektInzynierski.utils;
 using ProjektInzynierski.Utils;
 using TestTest.Models.Db;
 
@@ -17,10 +16,10 @@ namespace ProjektInzynierski.Pages.Group
     public class DeleteModel : PageModel
     {
         private readonly TestTest.Models.Db.DatabaseContext _context;
-        private readonly UserManager<Osoba> _userManager;
+        private readonly UserManager<Person> _userManager;
         private IAppLogger _logger;
 
-        public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Osoba> userManager)
+        public DeleteModel(TestTest.Models.Db.DatabaseContext context, UserManager<Person> userManager)
         {
             _context = context;
             _userManager = userManager;
@@ -30,24 +29,24 @@ namespace ProjektInzynierski.Pages.Group
         }
 
         [BindProperty]
-      public Grupy Grupy { get; set; } = default!;
+      public TestTest.Models.Db.Group Group { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null || _context.Grupy == null)
+            if (id == null || _context.Group == null)
             {
                 return NotFound();
             }
 
-            var grupy = await _context.Grupy.FirstOrDefaultAsync(m => m.IdGrupy == id);
+            var group = await _context.Group.FirstOrDefaultAsync(m => m.Id == id);
 
-            if (grupy == null)
+            if (group == null)
             {
                 return NotFound();
             }
             else 
             {
-                Grupy = grupy;
+                Group = group;
             }
             return Page();
         }
@@ -57,8 +56,8 @@ namespace ProjektInzynierski.Pages.Group
             if (id == null)
                 return NotFound();
 
-            var grupy = await _context.Grupy.FindAsync(id);
-            if (grupy == null)
+            var group = await _context.Group.FindAsync(id);
+            if (group == null)
                 return NotFound();
 
             //użycie command
@@ -68,7 +67,7 @@ namespace ProjektInzynierski.Pages.Group
             invoker.Run();
 
 
-            _logger.Log($"User: {User.Identity.Name} usunął grupę {grupy.Nazwa}");
+            _logger.Log($"User: {User.Identity.Name} usunął grupę {group.Name}");
             return RedirectToPage("./List");
         }
     }

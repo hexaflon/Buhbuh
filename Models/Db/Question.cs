@@ -4,40 +4,40 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TestTest.Models.Db;
 
-public partial class Pytanie
+public partial class Question
 {
 
-        public Pytanie()
+        public Question()
         {
-            ListaPytan = new HashSet<ListaPytan>();
-            Odpowiedz = new HashSet<Odpowiedz>();
+            QuestionList = new HashSet<QuestionList>();
+            Answers = new HashSet<Answer>();
         }
 
         [Display(Name = "ID pytania")]
-        public int IdPytanie { get; set; }
+        public int Id { get; set; }
         [Display(Name = "ID nauczyciela")]
-        public int? IdNauczyciela { get; set; }
+        public int? TeacherId { get; set; }
         [Display(Name = "Kategoria pytania")]
-        public int? IdKategoriaPytania { get; set; }
+        public int? CategoryId { get; set; }
         [Display(Name = "Typ pytania")]
-        public int? IdTypPytania { get; set; }
+        public int? TypeId { get; set; }
         [Display(Name = "Treść pytania")]
         [Required(ErrorMessage = "To pole jest wymagane.")]
         [StringLength(255, ErrorMessage = "Maksymalna długość to 255 znaków.")]
         [MinLength(5, ErrorMessage = "Pytanie musi mieć co najmnniej 5 znaków.")]
-        public string? Tresc { get; set; }
+        public string? Text { get; set; }
 
         [Display(Name = "Kategoria pytania")]
-        public virtual KategoriaPytania? IdKategoriaPytaniaNavigation { get; set; }
+        public virtual QuestionCategory? Category { get; set; }
         
         [Display(Name = "ID typu pytania")]
-        public virtual TypPytania? IdTypPytaniaNavigation { get; set; }
-        public virtual ICollection<ListaPytan> ListaPytan { get; set; }
-        public virtual ICollection<Odpowiedz> Odpowiedz { get; set; }
+        public virtual QuestionType? Type { get; set; }
+        public virtual ICollection<QuestionList> QuestionList { get; set; }
+        public virtual ICollection<Answer> Answers { get; set; }
 
     public override string ToString()
     {
-        return $"Pytanie o id: {IdPytanie} - {Tresc}";
+        return $"Pytanie o id: {Id} - {Text}";
     }
 
 }

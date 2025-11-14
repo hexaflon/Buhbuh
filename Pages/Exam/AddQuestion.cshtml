@@ -11,24 +11,24 @@
 <table class="table">
     <tr class="text-muted border-orange">
         <td class="fw-bold">
-            Tytuł: <span class="text1">@Model.wysTest.Tytul</span>
+            Tytuł: <span class="text1">@Model.Test.Title</span>
         </td>
     </tr>
-    @if (Model.wysTest.ListaPytan != null && Model.wysTest.ListaPytan.Any())
+    @if (Model.Test.Questions != null && Model.Test.Questions.Any())
     {
         <tr class="text-muted">
             <td class="fw-bold">
                 Pytania dodane do testu:
             </td>
         </tr>
-        foreach (var pyt in Model.wysTest.ListaPytan)
+        foreach (var pyt in Model.Test.Questions)
         {
             <tr class="text1">
                 <td>
-                    @Html.DisplayFor(x => pyt.IdPytanieNavigation.Tresc)
+                    @Html.DisplayFor(x => pyt.Questions.Text)
                 </td>
                 <td>
-                    <a asp-page-handler="Delete" asp-route-idTest="@pyt.IdTest" asp-route-idPytanie="@pyt.IdPytanie" class="btn btn-delete">Usuń</a>
+                    <a asp-page-handler="Delete" asp-route-idTest="@pyt.TestId" asp-route-idPytanie="@pyt.QuestionId" class="btn btn-delete">Usuń</a>
                 </td>
             </tr>
         }
@@ -55,9 +55,9 @@
                         <label for="categoryId" class="row1">Kategoria:</label>
                         <select class="form-control dropdown" id="categoryId" name="categoryId">
                             <option value="">Wszystkie</option>
-                            @foreach (var category in Model.Kategorie)
+                            @foreach (var category in Model.QuestionCategory)
                             {
-                                <option value="@category.IdKategoriaPytania">@category.Nazwa</option>
+                                <option value="@category.Id">@category.Name</option>
                             }
                         </select>
                     </div>
@@ -71,9 +71,9 @@
                         <label for="typeId" class="row1">Typ pytania:</label>
                         <select class="form-control dropdown" id="typeId" name="typeId">
                             <option value="">Wszystkie</option>
-                            @foreach (var type in Model.TypyPytan)
+                            @foreach (var type in Model.QuestionType)
                             {
-                                <option value="@type.IdTypPytania">@type.Nazwa</option>
+                                <option value="@type.Id">@type.Name</option>
                             }
                         </select>
                     </div>
@@ -101,8 +101,8 @@
             <form method="post" asp-route-id="@ViewBag.IdTest">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="ListaPytan.IdPytanie" class="control-label">Wybierz pytanie</label>
-                    <select asp-for="ListaPytan.IdPytanie" class="form-control dropdown" asp-items="ViewBag.IdPytanie"></select>
+                    <label asp-for="QuestionList.QuestionId" class="control-label">Wybierz pytanie</label>
+                    <select asp-for="QuestionList.QuestionId" class="form-control dropdown" asp-items="ViewBag.IdPytanie"></select>
                 </div>
                 <div class="form-group mt-3">
                     <input type="submit" value="Dodaj" class="btn btn-standard" />
@@ -122,7 +122,7 @@
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
     <script>
         $(document).ready(function () {
-            var pytaniaArray = @Html.Raw(Json.Serialize(Model.lPytan.Select(p => p.Tresc).ToList()));
+            var pytaniaArray = @Html.Raw(Json.Serialize(Model.Questions.Select(p => p.Text).ToList()));
             console.log(pytaniaArray);
 
             $("#searchText").autocomplete({

@@ -21,13 +21,13 @@ namespace TestTest.Pages
             _context = context;
         }
 
-        public IList<KategoriaPytania> KategoriaPytania { get;set; } = default!;
+        public IList<QuestionCategory> KategoriaPytania { get;set; } = default!;
 
         public async Task OnGetAsync()
         {
-            if (_context.KategoriaPytania != null)
+            if (_context.QuestionCategory != null)
             {
-                KategoriaPytania = await _context.KategoriaPytania.ToListAsync();
+                KategoriaPytania = await _context.QuestionCategory.ToListAsync();
             }
         }
     }
